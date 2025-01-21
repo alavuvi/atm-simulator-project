@@ -22,6 +22,8 @@ app.use('/login', loginRouter);
 app.use(authenticateToken);
 app.use('/card', cardRouter);
 app.use('/transactions', transactionsRouter);
+const accountRouter = require('./routes/account');
+app.use('/account', accountRouter);
 
 // authenticateToken (Tämän funktion voi kommentoida pois, jos haluaa testata sovellusta ilman tokenia)
 function authenticateToken(req, res, next) {
