@@ -8,8 +8,8 @@ var cardRouter = require('./routes/card');
 var transactionsRouter = require('./routes/transactions');
 var loginRouter = require('./routes/login');
 var customerRouter = require('./routes/customer');
+var accountRouter = require('./routes/account');
 const jwt = require('jsonwebtoken');
-
 
 var app = express();
 
@@ -24,24 +24,22 @@ app.use('/login', loginRouter);
 app.use(authenticateToken);
 app.use('/card', cardRouter);
 app.use('/transactions', transactionsRouter);
+app.use('/account', accountRouter);
 app.use('/customer', customerRouter);
 
 // authenticateToken (Tämän funktion voi kommentoida pois, jos haluaa testata sovellusta ilman tokenia)
 function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
   
-    console.log("token = "+token);
-    if (token == null) return res.sendStatus(401)
+    console.log("token = " + token);
+    if (token == null) return res.sendStatus(401);
   
     jwt.verify(token, process.env.MY_TOKEN, function(err, user) {
-  
-      if (err) return res.sendStatus(403)
-
-      req.user = user
-  
-      next()
-    })
-  }
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+}
 
 module.exports = app;
