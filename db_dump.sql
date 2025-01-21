@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `bankautomat` /*!40100 DEFAULT CHARACTER SET utf8mb3 */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `bankautomat`;
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: bankautomat
@@ -33,7 +31,7 @@ CREATE TABLE `account` (
   `accounttype` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idaccount`,`idcustomer`),
   KEY `customerid_idx` (`idcustomer`),
-  CONSTRAINT `customerid` FOREIGN KEY (`idcustomer`) REFERENCES `customer` (`idcustomer`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `fk_customerid` FOREIGN KEY (`idcustomer`) REFERENCES `customer` (`idcustomer`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -58,8 +56,8 @@ CREATE TABLE `accountcard` (
   `idaccount` int NOT NULL,
   PRIMARY KEY (`idcard`,`idaccount`),
   KEY `accountid_idx` (`idaccount`),
-  CONSTRAINT `accountcard` FOREIGN KEY (`idcard`) REFERENCES `card` (`idcard`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `accountid` FOREIGN KEY (`idaccount`) REFERENCES `account` (`idaccount`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `fk_account_id` FOREIGN KEY (`idaccount`) REFERENCES `account` (`idaccount`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_accountcard` FOREIGN KEY (`idcard`) REFERENCES `card` (`idcard`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -83,8 +81,9 @@ CREATE TABLE `card` (
   `idcard` int NOT NULL AUTO_INCREMENT,
   `cardnumber` int DEFAULT NULL,
   `pin` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`idcard`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+  PRIMARY KEY (`idcard`),
+  UNIQUE KEY `cardnumber_UNIQUE` (`cardnumber`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,6 +92,7 @@ CREATE TABLE `card` (
 
 LOCK TABLES `card` WRITE;
 /*!40000 ALTER TABLE `card` DISABLE KEYS */;
+INSERT INTO `card` VALUES (5,123456789,'$2a$10$gBX9Qv1sVu4bDkT3bTsBzutRyxCLiEc9Zr6BU.t5ovkCalsOSTxSq'),(7,98765431,'$2a$10$kml6ql71FRf.l4AtlZRA.Oox4y4mEWYPnaVfoITymqy16H9h4qTmy');
 /*!40000 ALTER TABLE `card` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -149,10 +149,6 @@ LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping routines for database 'bankautomat'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -163,4 +159,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-17  9:31:56
+-- Dump completed on 2025-01-21  9:52:20
