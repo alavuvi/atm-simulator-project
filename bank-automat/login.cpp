@@ -1,3 +1,4 @@
+#include "environment.h"
 #include "login.h"
 #include "ui_login.h"
 
@@ -6,6 +7,7 @@ Login::Login(QWidget *parent)
     , ui(new Ui::Login)
 {
     ui->setupUi(this);
+
     // Numeropainikkeet
     connect(ui->button00, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
     connect(ui->button01, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
@@ -17,7 +19,6 @@ Login::Login(QWidget *parent)
     connect(ui->button07, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
     connect(ui->button08, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
     connect(ui->button09, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
-
 
     connect(ui->buttonOk, &QPushButton::clicked, this, &Login::onOkButtonClicked);
     connect(ui->buttonBack, &QPushButton::clicked, this, &Login::onBackButtonClicked);
@@ -64,7 +65,7 @@ void Login::onOkButtonClicked()
     jsonObj.insert("cardnumber", ui->labelCardnumber->text());
     jsonObj.insert("pin", ui->pinOutput->text());
 
-    QString site_url="http://localhost:3000/login";
+    QString site_url=Environment::base_url()+"/login";
     QNetworkRequest request(site_url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     postManager = new QNetworkAccessManager(this);
