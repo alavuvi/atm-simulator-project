@@ -28,6 +28,11 @@ Login::~Login()
     delete ui;
 }
 
+void Login::setCardNumber(const QString &cardNumber)
+{
+    ui->labelCardnumber->setText(cardNumber);
+}
+
 // Slotti numeronapeille
 void Login::onNumberButtonClicked()
 {
@@ -42,17 +47,37 @@ void Login::onNumberButtonClicked()
     }
 }
 
-// Slot OK napille
-void Login::onOkButtonClicked()
-{
-    QString pinCode = ui->pinOutput->text();
-    // Tähän koodi millä tarkistetaan pin koodi backendistä
-}
-
 // Slot backspace napille
 void Login::onBackButtonClicked()
 {
     QString currentText = ui->pinOutput->text();
     currentText.chop(1);
     ui->pinOutput->setText(currentText);
+}
+
+// Slot OK napille
+void Login::onOkButtonClicked()
+
+{
+    QJsonObject jsonObj;
+    // Tähän koodi millä tarkistetaan korttinumero ja pinkoodi backendistä
+    jsonObj.insert("cardnumber", ui->labelCardnumber->text());
+    jsonObj.insert("pin", ui->pinOutput->text());
+
+    QString site_url="http://localhost:3000/login";
+    QNetworkRequest request(site_url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    postManager = new QNetworkAccessManager(this);
+    connect(postManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(loginSlot(QNetworkReply*)));
+    reply = postManager->post(request, QJsonDocument(jsonObj).toJson());
+}
+
+
+// login slot tarkistaa palvelimelta kirjautumistiedot
+void Login::loginSlot(QNetworkReply *reply)
+{
+    response_data=reply->readAll();
+    qDebug()<<response_data;
+    reply->deleteLater();
+    postManager->deleteLater();
 }

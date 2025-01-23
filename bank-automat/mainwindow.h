@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QWidget>
 
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -25,7 +26,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QLineEdit *lineCardnumber;
-    QPushButton *btnCardnumber;
+
 };
 #endif // MAINWINDOW_H
