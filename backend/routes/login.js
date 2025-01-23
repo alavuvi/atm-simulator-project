@@ -5,6 +5,7 @@ const login = require('../models/login_model');
 const card = require('../models/card_model');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+dotenv.config();
 
 router.post('/', 
   function(request, response) {
@@ -47,7 +48,6 @@ router.post('/',
 );
 
 function generateAccessToken(username) {
-// dotenv.config();
   return jwt.sign(username, process.env.MY_TOKEN, { expiresIn: '1800s' });
 }
 

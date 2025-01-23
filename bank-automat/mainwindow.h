@@ -1,7 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QlineEdit>
+#include <QPushButton>
 #include <QMainWindow>
+#include <QWidget>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,7 +21,11 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_btnCardnumber_clicked();
+
 private:
     Ui::MainWindow *ui;
+
 };
 #endif // MAINWINDOW_H
