@@ -20,7 +20,7 @@ router.get('/:id', function(request, response){
             response.json(err);
         }
         else {
-            response.json(result);
+            response.json(result[0]);
         }
     })
 });
@@ -31,9 +31,32 @@ router.post('/', function(request, response){
             response.json(err);
         }
         else {
-            response.json(result);
+            response.json(result.affectedRows);
         }
     })
+});
+
+router.put('/:id', function(request, response){
+    transactions.update(request.params.id,request.body, function(err, result){
+        if(err){
+            response.json(err);
+        }
+        else {
+            response.json(result.affectedRows);
+        }
+    })
+});
+
+router.delete('/:id', function(request, response) {
+    transactions.delete(request.params.id, function(err, result) {
+        if(err){
+            response.json(err);
+        }
+        else {
+            response.json(result.affectedRows);
+        }
+    }) 
+
 });
 
 module.exports=router;
