@@ -10,17 +10,31 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    balance.cpp \
+    environment.cpp \
     login.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainmenu.cpp \
+    mainwindow.cpp \
+    transactions.cpp \
+    withdraw.cpp
 
 HEADERS += \
+    balance.h \
+    environment.h \
     login.h \
-    mainwindow.h
+    mainmenu.h \
+    mainwindow.h \
+    transactions.h \
+    withdraw.h
 
 FORMS += \
+    balance.ui \
     login.ui \
-    mainwindow.ui
+    mainmenu.ui \
+    mainwindow.ui \
+    transactions.ui \
+    withdraw.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

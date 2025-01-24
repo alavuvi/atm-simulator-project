@@ -1,11 +1,16 @@
+#include "environment.h"
 #include "login.h"
+#include "mainmenu.h"
 #include "ui_login.h"
 
 Login::Login(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::Login)
+    , failedAttempts(0)
+    , loginTimeoutTimer(new QTimer(this))
 {
     ui->setupUi(this);
+
     // Numeropainikkeet
     connect(ui->button00, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
     connect(ui->button01, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
@@ -18,9 +23,13 @@ Login::Login(QWidget *parent)
     connect(ui->button08, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
     connect(ui->button09, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
 
-
     connect(ui->buttonOk, &QPushButton::clicked, this, &Login::onOkButtonClicked);
     connect(ui->buttonBack, &QPushButton::clicked, this, &Login::onBackButtonClicked);
+
+    connect(loginTimeoutTimer, &QTimer::timeout, this, &Login::handleLoginTimeout);
+
+    // Aloita 10 sekunnin ajastus kirjautumiselle
+    startLoginTimeout();
 }
 
 Login::~Login()
@@ -28,9 +37,26 @@ Login::~Login()
     delete ui;
 }
 
+void Login::startLoginTimeout()
+{
+    loginTimeoutTimer->start(10000);
+}
+
+void Login::resetFailedAttempts()
+{
+    failedAttempts = 0;
+}
+
 void Login::setCardNumber(const QString &cardNumber)
 {
     ui->labelCardnumber->setText(cardNumber);
+}
+
+// Tämä suoritetaan, kun login ei onnistu 10 sekunnin sisällä
+void Login::handleLoginTimeout()
+{
+    ui->labelInfo->setText("Palataan takaisin, oikeaa PIN-koodia ei annettu aikarajan sisällä!");
+    QTimer::singleShot(5000, this, &Login::close);
 }
 
 // Slotti numeronapeille
@@ -57,14 +83,13 @@ void Login::onBackButtonClicked()
 
 // Slot OK napille
 void Login::onOkButtonClicked()
-
 {
     QJsonObject jsonObj;
     // Tähän koodi millä tarkistetaan korttinumero ja pinkoodi backendistä
     jsonObj.insert("cardnumber", ui->labelCardnumber->text());
     jsonObj.insert("pin", ui->pinOutput->text());
 
-    QString site_url="http://localhost:3000/login";
+    QString site_url=Environment::base_url()+"/login";
     QNetworkRequest request(site_url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     postManager = new QNetworkAccessManager(this);
@@ -77,7 +102,37 @@ void Login::onOkButtonClicked()
 void Login::loginSlot(QNetworkReply *reply)
 {
     response_data=reply->readAll();
-    qDebug()<<response_data;
+    if(response_data.length()<2){
+        qDebug()<<"Palvelin ei vastaa!";
+        ui->labelInfo->setText("Palvelin ei vastaa!");
+    }
+    else {
+        if(response_data=="-11") {
+            ui->labelInfo->setText("Tietokanta virhe!");
+        }
+        else {
+            if(response_data!="false" && response_data.length()>20) {
+                ui->labelInfo->setText("Login OK");
+                loginTimeoutTimer->stop();
+                QByteArray myToken="Bearer "+response_data;
+                MainMenu *objMainMenu=new MainMenu(this);
+                objMainMenu->setCardnumber(ui->labelCardnumber->text());
+                objMainMenu->setMyToken(myToken);
+                objMainMenu->open();
+            }
+            else {
+                failedAttempts++;
+                if(failedAttempts >= 3){
+                    ui->labelInfo->setText("Syötit väärän PIN koodin 3 kertaa. Suljetaan...");
+                    // Aloittaa viiden sekunnin ajastimen ja sulkee ikkunan
+                    QTimer::singleShot(5000, this, &Login::close);
+                }
+                else{
+                    ui->labelInfo->setText("Väärä kortinnumero/PIN koodi");
+                }
+            }
+    }
     reply->deleteLater();
     postManager->deleteLater();
+}
 }

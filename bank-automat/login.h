@@ -5,6 +5,7 @@
 #include <QtNetwork>
 #include <QNetworkAccessManager>
 #include <QJsonDocument>
+#include <QTimer>
 
 
 namespace Ui {
@@ -20,6 +21,9 @@ public:
     void setCardNumber(const QString &cardNumber);
     ~Login();
 
+public slots:
+    void handleLoginTimeout();
+
 private slots:
     void onNumberButtonClicked();
     void onOkButtonClicked();
@@ -34,6 +38,12 @@ private:
     QNetworkAccessManager *postManager;
     QNetworkReply *reply;
     QByteArray response_data;
+
+    int failedAttempts;
+    QTimer *loginTimeoutTimer;
+
+    void startLoginTimeout();
+    void resetFailedAttempts();
 };
 
 #endif // LOGIN_H
