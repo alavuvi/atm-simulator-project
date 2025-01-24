@@ -12,3 +12,13 @@ Transactions::~Transactions()
 {
     delete ui;
 }
+
+void Transactions::setCardnumber(const QString &newCardnumber)
+{
+    cardnumber = newCardnumber;
+}
+
+void Transactions::setMyToken(const QByteArray &newMyToken)
+{
+    myToken = newMyToken;
+}

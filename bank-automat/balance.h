@@ -15,8 +15,14 @@ public:
     explicit Balance(QWidget *parent = nullptr);
     ~Balance();
 
+    void setCardnumber(const QString &newCardnumber);
+
+    void setMyToken(const QByteArray &newMyToken);
+
 private:
     Ui::Balance *ui;
+    QString cardnumber;
+    QByteArray myToken;
 };
 
 #endif // BALANCE_H

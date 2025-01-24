@@ -15,8 +15,14 @@ public:
     explicit Transactions(QWidget *parent = nullptr);
     ~Transactions();
 
+    void setCardnumber(const QString &newCardnumber);
+
+    void setMyToken(const QByteArray &newMyToken);
+
 private:
     Ui::Transactions *ui;
+    QString cardnumber;
+    QByteArray myToken;
 };
 
 #endif // TRANSACTIONS_H

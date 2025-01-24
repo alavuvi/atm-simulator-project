@@ -12,3 +12,13 @@ Withdraw::~Withdraw()
 {
     delete ui;
 }
+
+void Withdraw::setCardnumber(const QString &newCardnumber)
+{
+    cardnumber = newCardnumber;
+}
+
+void Withdraw::setMyToken(const QByteArray &newMyToken)
+{
+    myToken = newMyToken;
+}

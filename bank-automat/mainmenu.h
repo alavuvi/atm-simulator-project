@@ -19,6 +19,13 @@ public:
 
     void setMyToken(const QByteArray &newMyToken);
 
+private slots:
+    void on_btnBalance_clicked();
+
+    void on_btnTransactions_clicked();
+
+    void on_btnWithdraw_clicked();
+
 private:
     Ui::MainMenu *ui;
     QString cardnumber;

@@ -12,3 +12,13 @@ Balance::~Balance()
 {
     delete ui;
 }
+
+void Balance::setCardnumber(const QString &newCardnumber)
+{
+    cardnumber = newCardnumber;
+}
+
+void Balance::setMyToken(const QByteArray &newMyToken)
+{
+    myToken = newMyToken;
+}
