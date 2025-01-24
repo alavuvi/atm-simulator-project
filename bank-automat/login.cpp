@@ -6,7 +6,7 @@ Login::Login(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::Login)
     , failedAttempts(0)
-    , lockoutTimer(new QTimer(this))
+    // , lockoutTimer(new QTimer(this))
     , loginTimeoutTimer(new QTimer(this))
 {
     ui->setupUi(this);
@@ -26,7 +26,7 @@ Login::Login(QWidget *parent)
     connect(ui->buttonOk, &QPushButton::clicked, this, &Login::onOkButtonClicked);
     connect(ui->buttonBack, &QPushButton::clicked, this, &Login::onBackButtonClicked);
 
-    connect(lockoutTimer, &QTimer::timeout, this, &Login::handleLockoutTimeout);
+    // connect(lockoutTimer, &QTimer::timeout, this, &Login::handleLockoutTimeout);
     connect(loginTimeoutTimer, &QTimer::timeout, this, &Login::handleLoginTimeout);
 
     // Aloita 10 sekunnin ajastus kirjautumiselle
@@ -48,17 +48,20 @@ void Login::resetFailedAttempts()
     failedAttempts = 0;
 }
 
-void Login::handleLockoutTimeout()
-{
-    ui->labelInfo->setText("Lukittu, palataan takaisin edelliseen ikkunaan.");
-    this->close();
-}
+
+// void Login::handleLockoutTimeout()
+// {
+//     ui->labelInfo->setText("Lukittu, palataan takaisin edelliseen ikkunaan.");
+//     this->close();
+// }
+
 
 void Login::setCardNumber(const QString &cardNumber)
 {
     ui->labelCardnumber->setText(cardNumber);
 }
 
+// Tämä suoritetaan, kun login ei onnistu 10 sekunnin sisällä
 void Login::handleLoginTimeout()
 {
     ui->labelInfo->setText("Palataan takaisin, oikeaa PIN-koodia ei annettu aikarajan sisällä!");
@@ -125,9 +128,9 @@ void Login::loginSlot(QNetworkReply *reply)
             else {
                 failedAttempts++;
                 if(failedAttempts >= 3){
-                    ui->labelInfo->setText("Väärä PIN koodi. Suljetaan...");
-                    // Start lockout timer for 5 seconds
-                    lockoutTimer->start(5000);
+                    ui->labelInfo->setText("Syötit väärän PIN koodin 3 kertaa. Suljetaan...");
+                    // Aloittaa viiden sekunnin ajastimen ja sulkee ikkunan
+                    QTimer::singleShot(5000, this, &Login::close);
                 }
                 else{
                     ui->labelInfo->setText("Väärä kortinnumero/PIN koodi");

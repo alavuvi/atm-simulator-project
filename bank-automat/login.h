@@ -22,7 +22,7 @@ public:
     ~Login();
 
 public slots:
-    void handleLockoutTimeout();
+    // void handleLockoutTimeout();
     void handleLoginTimeout();
 
 private slots:
@@ -42,7 +42,7 @@ private:
 
     // Login timerit
     int failedAttempts;
-    QTimer *lockoutTimer;
+    // QTimer *lockoutTimer;
     QTimer *loginTimeoutTimer;
 
     void startLoginTimeout();
