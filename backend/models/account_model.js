@@ -13,6 +13,18 @@ const account = {
             'INSERT INTO account(idcustomer, balance, creditlimit, accountnumber, accounttype) VALUES(?,?,?,?,?)',
             [data.idcustomer, data.balance, data.creditlimit, data.accountnumber, data.accounttype],
             callback);
-    }
-}
+    },
+
+    update: function(id, account, callback) {
+        return db.query(
+            'UPDATE account SET balance = ?, creditlimit = ?, accountnumber = ?, accounttype = ? WHERE idaccount = ?',
+            [account.balance, account.creditlimit, account.accountnumber, account.accounttype, id],
+            callback
+        );
+    },
+    delete: function(id, callback) {
+        return db.query('DELETE FROM account WHERE idaccount = ?', [id], callback);
+    },
+};
+
 module.exports = account;
