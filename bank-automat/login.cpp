@@ -1,12 +1,12 @@
 #include "environment.h"
 #include "login.h"
+#include "mainmenu.h"
 #include "ui_login.h"
 
 Login::Login(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::Login)
     , failedAttempts(0)
-    // , lockoutTimer(new QTimer(this))
     , loginTimeoutTimer(new QTimer(this))
 {
     ui->setupUi(this);
@@ -26,7 +26,6 @@ Login::Login(QWidget *parent)
     connect(ui->buttonOk, &QPushButton::clicked, this, &Login::onOkButtonClicked);
     connect(ui->buttonBack, &QPushButton::clicked, this, &Login::onBackButtonClicked);
 
-    // connect(lockoutTimer, &QTimer::timeout, this, &Login::handleLockoutTimeout);
     connect(loginTimeoutTimer, &QTimer::timeout, this, &Login::handleLoginTimeout);
 
     // Aloita 10 sekunnin ajastus kirjautumiselle
@@ -48,14 +47,6 @@ void Login::resetFailedAttempts()
     failedAttempts = 0;
 }
 
-
-// void Login::handleLockoutTimeout()
-// {
-//     ui->labelInfo->setText("Lukittu, palataan takaisin edelliseen ikkunaan.");
-//     this->close();
-// }
-
-
 void Login::setCardNumber(const QString &cardNumber)
 {
     ui->labelCardnumber->setText(cardNumber);
@@ -66,7 +57,6 @@ void Login::handleLoginTimeout()
 {
     ui->labelInfo->setText("Palataan takaisin, oikeaa PIN-koodia ei annettu aikarajan sisällä!");
     QTimer::singleShot(5000, this, &Login::close);
-   // this->close();
 }
 
 // Slotti numeronapeille
@@ -124,6 +114,11 @@ void Login::loginSlot(QNetworkReply *reply)
             if(response_data!="false" && response_data.length()>20) {
                 ui->labelInfo->setText("Login OK");
                 loginTimeoutTimer->stop();
+                QByteArray myToken="Bearer "+response_data;
+                MainMenu *objMainMenu=new MainMenu(this);
+                objMainMenu->setCardnumber(ui->labelCardnumber->text());
+                objMainMenu->setMyToken(myToken);
+                objMainMenu->open();
             }
             else {
                 failedAttempts++;

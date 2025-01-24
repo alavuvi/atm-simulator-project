@@ -22,7 +22,6 @@ public:
     ~Login();
 
 public slots:
-    // void handleLockoutTimeout();
     void handleLoginTimeout();
 
 private slots:
@@ -40,9 +39,7 @@ private:
     QNetworkReply *reply;
     QByteArray response_data;
 
-    // Login timerit
     int failedAttempts;
-    // QTimer *lockoutTimer;
     QTimer *loginTimeoutTimer;
 
     void startLoginTimeout();
