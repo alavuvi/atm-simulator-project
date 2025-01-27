@@ -53,7 +53,9 @@ void MainMenu::on_btnWithdraw_clicked()
 
 void MainMenu::on_btnLogout_clicked()
 {
-    delete this;
     setMyToken(nullptr);
+    qDebug()<<"logout";
+    delete this;
+
 }
 

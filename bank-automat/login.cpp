@@ -11,6 +11,9 @@ Login::Login(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Aseta pinOutput-tekstikenttään EchoMode Password
+    ui->pinOutput->setEchoMode(QLineEdit::Password);
+
     // Numeropainikkeet
     connect(ui->button00, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
     connect(ui->button01, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
@@ -119,7 +122,7 @@ void Login::loginSlot(QNetworkReply *reply)
                 objMainMenu->setCardnumber(ui->labelCardnumber->text());
                 objMainMenu->setMyToken(myToken);
                 objMainMenu->open();
-                this->close(); // Close the login window
+                this->close(); // sulkee login ikkunan onnistuneen kirjautumisen jälkeen
             }
             else {
                 failedAttempts++;
