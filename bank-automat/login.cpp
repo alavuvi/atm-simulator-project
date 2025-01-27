@@ -119,13 +119,14 @@ void Login::loginSlot(QNetworkReply *reply)
                 objMainMenu->setCardnumber(ui->labelCardnumber->text());
                 objMainMenu->setMyToken(myToken);
                 objMainMenu->open();
+                this->close(); // Close the login window
             }
             else {
                 failedAttempts++;
                 if(failedAttempts >= 3){
                     ui->labelInfo->setText("Syötit väärän PIN koodin 3 kertaa. Suljetaan...");
-                    // Aloittaa viiden sekunnin ajastimen ja sulkee ikkunan
-                    QTimer::singleShot(5000, this, &Login::close);
+                    // Aloittaa kolmen sekunnin ajastimen ja sulkee ikkunan
+                    QTimer::singleShot(3000, this, &Login::close);
                 }
                 else{
                     ui->labelInfo->setText("Väärä kortinnumero/PIN koodi");
