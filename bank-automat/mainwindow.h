@@ -22,7 +22,12 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_btnCardnumber_clicked();
+    void onNumberButtonClicked();
+    void onOkButtonClicked();
+    void onBackButtonClicked();
+
+
+// void on_btnCardnumber_clicked();
 
 private:
     Ui::MainWindow *ui;
