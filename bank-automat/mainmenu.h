@@ -26,6 +26,8 @@ private slots:
 
     void on_btnWithdraw_clicked();
 
+    void on_btnLogout_clicked();
+
 private:
     Ui::MainMenu *ui;
     QString cardnumber;

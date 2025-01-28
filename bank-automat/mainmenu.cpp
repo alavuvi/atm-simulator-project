@@ -50,3 +50,12 @@ void MainMenu::on_btnWithdraw_clicked()
     objWithdraw->open();
 }
 
+
+void MainMenu::on_btnLogout_clicked()
+{
+    setMyToken(nullptr);
+    qDebug()<<"logout";
+    delete this;
+
+}
+

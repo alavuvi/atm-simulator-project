@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>705</width>
-    <height>470</height>
+    <width>1280</width>
+    <height>720</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>1</horstretch>
+    <verstretch>1</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
@@ -16,8 +22,8 @@
   <widget class="QLabel" name="labelCardnumber">
    <property name="geometry">
     <rect>
-     <x>580</x>
-     <y>10</y>
+     <x>1040</x>
+     <y>30</y>
      <width>121</width>
      <height>21</height>
     </rect>
@@ -34,8 +40,8 @@
   <widget class="QPushButton" name="btnBalance">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>190</y>
+     <x>300</x>
+     <y>310</y>
      <width>221</width>
      <height>71</height>
     </rect>
@@ -52,8 +58,8 @@
   <widget class="QPushButton" name="btnTransactions">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>190</y>
+     <x>530</x>
+     <y>310</y>
      <width>221</width>
      <height>71</height>
     </rect>
@@ -70,8 +76,8 @@
   <widget class="QPushButton" name="btnWithdraw">
    <property name="geometry">
     <rect>
-     <x>470</x>
-     <y>190</y>
+     <x>760</x>
+     <y>310</y>
      <width>221</width>
      <height>71</height>
     </rect>
@@ -83,6 +89,19 @@
    </property>
    <property name="text">
     <string>Withdraw</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnLogout">
+   <property name="geometry">
+    <rect>
+     <x>1060</x>
+     <y>650</y>
+     <width>111</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Logout</string>
    </property>
   </widget>
  </widget>

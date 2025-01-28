@@ -35,4 +35,23 @@ router.post('/', function(request, response) {
     })
 });
 
+router.put('/:id', function(request, response) {
+    account.update(request.params.id, request.body, function(err, result) {
+        if (err) {
+            response.json(err);
+        } else {
+            response.json(result);
+        }
+    });
+});
+
+router.delete('/:id', function(request, response) {
+    account.delete(request.params.id, function(err, result) {
+        if (err) {
+            response.json(err);
+        } else {
+            response.json(result);
+        }
+    });
+});
 module.exports = router;

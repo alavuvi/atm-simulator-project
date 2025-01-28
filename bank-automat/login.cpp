@@ -11,6 +11,9 @@ Login::Login(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Aseta pinOutput-tekstikenttään EchoMode Password
+    ui->pinOutput->setEchoMode(QLineEdit::Password);
+
     // Numeropainikkeet
     connect(ui->button00, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
     connect(ui->button01, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
@@ -119,13 +122,14 @@ void Login::loginSlot(QNetworkReply *reply)
                 objMainMenu->setCardnumber(ui->labelCardnumber->text());
                 objMainMenu->setMyToken(myToken);
                 objMainMenu->open();
+                this->close(); // sulkee login ikkunan onnistuneen kirjautumisen jälkeen
             }
             else {
                 failedAttempts++;
                 if(failedAttempts >= 3){
                     ui->labelInfo->setText("Syötit väärän PIN koodin 3 kertaa. Suljetaan...");
-                    // Aloittaa viiden sekunnin ajastimen ja sulkee ikkunan
-                    QTimer::singleShot(5000, this, &Login::close);
+                    // Aloittaa kolmen sekunnin ajastimen ja sulkee ikkunan
+                    QTimer::singleShot(3000, this, &Login::close);
                 }
                 else{
                     ui->labelInfo->setText("Väärä kortinnumero/PIN koodi");
