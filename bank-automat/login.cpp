@@ -133,7 +133,7 @@ void Login::loginSlot(QNetworkReply *reply)
                     QTimer::singleShot(3000, this, &Login::close);
                 }
                 else{
-                    ui->labelInfo->setText("Väärä kortinnumero/PIN koodi");
+                    ui->labelInfo->setText("Väärä kortti ID/PIN koodi");
                 }
             }
         }

@@ -1,28 +1,28 @@
 const db = require('../database');
 
 const accountcard = {
-    getAllAccountCards(callback) {
+    getAll:function(callback) {
         return db.query("SELECT * FROM accountcard", callback);
     },
 
-    getOneAccountCard(id, callback) {
+    getById:function(id, callback) {
         return db.query("SELECT * FROM accountcard WHERE idcard=?", [id], callback);
     },
 
-    addAccountCard(accontcard_data, callback) {
-        return db.query("INSERT INTO accountcard (idaccount, idcard) VALUES(?,?)", [accountcard_data.id_account, accountcard_data.id_card], callback);
+    add:function(accountcard_data, callback) {
+        return db.query('INSERT INTO accountcard (idcard, idaccount) VALUES(?,?)', [accountcard_data.idaccount, accountcard_data.idcard], callback);
     },
 
-    updateAccountCard(id, accountcard_data, callback) {
-        return db.query("UPDATE accountcard SET idaccount=?, idcard=? WHERE idcard=?", [accountcard_data.id_account, accountcard_data.id_card, id], callback);
+    update:function(id, accountcard_data, callback) {
+        return db.query("UPDATE accountcard SET idaccount=?, idcard=? WHERE idcard=?", [accountcard_data.idaccount, accountcard_data.idcard, id], callback);
     },
 
-    deleteCardAccount(id, callback) {
+    delete:function(id, callback) {
         return db.query("DELETE FROM accountcard WHERE idcard=?", [id], callback);
     },
-    getAccountsByCard(id, callback){
-        return db.query("select idaccount from accountcard where idcard=?;", [id], callback);
-    }
+    getAccountsByCard:function(idcard, callback){
+        return db.query('SELECT idaccount FROM accountcard where idcard=?', [id], callback);
+    },
 };
 
-module.exports = account;
+module.exports = accountcard;
