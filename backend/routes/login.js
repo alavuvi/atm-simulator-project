@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const login = require('../models/login_model');
 const card = require('../models/card_model');
+const account = require('../models/accountsbycard_model');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -24,25 +25,43 @@ router.post('/',
                   console.log("success");
                   const token = generateAccessToken({ username: cardnumber });
                   response.send(token);
+                
+                // Haetaan kortin tietoihin liittyvät tilit
+                  account.getAccountsByCard(cardnumber, function(accountError, accountResult) {
+                    if(accountError){
+                      response.send("-12"); 
                 }
-                else {
-                    console.log("wrong pincode");
-                    response.send(false);
-                }			
-              }
-              );
+                else{
+                  if(accountResult.length > 0){
+                    // Lähetetään token ja tilitiedot
+                    response.json({
+                      token: token,
+                      accounts: accountResult
+                    });
+                  }
+                  else{
+                    // Ei liitettyjä tilejä
+                    response.send("-13"); 
+                  }
+                }
+              });
             }
-            else{
-              console.log("card does not exists");
+            else {
+              console.log("wrong pincode");
               response.send(false);
-            }
-          }
-          }
-        );
+            }			
+          });
+        }
+        else{
+          console.log("card does not exists");
+          response.send(false);
+        }
       }
-    else{
-      console.log("cardnumber or pin missing");
-      response.send(false);
+    });
+  }
+  else{
+    console.log("cardnumber or pin missing");
+    response.send(false);
     }
   }
 );
