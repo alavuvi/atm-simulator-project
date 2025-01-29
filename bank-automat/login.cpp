@@ -59,7 +59,7 @@ void Login::setCardNumber(const QString &cardNumber)
 void Login::handleLoginTimeout()
 {
     ui->labelInfo->setText("Palataan takaisin, oikeaa PIN-koodia ei annettu aikarajan sisällä!");
-    QTimer::singleShot(5000, this, &Login::close);
+    QTimer::singleShot(3000, this, &Login::close);
 }
 
 // Slotti numeronapeille
@@ -89,7 +89,7 @@ void Login::onOkButtonClicked()
 {
     QJsonObject jsonObj;
     // Tähän koodi millä tarkistetaan korttinumero ja pinkoodi backendistä
-    jsonObj.insert("cardnumber", ui->labelCardnumber->text());
+    jsonObj.insert("idcard", ui->labelCardnumber->text());
     jsonObj.insert("pin", ui->pinOutput->text());
 
     QString site_url=Environment::base_url()+"/login";
@@ -97,6 +97,7 @@ void Login::onOkButtonClicked()
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     postManager = new QNetworkAccessManager(this);
     connect(postManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(loginSlot(QNetworkReply*)));
+
     reply = postManager->post(request, QJsonDocument(jsonObj).toJson());
 }
 
@@ -104,81 +105,39 @@ void Login::onOkButtonClicked()
 // login slot tarkistaa palvelimelta kirjautumistiedot
 void Login::loginSlot(QNetworkReply *reply)
 {
-    response_data = reply->readAll();
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(response_data);
-
-    if(response_data.length() < 2) {
+    response_data=reply->readAll();
+    if(response_data.length()<2){
+        qDebug()<<"Palvelin ei vastaa!";
         ui->labelInfo->setText("Palvelin ei vastaa!");
     }
-    else if(response_data == "-11") {
-        ui->labelInfo->setText("Tietokanta virhe!");
-    }
-    else if(response_data == "-12") {
-        ui->labelInfo->setText("Tilitietojen haku epäonnistui!");
-    }
-    else if(response_data == "-13") {
-        ui->labelInfo->setText("Ei tilejä liitettynä korttiin!");
-    }
-    else if(jsonDoc.isObject()) {
-        QJsonObject jsonObj = jsonDoc.object();
-        if(jsonObj.contains("token") && jsonObj.contains("accounts")) {
-            QByteArray token = "Bearer " + jsonObj["token"].toString().toUtf8();
-            QJsonArray accounts = jsonObj["accounts"].toArray();
-
-            if(accounts.size() > 1) {
-                handleMultipleAccounts(accounts, token);
+    else {
+        if(response_data=="-11") {
+            ui->labelInfo->setText("Tietokanta virhe!");
+        }
+        else {
+            if(response_data!="false" && response_data.length()>20) {
+                ui->labelInfo->setText("Login OK");
+                loginTimeoutTimer->stop();
+                QByteArray myToken="Bearer "+response_data;
+                MainMenu *objMainMenu=new MainMenu(this);
+                objMainMenu->setCardnumber(ui->labelCardnumber->text());
+                objMainMenu->setMyToken(myToken);
+                objMainMenu->open();
+                this->close(); // sulkee login ikkunan onnistuneen kirjautumisen jälkeen
             }
-            else if(accounts.size() == 1) {
-                QString accountType = accounts[0].toObject()["accounttype"].toString();
-                openMainMenu(accountType, token);
+            else {
+                failedAttempts++;
+                if(failedAttempts >= 3){
+                    ui->labelInfo->setText("Syötit väärän PIN koodin 3 kertaa. Suljetaan...");
+                    // Aloittaa kolmen sekunnin ajastimen ja sulkee ikkunan
+                    QTimer::singleShot(3000, this, &Login::close);
+                }
+                else{
+                    ui->labelInfo->setText("Väärä kortinnumero/PIN koodi");
+                }
             }
         }
+        reply->deleteLater();
+        postManager->deleteLater();
     }
-    else {
-        handleFailedLogin();
-    }
-
-    reply->deleteLater();
-    postManager->deleteLater();
-}
-
-void Login::handleMultipleAccounts(const QJsonArray &accounts, const QByteArray &token)
-{
-    QStringList accountTypes;
-    for(const QJsonValue &val : accounts) {
-        accountTypes.append(val.toObject()["accounttype"].toString());
-    }
-
-    accountTypeWidget = new AccountType(this);
-    accountTypeWidget->setAccounts(accountTypes);
-    connect(accountTypeWidget, &AccountType::accountSelected,
-            [this, token](const QString &type) {
-                openMainMenu(type, token);
-            });
-    accountTypeWidget->show();
-}
-
-void Login::handleFailedLogin()
-{
-    failedAttempts++;
-    if(failedAttempts >= 3) {
-        ui->labelInfo->setText("Syötit väärän PIN koodin 3 kertaa. Suljetaan...");
-        QTimer::singleShot(3000, this, &Login::close);
-    }
-    else {
-        ui->labelInfo->setText("Väärä kortinnumero/PIN koodi");
-    }
-}
-
-void Login::openMainMenu(const QString &accountType, const QByteArray &token)
-{
-    ui->labelInfo->setText("Login OK");
-    loginTimeoutTimer->stop();
-
-    MainMenu *objMainMenu = new MainMenu(this);
-    objMainMenu->setCardnumber(ui->labelCardnumber->text());
-    objMainMenu->setMyToken(token);
-    objMainMenu->setAccountType(accountType);
-    objMainMenu->open();
-    this->close();
 }

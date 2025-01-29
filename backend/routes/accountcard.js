@@ -67,14 +67,4 @@ router.delete('/:id', function (request, response) {
     });
 });
 
-router.getAccountsByCard = function(cardnumber, callback) {
-    const query = 'SELECT accountnumber, accounttype FROM account WHERE idcard = ?';
-    db.query(query, [idcard], function(err, results) {
-      if (err) {
-        return callback(err, null);
-      }
-      callback(null, results);
-    });
-};
-
 module.exports = router;

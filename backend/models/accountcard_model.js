@@ -20,6 +20,9 @@ const accountcard = {
     deleteCardAccount(id, callback) {
         return db.query("DELETE FROM accountcard WHERE idcard=?", [id], callback);
     },
+    getAccountsByCard(id, callback){
+        return db.query("select idaccount from accountcard where idcard=?;", [id], callback);
+    }
 };
 
 module.exports = account;
