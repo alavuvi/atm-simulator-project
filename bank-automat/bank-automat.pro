@@ -10,6 +10,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    accounttype.cpp \
     balance.cpp \
     environment.cpp \
     login.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
     withdraw.cpp
 
 HEADERS += \
+    accounttype.h \
     balance.h \
     environment.h \
     login.h \
@@ -29,6 +31,7 @@ HEADERS += \
     withdraw.h
 
 FORMS += \
+    accounttype.ui \
     balance.ui \
     login.ui \
     mainmenu.ui \

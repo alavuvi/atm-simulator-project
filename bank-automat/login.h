@@ -1,6 +1,7 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
+#include "accounttype.h"
 #include <QDialog>
 #include <QtNetwork>
 #include <QNetworkAccessManager>
@@ -21,6 +22,7 @@ public:
     void setCardNumber(const QString &cardNumber);
     ~Login();
 
+    void handleFailedLogin();
 public slots:
     void handleLoginTimeout();
 
@@ -44,6 +46,10 @@ private:
 
     void startLoginTimeout();
     void resetFailedAttempts();
+
+    void handleMultipleAccounts(const QJsonArray &accounts, const QByteArray &token);
+    void openMainMenu(const QString &accountType, const QByteArray &token);
+    AccountType *accountTypeWidget;
 };
 
 #endif // LOGIN_H
