@@ -9,6 +9,8 @@ var transactionsRouter = require('./routes/transactions');
 var loginRouter = require('./routes/login');
 var customerRouter = require('./routes/customer');
 var accountRouter = require('./routes/account');
+var accountcardRouter = require('./routes/accountcard');
+var getAccountsByCardRouter = require('./routes/accountsbycard');
 const jwt = require('jsonwebtoken');
 
 var app = express();
@@ -23,9 +25,11 @@ app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use(authenticateToken);
 app.use('/card', cardRouter);
+app.use('/accountcard', accountcardRouter);
 app.use('/transactions', transactionsRouter);
 app.use('/account', accountRouter);
 app.use('/customer', customerRouter);
+app.use('/accountsbycard', getAccountsByCardRouter);
 
 // authenticateToken (Tämän funktion voi kommentoida pois, jos haluaa testata sovellusta ilman tokenia)
 function authenticateToken(req, res, next) {

@@ -16,22 +16,20 @@ public:
     ~MainMenu();
 
     void setCardnumber(const QString &newCardnumber);
-
     void setMyToken(const QByteArray &newMyToken);
+    void setAccountType(const QString &type);
 
 private slots:
     void on_btnBalance_clicked();
-
     void on_btnTransactions_clicked();
-
     void on_btnWithdraw_clicked();
-
     void on_btnLogout_clicked();
 
 private:
     Ui::MainMenu *ui;
     QString cardnumber;
     QByteArray myToken;
+    QString accountType;
 };
 
 #endif // MAINMENU_H

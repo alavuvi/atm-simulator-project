@@ -7,48 +7,41 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
-router.post('/', 
-  function(request, response) {
-    if(request.body.cardnumber && request.body.pin){
-      const cardnumber = request.body.cardnumber;
-      const pincode = request.body.pin;
-      
-        card.checkPin(cardnumber, function(dbError, dbResult) {
-          if(dbError){
-            response.send("-11");
-          }
-          else{
-            if (dbResult.length > 0) {
-              bcrypt.compare(pincode,dbResult[0].pin, function(err,compareResult) {
-                if(compareResult) {
-                  console.log("success");
-                  const token = generateAccessToken({ username: cardnumber });
-                  response.send(token);
-                }
-                else {
-                    console.log("wrong pincode");
-                    response.send(false);
-                }			
-              }
-              );
-            }
-            else{
-              console.log("card does not exists");
-              response.send(false);
-            }
-          }
-          }
-        );
+router.post('/', function(request, response) {
+  if(request.body.idcard && request.body.pin) {
+    const idcard = request.body.idcard;
+    const pincode = request.body.pin;
+    
+    card.checkPin(idcard, function(dbError, dbResult) {
+      if(dbError) {
+        return response.send("-11");
       }
-    else{
-      console.log("cardnumber or pin missing");
-      response.send(false);
-    }
+      
+      if (dbResult.length > 0) {
+        console.log("idcard found");
+        bcrypt.compare(pincode, dbResult[0].pin, function(err, compareResult) {
+          if(!compareResult) {
+            console.log("wrong pincode");
+            return response.send("false");
+          }
+
+          console.log("success");
+          const token = generateAccessToken({ username: idcard });
+          return response.send(token);
+        });
+      } else { 
+        console.log("idcard does not exist");
+        return response.send("false");
+      }
+    });
+  } else {
+    console.log("idcard or pin missing");
+    return response.send("false");
   }
-);
+});
 
 function generateAccessToken(username) {
   return jwt.sign(username, process.env.MY_TOKEN, { expiresIn: '1800s' });
 }
 
-module.exports=router;
+module.exports = router;

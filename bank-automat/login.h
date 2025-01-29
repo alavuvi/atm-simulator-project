@@ -7,7 +7,6 @@
 #include <QJsonDocument>
 #include <QTimer>
 
-
 namespace Ui {
 class Login;
 }
@@ -29,9 +28,7 @@ private slots:
     void onOkButtonClicked();
     void onBackButtonClicked();
 
-    // login slot network
     void loginSlot (QNetworkReply *reply);
-
 
 private:
     Ui::Login *ui;
@@ -44,6 +41,7 @@ private:
 
     void startLoginTimeout();
     void resetFailedAttempts();
+
 };
 
 #endif // LOGIN_H

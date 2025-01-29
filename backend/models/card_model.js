@@ -22,8 +22,8 @@ const card={
     delete:function(id,callback){
         return db.query('DELETE FROM card WHERE idcard=?',[id],callback);
     },
-    checkPin:function(cardnumber,callback){
-        return db.query('SELECT pin FROM card WHERE cardnumber=?',[cardnumber],callback);
+    checkPin:function(idcard,callback){
+        return db.query('SELECT pin FROM card WHERE idcard=?',[idcard],callback);
     },
 }
 module.exports=card;
