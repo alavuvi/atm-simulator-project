@@ -21,7 +21,7 @@ const accountcard = {
         return db.query("DELETE FROM accountcard WHERE idcard=?", [id], callback);
     },
     getAccountsByCard:function(idcard, callback){
-        return db.query('SELECT idaccount FROM accountcard where idcard=?', [id], callback);
+        return db.query('SELECT idaccount FROM accountcard where idcard=?', [idcard], callback);
     },
 };
 
