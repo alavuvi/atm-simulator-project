@@ -1,7 +1,16 @@
-#include "environment.h"
+// filepath: /path/to/login.cpp
+
 #include "login.h"
-#include "mainmenu.h"
 #include "ui_login.h"
+#include "environment.h"
+#include "mainmenu.h"
+#include "selectaccountdialog.h"
+
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMessageBox>
+#include <QDebug>
 
 Login::Login(QWidget *parent)
     : QDialog(parent)
@@ -88,42 +97,50 @@ void Login::onBackButtonClicked()
 void Login::onOkButtonClicked()
 {
     QJsonObject jsonObj;
-    // Tähän koodi millä tarkistetaan korttinumero ja pinkoodi backendistä
+    // Koodi korttinumero ja PIN-tiedon tarkistamiseen backendistä
     jsonObj.insert("idcard", ui->labelCardnumber->text());
     jsonObj.insert("pin", ui->pinOutput->text());
 
-    QString site_url=Environment::base_url()+"/login";
+    QString site_url = Environment::base_url() + "/login";
     QNetworkRequest request(site_url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     postManager = new QNetworkAccessManager(this);
-    connect(postManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(loginSlot(QNetworkReply*)));
+    connect(postManager, &QNetworkAccessManager::finished, this, &Login::loginSlot);
 
     reply = postManager->post(request, QJsonDocument(jsonObj).toJson());
 }
 
-
-// login slot tarkistaa palvelimelta kirjautumistiedot
 void Login::loginSlot(QNetworkReply *reply)
 {
-    response_data=reply->readAll();
-    if(response_data.length()<2){
-        qDebug()<<"Palvelin ei vastaa!";
+    response_data = reply->readAll();
+    if(response_data.length() < 2){
+        qDebug() << "Palvelin ei vastaa!";
         ui->labelInfo->setText("Palvelin ei vastaa!");
     }
     else {
-        if(response_data=="-11") {
+        if(response_data == "-11") {
             ui->labelInfo->setText("Tietokanta virhe!");
         }
         else {
-            if(response_data!="false" && response_data.length()>20) {
+            if(response_data != "false" && response_data.length() > 20) {
                 ui->labelInfo->setText("Login OK");
                 loginTimeoutTimer->stop();
-                QByteArray myToken="Bearer "+response_data;
-                MainMenu *objMainMenu=new MainMenu(this);
-                objMainMenu->setCardnumber(ui->labelCardnumber->text());
-                objMainMenu->setMyToken(myToken);
-                objMainMenu->open();
-                this->close(); // sulkee login ikkunan onnistuneen kirjautumisen jälkeen
+
+                QByteArray myToken = "Bearer " + response_data;
+
+                // Kortin ID
+                QString cardId = ui->labelCardnumber->text();
+
+                // Tee GET-pyyntö linkitetyille tileille
+                QString accounts_url = Environment::base_url() + "/accountsbycard/" + cardId;
+                QNetworkRequest accountsRequest(accounts_url);
+                accountsRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+                accountsRequest.setRawHeader("Authorization", myToken);
+
+                QNetworkAccessManager *accountsManager = new QNetworkAccessManager(this);
+                connect(accountsManager, &QNetworkAccessManager::finished, this, &Login::handleAccountsResponse);
+
+                accountsManager->get(accountsRequest);
             }
             else {
                 failedAttempts++;
@@ -140,4 +157,50 @@ void Login::loginSlot(QNetworkReply *reply)
         reply->deleteLater();
         postManager->deleteLater();
     }
+}
+
+void Login::handleAccountsResponse(QNetworkReply *reply)
+{
+    QByteArray accountsData = reply->readAll();
+    if(accountsData.length() < 2){
+        QMessageBox::critical(this, "Error", "Failed to retrieve account information.");
+        return;
+    }
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(accountsData);
+    if(!jsonDoc.isArray()){
+        QMessageBox::critical(this, "Error", "Invalid account data received.");
+        qDebug() << accountsData;
+        return;
+    }
+
+    QJsonArray accountsArray = jsonDoc.array();
+    int accountCount = accountsArray.size();
+
+    if(accountCount > 1){
+        // Avaa valintaikkuna
+        SelectAccountDialog *selectDialog = new SelectAccountDialog(this, accountsArray);
+        connect(selectDialog, &SelectAccountDialog::accountSelected, this, &Login::proceedToMainMenu);
+        selectDialog->exec();
+    }
+    else if(accountCount == 1){
+        // Jatka yksittäisen tilin kanssa
+        QString accountType = accountsArray[0].toObject().value("accounttype").toString();
+        proceedToMainMenu(accountType);
+    }
+    else{
+        QMessageBox::warning(this, "No Accounts", "No accounts linked to this card.");
+    }
+
+    reply->deleteLater();
+}
+
+void Login::proceedToMainMenu(const QString &accountType)
+{
+    MainMenu *objMainMenu = new MainMenu(this);
+    objMainMenu->setCardnumber(ui->labelCardnumber->text());
+    objMainMenu->setAccountType(accountType);
+    objMainMenu->setMyToken("Bearer " + response_data);
+    objMainMenu->open();
+    this->close();
 }

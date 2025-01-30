@@ -16,6 +16,7 @@ SOURCES += \
     main.cpp \
     mainmenu.cpp \
     mainwindow.cpp \
+    selectaccountdialog.cpp \
     transactions.cpp \
     withdraw.cpp
 
@@ -25,6 +26,7 @@ HEADERS += \
     login.h \
     mainmenu.h \
     mainwindow.h \
+    selectaccountdialog.h \
     transactions.h \
     withdraw.h
 
@@ -33,6 +35,7 @@ FORMS += \
     login.ui \
     mainmenu.ui \
     mainwindow.ui \
+    selectaccountdialog.ui \
     transactions.ui \
     withdraw.ui
 

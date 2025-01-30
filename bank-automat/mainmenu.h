@@ -19,6 +19,7 @@ public:
     void setMyToken(const QByteArray &newMyToken);
     void setAccountType(const QString &type);
 
+
 private slots:
     void on_btnBalance_clicked();
     void on_btnTransactions_clicked();
