@@ -59,7 +59,7 @@ void Login::setCardNumber(const QString &cardNumber)
 void Login::handleLoginTimeout()
 {
     ui->labelInfo->setText("Palataan takaisin, oikeaa PIN-koodia ei annettu aikarajan sisällä!");
-    QTimer::singleShot(5000, this, &Login::close);
+    QTimer::singleShot(3000, this, &Login::close);
 }
 
 // Slotti numeronapeille
@@ -89,7 +89,7 @@ void Login::onOkButtonClicked()
 {
     QJsonObject jsonObj;
     // Tähän koodi millä tarkistetaan korttinumero ja pinkoodi backendistä
-    jsonObj.insert("cardnumber", ui->labelCardnumber->text());
+    jsonObj.insert("idcard", ui->labelCardnumber->text());
     jsonObj.insert("pin", ui->pinOutput->text());
 
     QString site_url=Environment::base_url()+"/login";
@@ -97,6 +97,7 @@ void Login::onOkButtonClicked()
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     postManager = new QNetworkAccessManager(this);
     connect(postManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(loginSlot(QNetworkReply*)));
+
     reply = postManager->post(request, QJsonDocument(jsonObj).toJson());
 }
 
@@ -132,11 +133,11 @@ void Login::loginSlot(QNetworkReply *reply)
                     QTimer::singleShot(3000, this, &Login::close);
                 }
                 else{
-                    ui->labelInfo->setText("Väärä kortinnumero/PIN koodi");
+                    ui->labelInfo->setText("Väärä kortti ID/PIN koodi");
                 }
             }
+        }
+        reply->deleteLater();
+        postManager->deleteLater();
     }
-    reply->deleteLater();
-    postManager->deleteLater();
-}
 }

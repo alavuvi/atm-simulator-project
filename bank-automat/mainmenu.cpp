@@ -22,6 +22,13 @@ void MainMenu::setCardnumber(const QString &newCardnumber)
     ui->labelCardnumber->setText(cardnumber);
 }
 
+void MainMenu::setAccountType(const QString &type)
+{
+    accountType = type;
+    if (ui->labelAccountType)
+    ui->labelAccountType->setText(type);
+}
+
 void MainMenu::setMyToken(const QByteArray &newMyToken)
 {
     myToken = newMyToken;

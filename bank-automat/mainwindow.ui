@@ -265,6 +265,24 @@
      <string>9</string>
     </property>
    </widget>
+   <widget class="QLabel" name="KorttiID">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>180</y>
+      <width>151</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Näppäile kortti-ID</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -275,6 +293,12 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuBankautomat">
+    <property name="title">
+     <string>Bankautomat</string>
+    </property>
+   </widget>
+   <addaction name="menuBankautomat"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
