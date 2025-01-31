@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SelectAccountDialog</class>
- <widget class="QDialog" name="SelectAccountDialog">
+ <class>SelectAccount</class>
+ <widget class="QDialog" name="SelectAccount">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>1280</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="buttonDebit">
+  <widget class="QPushButton" name="btnDebit">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>120</y>
-     <width>80</width>
-     <height>24</height>
+     <x>190</x>
+     <y>300</y>
+     <width>191</width>
+     <height>71</height>
     </rect>
    </property>
    <property name="text">
-    <string>debit</string>
+    <string>Debit</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="buttonCredit">
+  <widget class="QPushButton" name="btnCredit">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>120</y>
-     <width>80</width>
-     <height>24</height>
+     <x>450</x>
+     <y>300</y>
+     <width>181</width>
+     <height>71</height>
     </rect>
    </property>
    <property name="text">
-    <string>credit</string>
+    <string>Credit</string>
    </property>
   </widget>
  </widget>

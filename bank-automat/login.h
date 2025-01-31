@@ -16,11 +16,12 @@ class Login : public QDialog
 public:
     explicit Login(QWidget *parent = nullptr);
     ~Login();
+
     void setCardNumber(const QString &cardNumber);
+    void setMyToken(const QByteArray &newMyToken);
 
 public slots:
     void loginSlot(QNetworkReply *reply);
-    void proceedToMainMenu(const QString &accountType);
 
 private:
     Ui::Login *ui;
@@ -29,6 +30,7 @@ private:
     QNetworkAccessManager *postManager;
     QByteArray response_data;
     QNetworkReply *reply;
+    QByteArray myToken;
 
     void startLoginTimeout();
     void resetFailedAttempts();
