@@ -2,9 +2,7 @@
 #define LOGIN_H
 
 #include <QDialog>
-#include <QtNetwork>
-#include <QNetworkAccessManager>
-#include <QJsonDocument>
+#include <QNetworkReply>
 #include <QTimer>
 
 namespace Ui {
@@ -17,31 +15,31 @@ class Login : public QDialog
 
 public:
     explicit Login(QWidget *parent = nullptr);
-    void setCardNumber(const QString &cardNumber);
     ~Login();
 
+    void setCardNumber(const QString &cardNumber);
+    void setMyToken(const QByteArray &newMyToken);
+
 public slots:
-    void handleLoginTimeout();
-
-private slots:
-    void onNumberButtonClicked();
-    void onOkButtonClicked();
-    void onBackButtonClicked();
-
-    void loginSlot (QNetworkReply *reply);
+    void loginSlot(QNetworkReply *reply);
 
 private:
     Ui::Login *ui;
-    QNetworkAccessManager *postManager;
-    QNetworkReply *reply;
-    QByteArray response_data;
-
     int failedAttempts;
     QTimer *loginTimeoutTimer;
+    QNetworkAccessManager *postManager;
+    QByteArray response_data;
+    QNetworkReply *reply;
+    QByteArray myToken;
 
     void startLoginTimeout();
     void resetFailedAttempts();
 
+    void handleLoginTimeout();
+    void onNumberButtonClicked();
+    void onBackButtonClicked();
+    void onOkButtonClicked();
+    void handleAccountsResponse(QNetworkReply *reply);
 };
 
 #endif // LOGIN_H

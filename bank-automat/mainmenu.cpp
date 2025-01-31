@@ -16,17 +16,11 @@ MainMenu::~MainMenu()
     delete ui;
 }
 
-void MainMenu::setCardnumber(const QString &newCardnumber)
-{
-    cardnumber = newCardnumber;
-    ui->labelCardnumber->setText(cardnumber);
-}
+void MainMenu::setAccountid(const QString &newAccountid)
 
-void MainMenu::setAccountType(const QString &type)
 {
-    accountType = type;
-    if (ui->labelAccountType)
-    ui->labelAccountType->setText(type);
+    accountid = newAccountid;
+    ui->labelAccountid->setText(accountid);
 }
 
 void MainMenu::setMyToken(const QByteArray &newMyToken)
