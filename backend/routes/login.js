@@ -26,7 +26,7 @@ router.post('/', function(request, response) {
           }
 
           console.log("success");
-          const token = generateAccessToken({ username: idcard });
+          const token = generateAccessToken({ username: idcard }); 
           return response.send(token);
         });
       } else { 

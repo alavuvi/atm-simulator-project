@@ -2,6 +2,10 @@
 #define TRANSACTIONS_H
 
 #include <QDialog>
+#include <QtNetwork>
+#include <QNetworkAccessManager>
+#include <QJsonDocument>
+#include <QTimer>
 
 namespace Ui {
 class Transactions;
@@ -19,10 +23,17 @@ public:
 
     void setMyToken(const QByteArray &newMyToken);
 
+private slots:
+    void on_btnShowTransactions_clicked();
+    void showTransactionsSlot(QNetworkReply *reply);
+
 private:
     Ui::Transactions *ui;
     QString cardnumber;
     QByteArray myToken;
+    QNetworkAccessManager *transactionsManager;
+    QNetworkReply *reply;
+    QByteArray response_data;
 };
 
 #endif // TRANSACTIONS_H
