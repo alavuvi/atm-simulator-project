@@ -26,8 +26,10 @@ router.post('/', function(request, response) {
           }
 
           console.log("success");
-          const token = generateAccessToken({ username: idcard }); 
-          return response.send(token);
+          const token = generateAccessToken({ username: idcard });
+      
+          response.setHeader('Content-Type', 'application/json'); 
+          response.send(token);
         });
       } else { 
         console.log("idcard does not exist");

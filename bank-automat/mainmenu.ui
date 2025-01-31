@@ -19,10 +19,10 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QLabel" name="labelCardnumber">
+  <widget class="QLabel" name="labelAccountid">
    <property name="geometry">
     <rect>
-     <x>1040</x>
+     <x>960</x>
      <y>30</y>
      <width>121</width>
      <height>21</height>
@@ -102,24 +102,6 @@
    </property>
    <property name="text">
     <string>Logout</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelAccountType">
-   <property name="geometry">
-    <rect>
-     <x>1040</x>
-     <y>70</y>
-     <width>101</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
    </property>
   </widget>
  </widget>
