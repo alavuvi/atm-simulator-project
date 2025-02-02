@@ -15,9 +15,9 @@ public:
     explicit MainMenu(QWidget *parent = nullptr);
     ~MainMenu();
 
-    void setCardnumber(const QString &newCardnumber);
+    void setAccountid(const QString &newAccountid);
     void setMyToken(const QByteArray &newMyToken);
-    void setAccountType(const QString &type);
+
 
 private slots:
     void on_btnBalance_clicked();
@@ -27,9 +27,8 @@ private slots:
 
 private:
     Ui::MainMenu *ui;
-    QString cardnumber;
+    QString accountid;
     QByteArray myToken;
-    QString accountType;
 };
 
 #endif // MAINMENU_H
