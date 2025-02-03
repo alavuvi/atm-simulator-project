@@ -11,6 +11,7 @@ var customerRouter = require('./routes/customer');
 var accountRouter = require('./routes/account');
 var accountcardRouter = require('./routes/accountcard');
 var getAccountsByCardRouter = require('./routes/accountsbycard');
+var creditlimitRouter = require('./routes/creditlimit');
 const jwt = require('jsonwebtoken');
 
 var app = express();
@@ -30,8 +31,8 @@ app.use('/transactions', transactionsRouter);
 app.use('/account', accountRouter);
 app.use('/customer', customerRouter);
 app.use('/accountsbycard', getAccountsByCardRouter);
+app.use('/creditlimit', creditlimitRouter);
 
-// authenticateToken (Tämän funktion voi kommentoida pois, jos haluaa testata sovellusta ilman tokenia)
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];

@@ -16,7 +16,7 @@
   <widget class="QPushButton" name="btnDebit">
    <property name="geometry">
     <rect>
-     <x>190</x>
+     <x>390</x>
      <y>300</y>
      <width>191</width>
      <height>71</height>
@@ -29,7 +29,7 @@
   <widget class="QPushButton" name="btnCredit">
    <property name="geometry">
     <rect>
-     <x>450</x>
+     <x>660</x>
      <y>300</y>
      <width>181</width>
      <height>71</height>
