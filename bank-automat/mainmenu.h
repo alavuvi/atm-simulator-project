@@ -2,6 +2,7 @@
 #define MAINMENU_H
 
 #include <QDialog>
+#include <QDebug>
 
 namespace Ui {
 class MainMenu;
@@ -14,10 +15,8 @@ class MainMenu : public QDialog
 public:
     explicit MainMenu(QWidget *parent = nullptr);
     ~MainMenu();
-
-    void setAccountid(const QString &newAccountid);
     void setMyToken(const QByteArray &newMyToken);
-
+    void setAccountid(const QString &id);  // Add declaration
 
 private slots:
     void on_btnBalance_clicked();
@@ -27,8 +26,8 @@ private slots:
 
 private:
     Ui::MainMenu *ui;
-    QString accountid;
     QByteArray myToken;
+    QString accountid;
 };
 
-#endif // MAINMENU_H
+#endif

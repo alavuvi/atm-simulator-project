@@ -1,6 +1,6 @@
 #include "mainmenu.h"
-#include "balance.h"
 #include "ui_mainmenu.h"
+#include "balance.h"
 #include "transactions.h"
 #include "withdraw.h"
 
@@ -16,47 +16,67 @@ MainMenu::~MainMenu()
     delete ui;
 }
 
-void MainMenu::setAccountid(const QString &newAccountid)
-
+void MainMenu::setAccountid(const QString &id)
 {
-    accountid = newAccountid;
+    accountid = id;
     ui->labelAccountid->setText(accountid);
 }
 
 void MainMenu::setMyToken(const QByteArray &newMyToken)
 {
+    if (newMyToken.isEmpty()) {
+        qDebug() << "Warning: Tyhjä token saatu";
+        return;
+    }
     myToken = newMyToken;
-    qDebug()<<"Main Menu";
-    qDebug()<<myToken;
+    qDebug() << "Token asetettu Main Menu:" << myToken;
 }
 
 void MainMenu::on_btnBalance_clicked()
 {
-    Balance *objBalance=new Balance(this);
+    if (myToken.isEmpty()) {
+        qDebug() << "Error: Ei tokenia saatavilla balancelle";
+        return;
+    }
+    Balance *objBalance = new Balance(this);
     objBalance->setMyToken(myToken);
+     /* tämä ottaa käyttöön, jos accountid:tä tarvitaan balancessa
+    objBalance->setAccountId(accountid);
+    */
     objBalance->open();
 }
 
 void MainMenu::on_btnTransactions_clicked()
 {
-    Transactions *objTransactions=new Transactions(this);
+    if (myToken.isEmpty()) {
+        qDebug() << "Error: Ei tokenia saatavilla Transactions";
+        return;
+    }
+    Transactions *objTransactions = new Transactions(this);
     objTransactions->setMyToken(myToken);
+    /* tämä ottaa käyttöön, jos accountid:tä tarvitaan transactionsissa
+     objTransactions->setAccountId(accountid);
+    */
     objTransactions->open();
 }
 
 void MainMenu::on_btnWithdraw_clicked()
 {
-    Withdraw *objWithdraw=new Withdraw(this);
+    if (myToken.isEmpty()) {
+        qDebug() << "Error: Ei tokenia saatavilla Withdraw";
+        return;
+    }
+    Withdraw *objWithdraw = new Withdraw(this);
     objWithdraw->setMyToken(myToken);
+     /* tämä ottaa käyttöön, jos accountid:tä tarvitaan withdrawissa
+    // objWithdraw->setAccountId(accountid);
+    */
     objWithdraw->open();
 }
 
-
 void MainMenu::on_btnLogout_clicked()
 {
-    setMyToken(nullptr);
-    qDebug()<<"logout";
-    delete this;
-
+    myToken.clear();
+    qDebug() << "Kirjaudutaan ulos ja tyhjennetään token";
+    this->close();
 }
-
