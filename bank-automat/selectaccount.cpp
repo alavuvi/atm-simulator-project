@@ -31,14 +31,14 @@ void SelectAccount::SetAccountID(const QJsonArray &newAccountID)
 void SelectAccount::processAccounts()
 {
     if(myToken.isEmpty()) {
-        qDebug() << "Error: No token available";
+        qDebug() << "Error: Ei tokenia saatavilla";
         return;
     }
 
     for (int i = 0; i < accountID.size(); i++) {
         QJsonObject account = accountID[i].toObject();
         int id = account["idaccount"].toInt();
-        qDebug() << "Processing account ID:" << id;
+        qDebug() << "Käsitellään account ID:" << id;
 
         QString baseUrl = Environment::base_url();
         QUrl url(baseUrl + "/creditlimit/" + QString::number(id));
@@ -74,11 +74,11 @@ void SelectAccount::handleCreditLimitResponse(QNetworkReply *reply)
 
         if (creditLimit > 0.0) {
             creditAccountId = accountId;
-            qDebug() << "Set as credit account:" << creditAccountId;
+            qDebug() << "Asetetaan credit tiliksi:" << creditAccountId;
             ui->btnCredit->setEnabled(true);
         } else {
             debitAccountId = accountId;
-            qDebug() << "Set as debit account:" << debitAccountId;
+            qDebug() << "Asetetaan debit tiliksi:" << debitAccountId;
             ui->btnDebit->setEnabled(true);
         }
     }
@@ -86,13 +86,13 @@ void SelectAccount::handleCreditLimitResponse(QNetworkReply *reply)
     reply->deleteLater();
 }
 
-
 void SelectAccount::on_btnCredit_clicked()
 {
     if (creditAccountId != -1) {
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
-       // objMainMenu->setAccountid(creditAccountId);
+        qDebug() << "Token lähetetty Main Menu:" << myToken;
+        objMainMenu->setAccountid(QString::number(creditAccountId));  // Convert int to QString
         objMainMenu->open();
         this->close();
     }
@@ -106,7 +106,8 @@ void SelectAccount::on_btnDebit_clicked()
     if (debitAccountId != -1) {
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
-        // Voit siirtää debit tilin id:n MainMenu:lle esim. setAccountID(debitAccountId)
+        qDebug() << "Token lähetetty Main Menu:" << myToken;
+        objMainMenu->setAccountid(QString::number(debitAccountId));  // Convert int to QString
         objMainMenu->open();
         this->close();
     }
@@ -119,8 +120,8 @@ void SelectAccount::setMyToken(const QByteArray &newMyToken)
 {
     myToken = newMyToken;
     if(myToken.isEmpty()) {
-        qDebug() << "Warning: Empty token received";
+        qDebug() << "Warning: Tyhjä token saatu";
     } else {
-        qDebug() << "Token received in SelectAccount:" << myToken;
+        qDebug() << "Token vastaanotettu Select Accountissa:" << myToken;
     }
 }

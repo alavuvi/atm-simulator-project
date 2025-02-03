@@ -126,7 +126,7 @@ void Login::loginSlot(QNetworkReply *reply)
                 loginTimeoutTimer->stop();
 
                 setMyToken(response_data);
-                qDebug() << "Token is set to:" << myToken;
+                qDebug() << "Token asetettu:" << myToken;
 
                 QByteArray authHeader = "Bearer " + myToken;
 
@@ -169,13 +169,15 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
     QJsonArray accountsArray = json_doc.array();
 
     int accountCount = accountsArray.size();
-    qDebug() << "Accounts in card: "<<accountCount;
+    qDebug() << "Tilit kortilla: "<<accountCount;
     if(accountCount > 1){
         SelectAccount *objSelectAccount = new SelectAccount(this);
         objSelectAccount->setMyToken(myToken); // Verify this runs
-        qDebug() << "Token being passed to SelectAccount:" << myToken;
+        qDebug() << "Token lähetty Select Account:" << myToken;
         objSelectAccount->SetAccountID(accountsArray);
         objSelectAccount->open();
+
+        this->close();
     }
 
     else if (accountCount == 1) {
@@ -188,6 +190,7 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
         objMainMenu->open();
         objMainMenu->setAccountid(accountID);
         objMainMenu->setMyToken(myToken);
+        qDebug() << "Token lähetetty Main Menu:" << myToken;
 
         this->close();
 
