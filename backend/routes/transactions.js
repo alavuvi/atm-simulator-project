@@ -14,8 +14,8 @@ router.get('/', function(request, response){
     })
 });
 
-router.get('/:idaccount', function(request, response){
-    transactions.getByidaccount(request.params.idaccount,function(err, result){
+router.get('/:idcard', function(request, response){
+    transactions.getByidcard(request.params.idcard,function(err, result){
         if(err){
             response.json(err);
         }

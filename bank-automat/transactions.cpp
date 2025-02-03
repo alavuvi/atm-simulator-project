@@ -26,7 +26,7 @@ void Transactions::setMyToken(const QByteArray &newMyToken)
 
 void Transactions::on_btnShowTransactions_clicked()
 {
-    QString site_url=Environment::base_url()+"/transactions";
+    QString site_url=Environment::base_url()+"/transactions/"+cardnumber;
     QNetworkRequest request(site_url);
     //WEBTOKEN ALKU
     request.setRawHeader(QByteArray("Authorization"),(myToken));
