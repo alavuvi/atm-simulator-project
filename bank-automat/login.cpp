@@ -3,7 +3,6 @@
 #include "environment.h"
 #include "mainmenu.h"
 #include "selectaccount.h"
-#include "mainwindow.h"
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -103,7 +102,8 @@ void Login::onOkButtonClicked()
     QNetworkRequest request(site_url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     postManager = new QNetworkAccessManager(this);
-    connect(postManager, &QNetworkAccessManager::finished, this, &Login::loginSlot);
+    connect(postManager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(loginSlot(QNetworkReply*)));
 
     reply = postManager->post(request, QJsonDocument(jsonObj).toJson());
 }
@@ -126,6 +126,8 @@ void Login::loginSlot(QNetworkReply *reply)
                 loginTimeoutTimer->stop();
 
                 setMyToken(response_data);
+                qDebug() << "Token asetettu:" << myToken;
+
                 QByteArray authHeader = "Bearer " + myToken;
 
                 // Tee GET-pyyntö linkitetyille tileille
@@ -157,6 +159,7 @@ void Login::loginSlot(QNetworkReply *reply)
     }
 }
 
+
 // Käsitellään tilitiedot
 void Login::handleAccountsResponse(QNetworkReply *reply)
 {
@@ -166,26 +169,28 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
     QJsonArray accountsArray = json_doc.array();
 
     int accountCount = accountsArray.size();
-    qDebug() << "Accounts in card: "<<accountCount;
+    qDebug() << "Tilit kortilla: "<<accountCount;
     if(accountCount > 1){
-        // Avaa valintaikkuna
         SelectAccount *objSelectAccount = new SelectAccount(this);
-        objSelectAccount->open();
+        objSelectAccount->setMyToken(myToken); // Verify this runs
+        qDebug() << "Token lähetty Select Account:" << myToken;
         objSelectAccount->SetAccountID(accountsArray);
-        objSelectAccount->setMyToken(myToken);
+        objSelectAccount->open();
 
+        this->close();
     }
 
     else if (accountCount == 1) {
         QJsonObject jsonObj = accountsArray[0].toObject();
         int accountNumber = jsonObj["idaccount"].toInt();
         QString accountID = QString::number(accountNumber);
-        qDebug() << "accountid:" << accountID;
+        qDebug() << "accountId:" << accountID;
 
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->open();
         objMainMenu->setAccountid(accountID);
         objMainMenu->setMyToken(myToken);
+        qDebug() << "Token lähetetty Main Menu:" << myToken;
 
         this->close();
 
