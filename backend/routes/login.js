@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const login = require('../models/login_model');
-const card = require('../models/card_model');
+// const card = require('../models/card_model');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -12,7 +12,7 @@ router.post('/', function(request, response) {
     const idcard = request.body.idcard;
     const pincode = request.body.pin;
     
-    card.checkPin(idcard, function(dbError, dbResult) {
+    login.checkPin(idcard, function(dbError, dbResult) {
       if(dbError) {
         return response.send("-11");
       }

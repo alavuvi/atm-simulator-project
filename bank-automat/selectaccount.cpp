@@ -20,14 +20,15 @@ SelectAccount::~SelectAccount()
     delete ui;
 }
 
+ // Esikäsittele tilit, jotta saadaan creditAccountId ja debitAccountId arrayhin
 void SelectAccount::SetAccountID(const QJsonArray &newAccountID)
 {
     accountID = newAccountID;
     qDebug() << "Account array:" << accountID;
-    // Esikäsittele tilit, jotta saadaan creditAccountId ja debitAccountId
     processAccounts();
 }
 
+// Käsitellään yksittäiset accountid:t creditlimit metodilla for-loopin sisällä
 void SelectAccount::processAccounts()
 {
     if(myToken.isEmpty()) {
@@ -44,8 +45,9 @@ void SelectAccount::processAccounts()
         QUrl url(baseUrl + "/creditlimit/" + QString::number(id));
         QNetworkRequest request(url);
 
-        QByteArray headerValue = "Bearer " + myToken;
-        request.setRawHeader("Authorization", headerValue);
+        QByteArray authHeader = "Bearer " + myToken;
+        qDebug() << authHeader;
+        request.setRawHeader("Authorization", authHeader);
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
         QNetworkReply *reply = networkManager->get(request);
@@ -57,6 +59,7 @@ void SelectAccount::processAccounts()
     }
 }
 
+// Asetetaan tilityypit vertaamalla creditlimit taulussa olevaan tietoon
 void SelectAccount::handleCreditLimitResponse(QNetworkReply *reply)
 {
     QByteArray response_data = reply->readAll();
@@ -92,7 +95,7 @@ void SelectAccount::on_btnCredit_clicked()
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
         qDebug() << "Token lähetetty Main Menu:" << myToken;
-        objMainMenu->setAccountid(QString::number(creditAccountId));  // Convert int to QString
+        objMainMenu->setAccountId(QString::number(creditAccountId));
         objMainMenu->open();
         this->close();
     }
@@ -107,7 +110,7 @@ void SelectAccount::on_btnDebit_clicked()
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
         qDebug() << "Token lähetetty Main Menu:" << myToken;
-        objMainMenu->setAccountid(QString::number(debitAccountId));  // Convert int to QString
+        objMainMenu->setAccountId(QString::number(debitAccountId));
         objMainMenu->open();
         this->close();
     }
