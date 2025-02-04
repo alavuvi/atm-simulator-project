@@ -36,8 +36,8 @@ private:
     QByteArray myToken;
     QJsonArray accountID;
     QNetworkAccessManager *networkManager;
-    int creditAccountId;  // Tilille, jossa creditlimit > 0
-    int debitAccountId;   // Tilille, jossa creditlimit == 0
+    int creditAccountId;
+    int debitAccountId;
 };
 
 #endif // SELECTACCOUNT_H

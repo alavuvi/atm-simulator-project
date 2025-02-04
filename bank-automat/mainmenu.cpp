@@ -16,9 +16,9 @@ MainMenu::~MainMenu()
     delete ui;
 }
 
-void MainMenu::setAccountid(const QString &id)
+void MainMenu::setAccountId(const QString &newAccountId)
 {
-    accountid = id;
+    accountid = newAccountId;
     ui->labelAccountid->setText(accountid);
 }
 
