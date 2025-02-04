@@ -25,6 +25,9 @@ const account = {
     delete: function(id, callback) {
         return db.query('DELETE FROM account WHERE idaccount = ?', [id], callback);
     },
+    getCreditLimit: function(idaccount, callback) {
+        return db.query('SELECT creditlimit FROM account where idaccount=?', [idaccount], callback);
+    },
 };
 
 module.exports = account;
