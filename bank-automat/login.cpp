@@ -92,7 +92,6 @@ void Login::onBackButtonClicked()
 // Koodi korttinumero ja PIN-tiedon tarkistamiseen backendistä
 void Login::onOkButtonClicked()
 {
-
     QJsonObject jsonObj;
     jsonObj.insert("idcard", ui->labelCardnumber->text());
     jsonObj.insert("pin", ui->pinOutput->text());

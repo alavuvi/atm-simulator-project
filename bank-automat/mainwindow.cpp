@@ -21,7 +21,6 @@ MainWindow::MainWindow(QWidget *parent)
     // Ok- ja back-napit
     connect(ui->buttonOk, &QPushButton::clicked, this, &MainWindow::onOkButtonClicked);
     connect(ui->buttonBack, &QPushButton::clicked, this, &MainWindow::onBackButtonClicked);
-
 }
 
 // Slotti numeronapeille
