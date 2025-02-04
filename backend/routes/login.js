@@ -12,7 +12,7 @@ router.post('/', function(request, response) {
     const idcard = request.body.idcard;
     const pincode = request.body.pin;
     
-    card.checkPin(idcard, function(dbError, dbResult) {
+    login.checkPin(idcard, function(dbError, dbResult) {
       if(dbError) {
         return response.send("-11");
       }
