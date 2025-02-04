@@ -36,7 +36,6 @@ Login::Login(QWidget *parent)
 
     connect(loginTimeoutTimer, &QTimer::timeout, this, &Login::handleLoginTimeout);
 
-
     // Aloita 10 sekunnin ajastus kirjautumiselle
     startLoginTimeout();
 }
@@ -156,7 +155,6 @@ void Login::loginSlot(QNetworkReply *reply)
         postManager->deleteLater();
     }
 }
-
 
 // Käsitellään tilitiedot
 void Login::handleAccountsResponse(QNetworkReply *reply)
