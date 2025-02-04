@@ -20,18 +20,17 @@ Login::Login(QWidget *parent)
     // Aseta pinOutput-tekstikenttään EchoMode Password
     ui->pinOutput->setEchoMode(QLineEdit::Password);
 
-    // Numeropainikkeet
-    connect(ui->button00, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
-    connect(ui->button01, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
-    connect(ui->button02, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
-    connect(ui->button03, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
-    connect(ui->button04, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
-    connect(ui->button05, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
-    connect(ui->button06, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
-    connect(ui->button07, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
-    connect(ui->button08, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
-    connect(ui->button09, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
+    // QList numeronapeille ja for-looppi näppäilyyn.
+    QList<QPushButton*> numberButtons = {
+        ui->button00, ui->button01, ui->button02, ui->button03, ui->button04,
+        ui->button05, ui->button06, ui->button07, ui->button08, ui->button09
+    };
 
+    for (QPushButton* button : numberButtons) {
+        connect(button, &QPushButton::clicked, this, &Login::onNumberButtonClicked);
+    }
+
+    // Ok- ja back-napit
     connect(ui->buttonOk, &QPushButton::clicked, this, &Login::onOkButtonClicked);
     connect(ui->buttonBack, &QPushButton::clicked, this, &Login::onBackButtonClicked);
 
@@ -93,7 +92,6 @@ void Login::onBackButtonClicked()
 // Koodi korttinumero ja PIN-tiedon tarkistamiseen backendistä
 void Login::onOkButtonClicked()
 {
-
     QJsonObject jsonObj;
     jsonObj.insert("idcard", ui->labelCardnumber->text());
     jsonObj.insert("pin", ui->pinOutput->text());
@@ -129,8 +127,6 @@ void Login::loginSlot(QNetworkReply *reply)
                 qDebug() << "Token asetettu:" << myToken;
 
                 QByteArray authHeader = "Bearer " + myToken;
-
-                // Tee GET-pyyntö linkitetyille tileille
                 QString cardId = ui->labelCardnumber->text();
                 QString accounts_url = Environment::base_url() + "/accountsbycard/" + cardId;
                 QNetworkRequest accountsRequest(accounts_url);
@@ -159,7 +155,6 @@ void Login::loginSlot(QNetworkReply *reply)
     }
 }
 
-
 // Käsitellään tilitiedot
 void Login::handleAccountsResponse(QNetworkReply *reply)
 {
@@ -172,7 +167,7 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
     qDebug() << "Tilit kortilla: "<<accountCount;
     if(accountCount > 1){
         SelectAccount *objSelectAccount = new SelectAccount(this);
-        objSelectAccount->setMyToken(myToken); // Verify this runs
+        objSelectAccount->setMyToken(myToken);
         qDebug() << "Token lähetty Select Account:" << myToken;
         objSelectAccount->SetAccountID(accountsArray);
         objSelectAccount->open();
@@ -184,11 +179,11 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
         QJsonObject jsonObj = accountsArray[0].toObject();
         int accountNumber = jsonObj["idaccount"].toInt();
         QString accountID = QString::number(accountNumber);
-        qDebug() << "accountId:" << accountID;
+        qDebug() << "Korttiin liitetty accountId:" << accountID;
 
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->open();
-        objMainMenu->setAccountid(accountID);
+        objMainMenu->setAccountId(accountID);
         objMainMenu->setMyToken(myToken);
         qDebug() << "Token lähetetty Main Menu:" << myToken;
 
