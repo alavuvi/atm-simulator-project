@@ -98,11 +98,12 @@ void Login::onOkButtonClicked()
     QString site_url = Environment::base_url() + "/login";
     QNetworkRequest request(site_url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    postManager = new QNetworkAccessManager(this);
-    connect(postManager, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(loginSlot(QNetworkReply*)));
-
-    reply = postManager->post(request, QJsonDocument(jsonObj).toJson());
+    loginManager = new QNetworkAccessManager(this);
+    //connect(loginManager, SIGNAL(finished(QNetworkReply*)),
+    //        this, SLOT(loginSlot(QNetworkReply*)));
+    //Alla uudella versiolla sama
+    connect(loginManager, &QNetworkAccessManager::finished, this, &Login::loginSlot);
+    reply = loginManager->post(request, QJsonDocument(jsonObj).toJson());
 }
 
 // Tarkistaa palvelimelta saadut tiedot tai saadaanko palvelimeen yhtettä
@@ -150,7 +151,7 @@ void Login::loginSlot(QNetworkReply *reply)
             }
         }
         reply->deleteLater();
-        postManager->deleteLater();
+        loginManager->deleteLater();
     }
 }
 
@@ -167,7 +168,7 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
     if(accountCount > 1){
         SelectAccount *objSelectAccount = new SelectAccount(this);
         objSelectAccount->setMyToken(myToken);
-       // qDebug() << "Token lähetty Select Account:" << myToken;
+        // qDebug() << "Token lähetty Select Account:" << myToken;
         objSelectAccount->SetAccountID(accountsArray);
         objSelectAccount->open();
 

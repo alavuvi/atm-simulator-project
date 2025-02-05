@@ -27,7 +27,7 @@ private:
     Ui::Login *ui;
     int failedAttempts;
     QTimer *loginTimeoutTimer;
-    QNetworkAccessManager *postManager;
+    QNetworkAccessManager *loginManager;
     QByteArray response_data;
     QNetworkReply *reply;
     QByteArray myToken;
