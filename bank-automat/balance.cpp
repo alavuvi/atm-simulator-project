@@ -41,7 +41,7 @@ void Balance::on_btnBack_clicked()
 
 void Balance::getBalanceData()
 {
-    QString site_url = "http://localhost:3000/account/" + cardnumber;
+    QString site_url = "http://localhost:3000/account/5" + cardnumber;
     QNetworkRequest request((site_url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader(QByteArray("Authorization"), "Bearer " + myToken);
@@ -55,9 +55,30 @@ void Balance::balanceReceived()
     {
         QString response = reply->readAll();
         QJsonDocument json_doc = QJsonDocument::fromJson(response.toUtf8());
-        QJsonObject json_obj = json_doc.object();
-        double balance = json_obj["balance"].toDouble();
-        ui->labelBalance->setText(QString("Current Balance: %.2f €").arg(balance));
+
+        if (json_doc.isArray()) {
+            QJsonArray json_array = json_doc.array();
+
+            if (!json_array.isEmpty()) {
+                QJsonObject json_obj = json_array.first().toObject();
+
+                QJsonValue balanceValue = json_obj["balance"];
+                double balance = 0.0;
+
+                if (balanceValue.isString()) {
+                    balance = balanceValue.toString().toDouble();
+                } else {
+                    balance = balanceValue.toDouble();
+                }
+
+                // Asetetaan teksti ilman virheitä
+                ui->labelBalance->setText(QString("Current Balance: %1 €").arg(balance, 0, 'f', 2));
+            } else {
+                ui->labelBalance->setText("Error: No balance data");
+            }
+        } else {
+            ui->labelBalance->setText("Error: Invalid JSON format");
+        }
     }
     else
     {
