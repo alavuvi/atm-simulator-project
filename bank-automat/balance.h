@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QtNetwork>
 #include <QJsonDocument>
+#include <QTimer>
 
 namespace Ui {
 class Balance;
@@ -29,6 +30,7 @@ private:
     QByteArray myToken;
     QNetworkAccessManager *networkManager;
     QNetworkReply *reply;
+    QTimer *refreshTimer;
     void getBalanceData();
 };
 
