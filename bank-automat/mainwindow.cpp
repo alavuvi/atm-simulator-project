@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // QList numeronapeille ja for-looppi näppäilyyn.
+    // QList ja for-loop numeronapeille.
     QList<QPushButton*> numberButtons = {
         ui->button00, ui->button01, ui->button02, ui->button03, ui->button04,
         ui->button05, ui->button06, ui->button07, ui->button08, ui->button09

@@ -94,7 +94,7 @@ void SelectAccount::on_btnCredit_clicked()
     if (creditAccountId != -1) {
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
-        qDebug() << "Token lähetetty Main Menu:" << myToken;
+       // qDebug() << "Token lähetetty Main Menu:" << myToken;
         objMainMenu->setAccountId(QString::number(creditAccountId));
         objMainMenu->open();
         this->close();
@@ -109,7 +109,7 @@ void SelectAccount::on_btnDebit_clicked()
     if (debitAccountId != -1) {
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
-        qDebug() << "Token lähetetty Main Menu:" << myToken;
+       // qDebug() << "Token lähetetty Main Menu:" << myToken;
         objMainMenu->setAccountId(QString::number(debitAccountId));
         objMainMenu->open();
         this->close();

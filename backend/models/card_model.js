@@ -10,8 +10,7 @@ const card={
     },
     add:function(card_data,callback){
         bcrypt.hash(card_data.pin,10,function(err, hashed_pin){
-           return db.query('INSERT INTO card(cardnumber,pin) VALUES(?,?)',[card_data.cardnumber,hashed_pin], callback);
-            
+           return db.query('INSERT INTO card(cardnumber,pin) VALUES(?,?)',[card_data.cardnumber,hashed_pin], callback);   
         })
     },
     update:function(id,card_data,callback){
@@ -22,8 +21,5 @@ const card={
     delete:function(id,callback){
         return db.query('DELETE FROM card WHERE idcard=?',[id],callback);
     },
- //   checkPin:function(idcard,callback){
- //       return db.query('SELECT pin FROM card WHERE idcard=?',[idcard],callback);
- //   },
 }
 module.exports=card;

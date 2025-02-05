@@ -20,7 +20,7 @@ Login::Login(QWidget *parent)
     // Aseta pinOutput-tekstikenttään EchoMode Password
     ui->pinOutput->setEchoMode(QLineEdit::Password);
 
-    // QList numeronapeille ja for-looppi näppäilyyn.
+    // QList ja for-loop numeronapeille.
     QList<QPushButton*> numberButtons = {
         ui->button00, ui->button01, ui->button02, ui->button03, ui->button04,
         ui->button05, ui->button06, ui->button07, ui->button08, ui->button09
@@ -89,7 +89,6 @@ void Login::onBackButtonClicked()
     ui->pinOutput->setText(currentText);
 }
 
-// Koodi korttinumero ja PIN-tiedon tarkistamiseen backendistä
 void Login::onOkButtonClicked()
 {
     QJsonObject jsonObj;
@@ -168,7 +167,7 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
     if(accountCount > 1){
         SelectAccount *objSelectAccount = new SelectAccount(this);
         objSelectAccount->setMyToken(myToken);
-        qDebug() << "Token lähetty Select Account:" << myToken;
+       // qDebug() << "Token lähetty Select Account:" << myToken;
         objSelectAccount->SetAccountID(accountsArray);
         objSelectAccount->open();
 
@@ -185,7 +184,7 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
         objMainMenu->open();
         objMainMenu->setAccountId(accountID);
         objMainMenu->setMyToken(myToken);
-        qDebug() << "Token lähetetty Main Menu:" << myToken;
+        // qDebug() << "Token lähetetty Main Menu:" << myToken;
 
         this->close();
 
@@ -193,7 +192,6 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
     else{
         qDebug() << "Ei tiliä linkitettynä korttiin!";
     }
-
     reply->deleteLater();
 }
 
