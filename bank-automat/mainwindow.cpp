@@ -30,27 +30,27 @@ void MainWindow::onNumberButtonClicked()
     if (button)
     {
         QString buttonText = button->text();
-        QString cardNumber = ui->lineCardnumber->text();
+        QString cardNumber = ui->lineCardId->text();
         cardNumber.append(buttonText);
-        ui->lineCardnumber->setText(cardNumber);
+        ui->lineCardId->setText(cardNumber);
     }
 }
 
 // Slot backspace napille
 void MainWindow::onBackButtonClicked()
 {
-    QString cardnumber = ui->lineCardnumber->text();
+    QString cardnumber = ui->lineCardId->text();
     cardnumber.chop(1);
-    ui->lineCardnumber->setText(cardnumber);
+    ui->lineCardId->setText(cardnumber);
 }
 
 // Slot OK napille
 void MainWindow::onOkButtonClicked()
 {
     Login *objLogin=new Login(this);
-    QString accountId = ui->lineCardnumber->text();
-    objLogin->setAccountId(accountId);
-    ui->lineCardnumber->clear();
+    QString cardId = ui->lineCardId->text();
+    objLogin->setCardId(cardId);
+    ui->lineCardId->clear();
     objLogin->open();
 }
 

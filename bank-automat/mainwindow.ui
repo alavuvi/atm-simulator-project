@@ -20,7 +20,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLineEdit" name="lineCardnumber">
+   <widget class="QLineEdit" name="lineCardId">
     <property name="geometry">
      <rect>
       <x>460</x>

@@ -55,9 +55,9 @@ void Login::resetFailedAttempts()
     failedAttempts = 0;
 }
 
-void Login::setAccountId(const QString &newAccountId)
+void Login::setCardId(const QString &newCardId)
 {
-    ui->labelCardnumber->setText(newAccountId);
+    ui->labelCardId->setText(newCardId);
 }
 
 // Tämä suoritetaan, kun login ei onnistu 10 sekunnin sisällä
@@ -92,7 +92,7 @@ void Login::onBackButtonClicked()
 void Login::onOkButtonClicked()
 {
     QJsonObject jsonObj;
-    jsonObj.insert("idcard", ui->labelCardnumber->text());
+    jsonObj.insert("idcard", ui->labelCardId->text());
     jsonObj.insert("pin", ui->pinOutput->text());
 
     QString site_url = Environment::base_url() + "/login";
@@ -127,7 +127,7 @@ void Login::loginSlot(QNetworkReply *reply)
                 qDebug() << "Token asetettu:" << myToken;
 
                 QByteArray authHeader = "Bearer " + myToken;
-                QString cardId = ui->labelCardnumber->text();
+                QString cardId = ui->labelCardId->text();
                 QString accounts_url = Environment::base_url() + "/accountsbycard/" + cardId;
                 QNetworkRequest accountsRequest(accounts_url);
                 accountsRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
