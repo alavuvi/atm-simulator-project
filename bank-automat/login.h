@@ -17,7 +17,7 @@ public:
     explicit Login(QWidget *parent = nullptr);
     ~Login();
 
-    void setCardNumber(const QString &cardNumber);
+    void setAccountId(const QString &newAccountId);
     void setMyToken(const QByteArray &newMyToken);
 
 public slots:

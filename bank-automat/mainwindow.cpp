@@ -48,8 +48,8 @@ void MainWindow::onBackButtonClicked()
 void MainWindow::onOkButtonClicked()
 {
     Login *objLogin=new Login(this);
-    QString cardNumber = ui->lineCardnumber->text();
-    objLogin->setCardNumber(cardNumber);
+    QString accountId = ui->lineCardnumber->text();
+    objLogin->setAccountId(accountId);
     ui->lineCardnumber->clear();
     objLogin->open();
 }

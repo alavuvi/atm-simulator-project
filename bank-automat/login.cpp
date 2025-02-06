@@ -55,9 +55,9 @@ void Login::resetFailedAttempts()
     failedAttempts = 0;
 }
 
-void Login::setCardNumber(const QString &cardNumber)
+void Login::setAccountId(const QString &newAccountId)
 {
-    ui->labelCardnumber->setText(cardNumber);
+    ui->labelCardnumber->setText(newAccountId);
 }
 
 // Tämä suoritetaan, kun login ei onnistu 10 sekunnin sisällä
