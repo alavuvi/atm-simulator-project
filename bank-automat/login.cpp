@@ -169,7 +169,7 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
         SelectAccount *objSelectAccount = new SelectAccount(this);
         objSelectAccount->setMyToken(myToken);
         // qDebug() << "Token lähetty Select Account:" << myToken;
-        objSelectAccount->SetAccountID(accountsArray);
+        objSelectAccount->setAccountId(accountsArray);
         objSelectAccount->open();
 
         this->close();

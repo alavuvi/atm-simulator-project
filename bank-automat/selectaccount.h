@@ -22,7 +22,7 @@ public:
 
     void setMyToken(const QByteArray &newMyToken);
     QByteArray getMyToken() const { return myToken; }
-    void SetAccountID(const QJsonArray &newAccountID);
+    void setAccountId(const QJsonArray &newAccountId);
 
 private slots:
     void on_btnDebit_clicked();
@@ -34,7 +34,7 @@ private:
 
     Ui::SelectAccount *ui;
     QByteArray myToken;
-    QJsonArray accountID;
+    QJsonArray accountId;
     QNetworkAccessManager *networkManager;
     int creditAccountId;
     int debitAccountId;
