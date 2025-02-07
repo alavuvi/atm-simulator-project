@@ -14,9 +14,10 @@ Transactions::~Transactions()
     delete ui;
 }
 
-void Transactions::setCardnumber(const QString &newCardnumber)
+void Transactions::setAccountId(const QString &id)
 {
-    cardnumber = newCardnumber;
+    accountid = id;
+    ui->labelAccountid->setText(accountid);
 }
 
 void Transactions::setMyToken(const QByteArray &newMyToken)
@@ -26,7 +27,7 @@ void Transactions::setMyToken(const QByteArray &newMyToken)
 
 void Transactions::on_btnShowTransactions_clicked()
 {
-    QString site_url=Environment::base_url()+"/transactions/"+cardnumber;
+    QString site_url=Environment::base_url()+"/transactions/"+accountid;
     QNetworkRequest request(site_url);
     //WEBTOKEN ALKU
     request.setRawHeader(QByteArray("Authorization"),(myToken));

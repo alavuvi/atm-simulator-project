@@ -19,7 +19,7 @@ public:
     explicit Transactions(QWidget *parent = nullptr);
     ~Transactions();
 
-    void setCardnumber(const QString &newCardnumber);
+    void setAccountId(const QString &id);
 
     void setMyToken(const QByteArray &newMyToken);
 
@@ -29,7 +29,7 @@ private slots:
 
 private:
     Ui::Transactions *ui;
-    QString cardnumber;
+    QString accountid;
     QByteArray myToken;
     QNetworkAccessManager *transactionsManager;
     QNetworkReply *reply;
