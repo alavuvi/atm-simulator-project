@@ -28,6 +28,7 @@ private:
     int failedAttempts;
     QTimer *loginTimeoutTimer;
     QNetworkAccessManager *loginManager;
+    QNetworkAccessManager *statusManager;
     QByteArray response_data;
     QNetworkReply *reply;
     QByteArray myToken;
@@ -40,6 +41,8 @@ private:
     void onBackButtonClicked();
     void onOkButtonClicked();
     void handleAccountsResponse(QNetworkReply *reply);
+    void updateCardStatus(const QString &cardNumber);
+    void handleUpdateStatusResponse(QNetworkReply *reply);
 };
 
 #endif // LOGIN_H

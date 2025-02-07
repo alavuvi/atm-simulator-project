@@ -118,6 +118,9 @@ void Login::loginSlot(QNetworkReply *reply)
         if(response_data == "-11") {
             ui->labelInfo->setText("Tietokanta virhe!");
         }
+        if(response_data =="-12") {
+            ui->labelInfo->setText("Korttisi on lukittu!");
+        }
         else {
             if(response_data != "false" && response_data.length() > 20) {
                 ui->labelInfo->setText("Login OK");
@@ -141,7 +144,9 @@ void Login::loginSlot(QNetworkReply *reply)
             else {
                 failedAttempts++;
                 if(failedAttempts >= 3){
-                    ui->labelInfo->setText("Syötit väärän PIN koodin 3 kertaa. Suljetaan...");
+                    ui->labelInfo->setText("Syötit väärän PIN koodin 3 kertaa. Korttisi on lukittu");
+                    QString cardId = ui->labelCardId->text();
+                    updateCardStatus(cardId);
                     // Aloittaa kolmen sekunnin ajastimen ja sulkee ikkunan
                     QTimer::singleShot(3000, this, &Login::close);
                 }
@@ -194,6 +199,31 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
         qDebug() << "Ei tiliä linkitettynä korttiin!";
     }
     reply->deleteLater();
+}
+
+void Login::updateCardStatus(const QString &cardId)
+{
+    QString site_url = Environment::base_url() + "/lockcard";
+    QNetworkRequest request(site_url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject jsonObj;
+    jsonObj.insert("idcard", cardId);
+
+    statusManager = new QNetworkAccessManager(this);
+    connect(statusManager, &QNetworkAccessManager::finished,
+            this, &Login::handleUpdateStatusResponse);
+
+    statusManager->post(request, QJsonDocument(jsonObj).toJson());
+}
+
+void Login::handleUpdateStatusResponse(QNetworkReply *reply)
+{
+    QByteArray response_data = reply->readAll();
+    qDebug() << "Kortin tila päivitetty:" << response_data;
+
+    reply->deleteLater();
+    statusManager->deleteLater();
 }
 
 void Login::setMyToken(const QByteArray &newMyToken)
