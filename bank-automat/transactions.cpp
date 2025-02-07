@@ -27,14 +27,18 @@ void Transactions::setMyToken(const QByteArray &newMyToken)
 
 void Transactions::on_btnShowTransactions_clicked()
 {
+
     QString site_url=Environment::base_url()+"/transactions/"+accountid;
     QNetworkRequest request(site_url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
     //WEBTOKEN ALKU
-    request.setRawHeader(QByteArray("Authorization"),(myToken));
+    QByteArray header="Bearer "+myToken;
+    request.setRawHeader(QByteArray("Authorization"),(header));
     //WEBTOKEN LOPPU
     transactionsManager = new QNetworkAccessManager(this);
 
-    connect(transactionsManager,&QNetworkAccessManager::finished,this,&Transactions::showTransactionsSlot);
+    connect(transactionsManager, &QNetworkAccessManager::finished, this, &Transactions::showTransactionsSlot);
 
     reply = transactionsManager->get(request);
 }
