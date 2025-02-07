@@ -16,7 +16,7 @@ public:
     explicit MainMenu(QWidget *parent = nullptr);
     ~MainMenu();
     void setMyToken(const QByteArray &newMyToken);
-    void setAccountid(const QString &id);  // Add declaration
+    void setAccountId(const QString &newAccountId);
 
 private slots:
     void on_btnBalance_clicked();

@@ -7,21 +7,20 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    // Numeropainikkeet
-    connect(ui->button00, &QPushButton::clicked, this, &MainWindow::onNumberButtonClicked);
-    connect(ui->button01, &QPushButton::clicked, this, &MainWindow::onNumberButtonClicked);
-    connect(ui->button02, &QPushButton::clicked, this, &MainWindow::onNumberButtonClicked);
-    connect(ui->button03, &QPushButton::clicked, this, &MainWindow::onNumberButtonClicked);
-    connect(ui->button04, &QPushButton::clicked, this, &MainWindow::onNumberButtonClicked);
-    connect(ui->button05, &QPushButton::clicked, this, &MainWindow::onNumberButtonClicked);
-    connect(ui->button06, &QPushButton::clicked, this, &MainWindow::onNumberButtonClicked);
-    connect(ui->button07, &QPushButton::clicked, this, &MainWindow::onNumberButtonClicked);
-    connect(ui->button08, &QPushButton::clicked, this, &MainWindow::onNumberButtonClicked);
-    connect(ui->button09, &QPushButton::clicked, this, &MainWindow::onNumberButtonClicked);
 
+    // QList numeronapeille ja for-looppi näppäilyyn.
+    QList<QPushButton*> numberButtons = {
+        ui->button00, ui->button01, ui->button02, ui->button03, ui->button04,
+        ui->button05, ui->button06, ui->button07, ui->button08, ui->button09
+    };
+
+    for (QPushButton* button : numberButtons) {
+        connect(button, &QPushButton::clicked, this, &MainWindow::onNumberButtonClicked);
+    }
+
+    // Ok- ja back-napit
     connect(ui->buttonOk, &QPushButton::clicked, this, &MainWindow::onOkButtonClicked);
     connect(ui->buttonBack, &QPushButton::clicked, this, &MainWindow::onBackButtonClicked);
-
 }
 
 // Slotti numeronapeille
