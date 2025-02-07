@@ -30,18 +30,18 @@ void MainWindow::onNumberButtonClicked()
     if (button)
     {
         QString buttonText = button->text();
-        QString cardNumber = ui->lineCardId->text();
-        cardNumber.append(buttonText);
-        ui->lineCardId->setText(cardNumber);
+        QString cardId = ui->lineCardId->text();
+        cardId.append(buttonText);
+        ui->lineCardId->setText(cardId);
     }
 }
 
 // Slot backspace napille
 void MainWindow::onBackButtonClicked()
 {
-    QString cardnumber = ui->lineCardId->text();
-    cardnumber.chop(1);
-    ui->lineCardId->setText(cardnumber);
+    QString cardId = ui->lineCardId->text();
+    cardId.chop(1);
+    ui->lineCardId->setText(cardId);
 }
 
 // Slot OK napille

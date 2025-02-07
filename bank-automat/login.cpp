@@ -210,11 +210,11 @@ void Login::updateCardStatus(const QString &cardId)
     QJsonObject jsonObj;
     jsonObj.insert("idcard", cardId);
 
-    statusManager = new QNetworkAccessManager(this);
-    connect(statusManager, &QNetworkAccessManager::finished,
+    cardStatusManager = new QNetworkAccessManager(this);
+    connect(cardStatusManager, &QNetworkAccessManager::finished,
             this, &Login::handleUpdateStatusResponse);
 
-    statusManager->post(request, QJsonDocument(jsonObj).toJson());
+    cardStatusManager->post(request, QJsonDocument(jsonObj).toJson());
 }
 
 void Login::handleUpdateStatusResponse(QNetworkReply *reply)
@@ -223,7 +223,7 @@ void Login::handleUpdateStatusResponse(QNetworkReply *reply)
     qDebug() << "Kortin tila päivitetty:" << response_data;
 
     reply->deleteLater();
-    statusManager->deleteLater();
+    cardStatusManager->deleteLater();
 }
 
 void Login::setMyToken(const QByteArray &newMyToken)

@@ -14,15 +14,14 @@ class SelectAccount;
 class SelectAccount : public QDialog
 {
     Q_OBJECT
-    Q_PROPERTY(QByteArray myToken READ getMyToken WRITE setMyToken)
 
 public:
     explicit SelectAccount(QWidget *parent = nullptr);
     ~SelectAccount();
 
     void setMyToken(const QByteArray &newMyToken);
-    QByteArray getMyToken() const { return myToken; }
     void setAccountId(const QJsonArray &newAccountId);
+
 
 private slots:
     void on_btnDebit_clicked();
