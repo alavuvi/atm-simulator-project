@@ -21,10 +21,10 @@ SelectAccount::~SelectAccount()
 }
 
  // Esikäsittele tilit, jotta saadaan creditAccountId ja debitAccountId arrayhin
-void SelectAccount::SetAccountID(const QJsonArray &newAccountID)
+void SelectAccount::setAccountId(const QJsonArray &newAccountId)
 {
-    accountID = newAccountID;
-    qDebug() << "Account array:" << accountID;
+    accountId = newAccountId;
+    qDebug() << "Account array:" << accountId;
     processAccounts();
 }
 
@@ -36,8 +36,8 @@ void SelectAccount::processAccounts()
         return;
     }
 
-    for (int i = 0; i < accountID.size(); i++) {
-        QJsonObject account = accountID[i].toObject();
+    for (int i = 0; i < accountId.size(); i++) {
+        QJsonObject account = accountId[i].toObject();
         int id = account["idaccount"].toInt();
         qDebug() << "Käsitellään account ID:" << id;
 
@@ -94,7 +94,7 @@ void SelectAccount::on_btnCredit_clicked()
     if (creditAccountId != -1) {
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
-        qDebug() << "Token lähetetty Main Menu:" << myToken;
+       // qDebug() << "Token lähetetty Main Menu:" << myToken;
         objMainMenu->setAccountId(QString::number(creditAccountId));
         objMainMenu->open();
         this->close();
@@ -109,7 +109,7 @@ void SelectAccount::on_btnDebit_clicked()
     if (debitAccountId != -1) {
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
-        qDebug() << "Token lähetetty Main Menu:" << myToken;
+       // qDebug() << "Token lähetetty Main Menu:" << myToken;
         objMainMenu->setAccountId(QString::number(debitAccountId));
         objMainMenu->open();
         this->close();

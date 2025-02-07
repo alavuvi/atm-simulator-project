@@ -12,6 +12,8 @@ var accountRouter = require('./routes/account');
 var accountcardRouter = require('./routes/accountcard');
 var getAccountsByCardRouter = require('./routes/accountsbycard');
 var creditlimitRouter = require('./routes/creditlimit');
+const updateCardStatusRouter = require('./routes/updateCardStatus');
+const lockCardRouter = require('./routes/lockcard');
 const jwt = require('jsonwebtoken');
 
 var app = express();
@@ -24,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
+app.use('/lockcard', lockCardRouter);
 app.use(authenticateToken);
 app.use('/card', cardRouter);
 app.use('/accountcard', accountcardRouter);
@@ -32,6 +35,7 @@ app.use('/account', accountRouter);
 app.use('/customer', customerRouter);
 app.use('/accountsbycard', getAccountsByCardRouter);
 app.use('/creditlimit', creditlimitRouter);
+app.use('/updateCardStatus', updateCardStatusRouter);
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
