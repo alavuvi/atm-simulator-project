@@ -32,7 +32,7 @@ CREATE TABLE `account` (
   PRIMARY KEY (`idaccount`,`idcustomer`),
   KEY `customerid_idx` (`idcustomer`),
   CONSTRAINT `fk_customerid` FOREIGN KEY (`idcustomer`) REFERENCES `customer` (`idcustomer`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,6 +41,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
+INSERT INTO `account` VALUES (16,1,50000.00,0.00,123456789,'debit'),(17,2,0.00,5000.00,555444999,'credit'),(19,4,0.00,2000.00,111444999,'credit'),(20,4,50000.00,0.00,222444999,'debit');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -67,6 +68,7 @@ CREATE TABLE `accountcard` (
 
 LOCK TABLES `accountcard` WRITE;
 /*!40000 ALTER TABLE `accountcard` DISABLE KEYS */;
+INSERT INTO `accountcard` VALUES (17,16),(16,17),(20,19),(20,20);
 /*!40000 ALTER TABLE `accountcard` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -81,9 +83,10 @@ CREATE TABLE `card` (
   `idcard` int NOT NULL AUTO_INCREMENT,
   `cardnumber` int DEFAULT NULL,
   `pin` varchar(255) DEFAULT NULL,
+  `active` int DEFAULT NULL,
   PRIMARY KEY (`idcard`),
   UNIQUE KEY `cardnumber_UNIQUE` (`cardnumber`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -92,7 +95,7 @@ CREATE TABLE `card` (
 
 LOCK TABLES `card` WRITE;
 /*!40000 ALTER TABLE `card` DISABLE KEYS */;
-INSERT INTO `card` VALUES (5,123456789,'$2a$10$gBX9Qv1sVu4bDkT3bTsBzutRyxCLiEc9Zr6BU.t5ovkCalsOSTxSq'),(7,98765431,'$2a$10$kml6ql71FRf.l4AtlZRA.Oox4y4mEWYPnaVfoITymqy16H9h4qTmy');
+INSERT INTO `card` VALUES (16,45605555,'$2a$10$dtG7mNyJptXB2q//l/u2MOOTBYiRfxO5jxyUUzaKlUx7DB4aZgXcu',NULL),(17,45706666,'$2a$10$gObFslfvon/pVlWmQh3fz.uE2X3JtoptFhO4LIVG5FkPoBYcHOS.a',NULL),(20,45707777,'$2a$10$tL7xhGEXL71ALETER9sFM.DAzbJkvX3gJy8PVDdHTUQ7rA3C5z64C',NULL),(21,5555555,'$2a$10$lvrWlNzQqX9N1FoP.WQh.uPXHI7cXzFDEQUxVoiwoK0Kd5a./zk1a',NULL);
 /*!40000 ALTER TABLE `card` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -110,7 +113,7 @@ CREATE TABLE `customer` (
   `address` varchar(45) DEFAULT NULL,
   `phone` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`idcustomer`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,6 +122,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
+INSERT INTO `customer` VALUES (1,'Teppo','Testaaja','Koulukatu 5','0554441110'),(2,'Tauno','Taavetti','Hallituskatu 5','0554445555'),(3,'Aatu','Ahvenlahtti','Kalatie 5','0554443333'),(4,'Asko','Ahvenlahtti','Kalatie 65','0554443213');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -159,4 +163,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-21  9:52:20
+-- Dump completed on 2025-02-07  8:34:07
