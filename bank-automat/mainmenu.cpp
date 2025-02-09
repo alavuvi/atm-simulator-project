@@ -25,7 +25,7 @@ void MainMenu::setAccountId(const QString &newAccountId)
 void MainMenu::setMyToken(const QByteArray &newMyToken)
 {
     if (newMyToken.isEmpty()) {
-        qDebug() << "Warning: Tyhjä token saatu";
+        qDebug() << "Tyhjä token saatu";
         return;
     }
     myToken = newMyToken;
@@ -35,7 +35,7 @@ void MainMenu::setMyToken(const QByteArray &newMyToken)
 void MainMenu::on_btnBalance_clicked()
 {
     if (myToken.isEmpty()) {
-        qDebug() << "Error: Ei tokenia saatavilla balancelle";
+        qDebug() << "Ei tokenia saatavilla balancelle";
         return;
     }
     Balance *objBalance = new Balance(this);
@@ -49,28 +49,26 @@ void MainMenu::on_btnBalance_clicked()
 void MainMenu::on_btnTransactions_clicked()
 {
     if (myToken.isEmpty()) {
-        qDebug() << "Error: Ei tokenia saatavilla Transactions";
+        qDebug() << "Ei tokenia saatavilla Transactions";
         return;
     }
     Transactions *objTransactions = new Transactions(this);
     objTransactions->setMyToken(myToken);
-    /* tämä ottaa käyttöön, jos accountid:tä tarvitaan transactionsissa
-     objTransactions->setAccountId(accountid);
-    */
+    //tämä ottaa käyttöön, jos accountid:tä tarvitaan transactionsissa
+    objTransactions->setAccountId(accountid);
     objTransactions->open();
 }
 
 void MainMenu::on_btnWithdraw_clicked()
 {
     if (myToken.isEmpty()) {
-        qDebug() << "Error: Ei tokenia saatavilla Withdraw";
+        qDebug() << "Ei tokenia saatavilla Withdraw";
         return;
     }
     Withdraw *objWithdraw = new Withdraw(this);
     objWithdraw->setMyToken(myToken);
-     /* tämä ottaa käyttöön, jos accountid:tä tarvitaan withdrawissa
-    // objWithdraw->setAccountId(accountid);
-    */
+    //tämä ottaa käyttöön, jos accountid:tä tarvitaan withdrawissa
+    //objWithdraw->setAccountId(accountid);
     objWithdraw->open();
 }
 

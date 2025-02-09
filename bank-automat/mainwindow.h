@@ -27,8 +27,6 @@ private slots:
     void onBackButtonClicked();
 
 
-// void on_btnCardnumber_clicked();
-
 private:
     Ui::MainWindow *ui;
 
