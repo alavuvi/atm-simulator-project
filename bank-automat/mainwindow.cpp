@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // QList numeronapeille ja for-looppi näppäilyyn.
+    // QList ja for-loop numeronapeille.
     QList<QPushButton*> numberButtons = {
         ui->button00, ui->button01, ui->button02, ui->button03, ui->button04,
         ui->button05, ui->button06, ui->button07, ui->button08, ui->button09
@@ -30,27 +30,27 @@ void MainWindow::onNumberButtonClicked()
     if (button)
     {
         QString buttonText = button->text();
-        QString cardNumber = ui->lineCardnumber->text();
-        cardNumber.append(buttonText);
-        ui->lineCardnumber->setText(cardNumber);
+        QString cardId = ui->lineCardId->text();
+        cardId.append(buttonText);
+        ui->lineCardId->setText(cardId);
     }
 }
 
 // Slot backspace napille
 void MainWindow::onBackButtonClicked()
 {
-    QString cardnumber = ui->lineCardnumber->text();
-    cardnumber.chop(1);
-    ui->lineCardnumber->setText(cardnumber);
+    QString cardId = ui->lineCardId->text();
+    cardId.chop(1);
+    ui->lineCardId->setText(cardId);
 }
 
 // Slot OK napille
 void MainWindow::onOkButtonClicked()
 {
     Login *objLogin=new Login(this);
-    QString cardNumber = ui->lineCardnumber->text();
-    objLogin->setCardNumber(cardNumber);
-    ui->lineCardnumber->clear();
+    QString cardId = ui->lineCardId->text();
+    objLogin->setCardId(cardId);
+    ui->lineCardId->clear();
     objLogin->open();
 }
 

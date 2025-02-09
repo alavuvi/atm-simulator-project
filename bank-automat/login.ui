@@ -247,7 +247,7 @@
     <string>OK</string>
    </property>
   </widget>
-  <widget class="QLabel" name="labelCardnumber">
+  <widget class="QLabel" name="labelCardId">
    <property name="geometry">
     <rect>
      <x>410</x>
