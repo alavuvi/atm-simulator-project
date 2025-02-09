@@ -14,8 +14,8 @@ router.get('/', function(request, response){
     })
 });
 
-router.get('/:accountid', function(request, response){
-    transactions.getByaccountId(request.params.accountid,function(err, result){
+router.get('/:id', function(request, response){
+    transactions.getByid(request.params.id,function(err, result){
         if(err){
             response.json(err);
         }
