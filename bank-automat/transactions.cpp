@@ -28,7 +28,9 @@ void Transactions::setMyToken(const QByteArray &newMyToken)
 
 void Transactions::on_btnTransactions_clicked()
 {
-    QString site_url=Environment::base_url()+"/transactions/"+accountid;
+    QString start = "1";
+    QString end = "3";
+    QString site_url=Environment::base_url()+"/transactions/"+accountid+"/"+start+"/"+end;
     QNetworkRequest request(site_url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QByteArray header="Bearer "+myToken;
