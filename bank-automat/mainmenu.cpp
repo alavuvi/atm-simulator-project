@@ -54,9 +54,8 @@ void MainMenu::on_btnTransactions_clicked()
     }
     Transactions *objTransactions = new Transactions(this);
     objTransactions->setMyToken(myToken);
-    /* tämä ottaa käyttöön, jos accountid:tä tarvitaan transactionsissa
-     objTransactions->setAccountId(accountid);
-    */
+    //tämä ottaa käyttöön, jos accountid:tä tarvitaan transactionsissa
+    objTransactions->setAccountId(accountid);
     objTransactions->open();
 }
 

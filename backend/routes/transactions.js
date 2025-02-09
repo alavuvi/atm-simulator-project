@@ -14,13 +14,13 @@ router.get('/', function(request, response){
     })
 });
 
-router.get('/:id', function(request, response){
-    transactions.getById(request.params.id,function(err, result){
+router.get('/:accountid', function(request, response){
+    transactions.getByaccountId(request.params.accountid,function(err, result){
         if(err){
             response.json(err);
         }
         else {
-            response.json(result[0]);
+            response.json(result);
         }
     })
 });

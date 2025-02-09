@@ -4,8 +4,8 @@ const transactions={
     getAll:function(callback){
         return db.query('SELECT * FROM transactions', callback);
     },
-    getById:function(id, callback){
-        return db.query('SELECT * FROM transactions WHERE idtransactions=?',[id],callback);
+    getByaccountId:function(accountid, callback){
+        return db.query('SELECT date_format(datetime, "%Y.%m.%d %H.%i.%S") as "datetime", transaction, amount FROM transactions WHERE idaccount=? LIMIT 0, 20',[accountid],callback);
     },
     add:function(transactions_data, callback){
         return db.query("insert into transactions(idaccount, datetime, transaction, amount) values(?,?,?,?)", [transactions_data.idaccount, transactions_data.datetime, transactions_data.transaction, transactions_data.amount], callback);
