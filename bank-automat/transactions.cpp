@@ -17,7 +17,7 @@ Transactions::~Transactions()
 void Transactions::setAccountId(const QString &id)
 {
     accountid = id;
-    ui->labelAccountid->setText(accountid);
+    ui->labelAccountId->setText(accountid);
 }
 
 void Transactions::setMyToken(const QByteArray &newMyToken)
@@ -32,10 +32,8 @@ void Transactions::on_btnShowTransactions_clicked()
     QNetworkRequest request(site_url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    //WEBTOKEN ALKU
     QByteArray header="Bearer "+myToken;
     request.setRawHeader(QByteArray("Authorization"),(header));
-    //WEBTOKEN LOPPU
     transactionsManager = new QNetworkAccessManager(this);
 
     connect(transactionsManager, &QNetworkAccessManager::finished, this, &Transactions::showTransactionsSlot);

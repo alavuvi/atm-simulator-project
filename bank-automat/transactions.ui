@@ -36,7 +36,7 @@
     <string>Show transactions</string>
    </property>
   </widget>
-  <widget class="QLabel" name="labelAccountid">
+  <widget class="QLabel" name="labelAccountId">
    <property name="geometry">
     <rect>
      <x>330</x>
