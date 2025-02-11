@@ -23,6 +23,15 @@ const customer = {
     },
     delete: function(id, callback) {
         return db.query('DELETE FROM customer WHERE idcustomer = ?', [id], callback);
+    },
+    getCustomerName: function(accountId, callback) {
+        return db.query(
+            'SELECT customer.fname, customer.lname FROM customer ' +
+            'JOIN account ON customer.idcustomer = account.idcustomer ' +
+            'WHERE account.idaccount = ?',
+            [accountId],
+            callback
+        );
     }
 };
 
