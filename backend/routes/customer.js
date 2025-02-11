@@ -2,6 +2,20 @@ const express = require('express');
 const router = express.Router();
 const customer = require('../models/customer_model');
 
+// Tämä hakee asiakkaan nimen id:n perusteella
+router.get('/name/:accountId', function(req, res) {
+    customer.getCustomerName(req.params.accountId, function(err, result) {
+        if (err) {
+            res.status(500).json(err);
+        } else {
+            const customerData = result[0];
+            res.status(200).json({
+                name: `${customerData.fname} ${customerData.lname}`
+            });
+        }
+    });
+});
+
 router.get('/', function(req, res) {
     customer.getAll(function(err, dbResult) {
         if (err) {

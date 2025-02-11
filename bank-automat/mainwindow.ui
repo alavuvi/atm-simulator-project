@@ -280,7 +280,25 @@
      </font>
     </property>
     <property name="text">
-     <string>Näppäile kortti-ID</string>
+     <string>ENTER CARD ID</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelLogo">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>50</y>
+      <width>141</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>42</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>ATM</string>
     </property>
    </widget>
   </widget>
@@ -293,14 +311,7 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuBankautomat">
-    <property name="title">
-     <string>Bankautomat</string>
-    </property>
-   </widget>
-   <addaction name="menuBankautomat"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
