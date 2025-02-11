@@ -11,22 +11,29 @@ Balance::Balance(QWidget *parent)
     this->setWindowTitle("Balance");
     networkManager = new QNetworkAccessManager(this);
 
-    // Lisätty QTimer alustus
     refreshTimer = new QTimer(this);
     connect(refreshTimer, &QTimer::timeout, this, &Balance::getBalanceData);
-    refreshTimer->start(1000); // Päivitä 5 sekunnin välein
+    refreshTimer->start(5000); // 5 sekunnin välein
+
+    inactivityTimer = new QTimer(this);
+    inactivityTimer->setSingleShot(true);
+    connect(inactivityTimer, &QTimer::timeout, this, &Balance::close);
+    resetInactivityTimer();
+
+    this->installEventFilter(this);
 }
 
 Balance::~Balance()
 {
-    refreshTimer->stop();  // Pysäytä ajastin
+    refreshTimer->stop();
+    inactivityTimer->stop();
     delete ui;
 }
 
 void Balance::setCardnumber(const QString &newCardnumber)
 {
     cardnumber = newCardnumber;
-    getBalanceData();  // Hae balance heti kun korttinumero asetetaan
+    getBalanceData();
 }
 
 void Balance::setMyToken(const QByteArray &newMyToken)
@@ -54,30 +61,22 @@ void Balance::balanceReceived()
     if(reply->error() == QNetworkReply::NoError)
     {
         QString response = reply->readAll();
+        qDebug() << "Server Response:" << response;
+
         QJsonDocument json_doc = QJsonDocument::fromJson(response.toUtf8());
 
-        if (json_doc.isArray()) {
+        if (!json_doc.isNull() && json_doc.isArray()) {
             QJsonArray json_array = json_doc.array();
 
             if (!json_array.isEmpty()) {
-                QJsonObject json_obj = json_array.first().toObject();
-
-                QJsonValue balanceValue = json_obj["balance"];
-                double balance = 0.0;
-
-                if (balanceValue.isString()) {
-                    balance = balanceValue.toString().toDouble();
-                } else {
-                    balance = balanceValue.toDouble();
-                }
-
-                // Asetetaan teksti ilman virheitä
-                ui->labelBalance->setText(QString("Current Balance: %1 €").arg(balance, 0, 'f', 2));
+                QJsonObject accountData = json_array[0].toObject();
+                updateUI(accountData);
             } else {
-                ui->labelBalance->setText("Error: No balance data");
+                ui->labelBalance->setText("Error: Account not found");
             }
         } else {
             ui->labelBalance->setText("Error: Invalid JSON format");
+            qDebug() << "Invalid JSON format. Raw response:" << response;
         }
     }
     else
@@ -86,4 +85,41 @@ void Balance::balanceReceived()
         qDebug() << "Error:" << reply->errorString();
     }
     reply->deleteLater();
+}
+
+void Balance::updateUI(const QJsonObject &accountData)
+{
+    // Saldo
+    if (accountData.contains("balance")) {
+        double balance = accountData["balance"].toString().toDouble();
+        ui->labelBalance->setText(QString("Current Balance: %1 €").arg(balance, 0, 'f', 2));
+    } else {
+        ui->labelBalance->setText("Error: Missing balance data");
+    }
+
+    // Tili numero
+    if (accountData.contains("accountnumber")) {
+        QString accountNumber = accountData["accountnumber"].toString();
+        ui->labelOwner->setText(QString("Erkki Esimerkki").arg(accountNumber));
+    } else {
+        ui->labelOwner->setText("Error: Missing account number data");
+    }
+
+    ui->textTransactions->setText("No transactions found");
+}
+
+void Balance::resetInactivityTimer()
+{
+    inactivityTimer->start(10000);
+}
+
+bool Balance::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::MouseMove ||
+        event->type() == QEvent::KeyPress ||
+        event->type() == QEvent::MouseButtonPress)
+    {
+        resetInactivityTimer();
+    }
+    return QDialog::eventFilter(obj, event);
 }

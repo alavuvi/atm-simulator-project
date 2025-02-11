@@ -31,7 +31,16 @@ private:
     QNetworkAccessManager *networkManager;
     QNetworkReply *reply;
     QTimer *refreshTimer;
+    QTimer *inactivityTimer;
+    void resetInactivityTimer();
     void getBalanceData();
+    void updateUI(const QJsonObject &accountData);
+
+    QString accountOwner;
+    QStringList recentTransactions;
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) override;
 };
 
 #endif // BALANCE_H

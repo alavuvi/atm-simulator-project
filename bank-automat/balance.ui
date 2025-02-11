@@ -70,6 +70,36 @@
     <string>Back</string>
    </property>
   </widget>
+  <widget class="QLabel" name="labelOwner">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>30</y>
+     <width>121</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>12</pointsize>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Erkki Esimerkki</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="textTransactions">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>20</y>
+     <width>161</width>
+     <height>131</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
