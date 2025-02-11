@@ -1,4 +1,5 @@
 #include "mainmenu.h"
+#include "environment.h"
 #include "ui_mainmenu.h"
 #include "balance.h"
 #include "transactions.h"
@@ -9,6 +10,7 @@ MainMenu::MainMenu(QWidget *parent)
     , ui(new Ui::MainMenu)
 {
     ui->setupUi(this);
+    labelName = ui->label;
 }
 
 MainMenu::~MainMenu()
@@ -16,20 +18,65 @@ MainMenu::~MainMenu()
     delete ui;
 }
 
-void MainMenu::setAccountId(const QString &newAccountId)
-{
-    accountid = newAccountId;
-    ui->labelAccountid->setText(accountid);
-}
-
 void MainMenu::setMyToken(const QByteArray &newMyToken)
 {
     if (newMyToken.isEmpty()) {
-        qDebug() << "Tyhjä token saatu";
+        qDebug() << "WARNING: Empty token received in setMyToken";
         return;
     }
     myToken = newMyToken;
-    qDebug() << "Token asetettu Main Menu:" << myToken;
+}
+
+void MainMenu::setAccountId(const QString &newAccountId)
+{
+    accountid = newAccountId;
+    // ui->labelAccountid->setText(accountid);
+    getCustomerInfo();
+}
+
+void MainMenu::getCustomerInfo()
+{
+    qDebug() << "Token content:" << myToken;
+    qDebug() << "Account ID:" << accountid;
+    if (myToken.isEmpty()) {
+        qDebug() << "Authentication token is empty";
+        return;
+    }
+
+    QString site_url = Environment::base_url() + QString("/customer/name/%1").arg(accountid);
+    QNetworkRequest request((QUrl(site_url)));
+
+    // Set headers
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QByteArray authHeader = "Bearer " + myToken;
+    request.setRawHeader("Authorization", authHeader);
+
+    networkManager = new QNetworkAccessManager(this);
+    connect(networkManager, &QNetworkAccessManager::finished,
+            this, &MainMenu::handleCustomerInfo);
+    reply = networkManager->get(request);
+}
+
+void MainMenu::handleCustomerInfo(QNetworkReply *reply)
+{
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray responseData = reply->readAll();
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+        QJsonObject jsonObj = jsonDoc.object();
+
+        // Nyt backend palauttaa suoraan "name" kentän
+        QString customerName = jsonObj["name"].toString();
+        if (!customerName.isEmpty()) {
+            labelName->setText(customerName);
+        } else {
+            labelName->setText("Asiakasta ei löytynyt");
+        }
+    } else {
+        labelName->setText("Virhe haettaessa asiakastietoja");
+    }
+
+    reply->deleteLater();
+    networkManager->deleteLater();  // Siivoa networkManager
 }
 
 void MainMenu::on_btnBalance_clicked()
@@ -54,7 +101,7 @@ void MainMenu::on_btnTransactions_clicked()
     }
     Transactions *objTransactions = new Transactions(this);
     objTransactions->setMyToken(myToken);
-    //tämä ottaa käyttöön, jos accountid:tä tarvitaan transactionsissa
+    qDebug() << "Token lähetty transactions:"<< myToken;
     objTransactions->setAccountId(accountid);
     objTransactions->open();
 }
