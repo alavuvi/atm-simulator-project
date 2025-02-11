@@ -17,8 +17,8 @@
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>240</y>
-     <width>101</width>
+     <y>250</y>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
@@ -29,7 +29,7 @@
   <widget class="QLabel" name="labelAccountId">
    <property name="geometry">
     <rect>
-     <x>330</x>
+     <x>340</x>
      <y>20</y>
      <width>37</width>
      <height>12</height>
@@ -42,10 +42,10 @@
   <widget class="QTableView" name="tableTransactions">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>70</x>
      <y>40</y>
-     <width>256</width>
-     <height>192</height>
+     <width>261</width>
+     <height>201</height>
     </rect>
    </property>
    <property name="selectionMode">
