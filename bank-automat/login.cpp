@@ -106,7 +106,6 @@ void Login::onOkButtonClicked()
     reply = loginManager->post(request, QJsonDocument(jsonObj).toJson());
 }
 
-// Tarkistaa palvelimelta saadut tiedot tai saadaanko palvelimeen yhtettä
 void Login::loginSlot(QNetworkReply *reply)
 {
     response_data = reply->readAll();
@@ -160,7 +159,6 @@ void Login::loginSlot(QNetworkReply *reply)
     }
 }
 
-// Käsitellään tilitiedot
 void Login::handleAccountsResponse(QNetworkReply *reply)
 {
     response_data=reply->readAll();
@@ -173,7 +171,6 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
     if(accountCount > 1){
         SelectAccount *objSelectAccount = new SelectAccount(this);
         objSelectAccount->setMyToken(myToken);
-        // qDebug() << "Token lähetty Select Account:" << myToken;
         objSelectAccount->setAccountId(accountsArray);
         objSelectAccount->open();
 
@@ -187,10 +184,9 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
         qDebug() << "Korttiin liitetty accountId:" << accountID;
 
         MainMenu *objMainMenu = new MainMenu(this);
-        objMainMenu->open();
-        objMainMenu->setAccountId(accountID);
         objMainMenu->setMyToken(myToken);
-        // qDebug() << "Token lähetetty Main Menu:" << myToken;
+        objMainMenu->setAccountId(accountID);
+        objMainMenu->open();
 
         this->close();
 

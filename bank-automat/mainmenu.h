@@ -1,6 +1,8 @@
 #ifndef MAINMENU_H
 #define MAINMENU_H
 
+#include "qlabel.h"
+#include <QNetworkAccessManager>
 #include <QDialog>
 #include <QDebug>
 
@@ -18,7 +20,9 @@ public:
     void setMyToken(const QByteArray &newMyToken);
     void setAccountId(const QString &newAccountId);
 
+
 private slots:
+    void handleCustomerInfo(QNetworkReply *reply);
     void on_btnBalance_clicked();
     void on_btnTransactions_clicked();
     void on_btnWithdraw_clicked();
@@ -26,8 +30,13 @@ private slots:
 
 private:
     Ui::MainMenu *ui;
+    QNetworkAccessManager *networkManager;
+    QNetworkReply *reply;
     QByteArray myToken;
     QString accountid;
+    QLabel *labelName;
+    void getCustomerInfo();
+
 };
 
 #endif
