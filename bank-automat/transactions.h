@@ -26,9 +26,6 @@ private slots:
     void on_btnTransactions_clicked();
     void showTransactionsSlot(QNetworkReply *reply);
 
-
-    void on_tableTransactions_clicked(const QModelIndex &index);
-
 private:
     Ui::Transactions *ui;
     QString accountid;
@@ -36,8 +33,6 @@ private:
     QNetworkAccessManager *transactionsManager;
     QByteArray response_data;
     QNetworkReply *reply;
-
-    QList<Transactions> transactionsList;
 };
 
 #endif // TRANSACTIONS_H
