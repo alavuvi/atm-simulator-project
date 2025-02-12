@@ -79,3 +79,13 @@ void Transactions::showTransactionsSlot(QNetworkReply *reply)
     transactionsManager->deleteLater();
 
 }
+
+void Transactions::on_btn_older_clicked()
+{
+
+}
+
+void Transactions::on_btnBack_clicked()
+{
+
+}
