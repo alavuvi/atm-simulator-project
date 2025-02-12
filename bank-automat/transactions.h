@@ -25,7 +25,8 @@ public:
 private slots:
     void on_btnTransactions_clicked();
     void showTransactionsSlot(QNetworkReply *reply);
-
+    void on_btnBack_clicked();
+    void on_btn_older_clicked();
 
 private:
     Ui::Transactions *ui;
