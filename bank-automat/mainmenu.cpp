@@ -30,7 +30,6 @@ void MainMenu::setMyToken(const QByteArray &newMyToken)
 void MainMenu::setAccountId(const QString &newAccountId)
 {
     accountid = newAccountId;
-    // ui->labelAccountid->setText(accountid);
     getCustomerInfo();
 }
 
@@ -64,7 +63,6 @@ void MainMenu::handleCustomerInfo(QNetworkReply *reply)
         QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
         QJsonObject jsonObj = jsonDoc.object();
 
-        // Nyt backend palauttaa suoraan "name" kentän
         QString customerName = jsonObj["name"].toString();
         if (!customerName.isEmpty()) {
             labelName->setText(customerName);
@@ -76,7 +74,7 @@ void MainMenu::handleCustomerInfo(QNetworkReply *reply)
     }
 
     reply->deleteLater();
-    networkManager->deleteLater();  // Siivoa networkManager
+    networkManager->deleteLater();
 }
 
 void MainMenu::on_btnBalance_clicked()

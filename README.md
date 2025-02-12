@@ -35,11 +35,8 @@ The system includes the following system components:
 ### ER-Diagram for the database
 ![ER-diagram](er-diagram.png)
 
-## License
-Coming later...
-
 ## Made by following students:
-- Ville-Pekka Alavuotunki
+- Ville-Pekka Alavuotunki - Login front/back, select account, main menu.
 - Aapo Pähti
 - Kata Niva
 - Tuure Väänänen
