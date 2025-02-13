@@ -24,20 +24,20 @@ void TimerManager::startTimer(QWidget* window, int timeout)
 {
     currentWindow = window;
     timer->start(timeout);
-    qDebug() << "Timer started with" << timeout << "ms timeout";
+    qDebug() << "Aloitettu" << timeout << "ms ajastin";
 }
 
 void TimerManager::stopTimer()
 {
     timer->stop();
-    qDebug() << "Timer stopped";
+    qDebug() << "Ajastin pysäytetty";
 }
 
 void TimerManager::resetTimer()
 {
     if(timer->isActive()) {
         timer->start();
-        qDebug() << "Timer reset";
+        qDebug() << "Ajastin käynnistetty uudelleen";
     }
 }
 

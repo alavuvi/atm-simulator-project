@@ -17,7 +17,7 @@ Login::Login(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // Aseta pinOutput-tekstikenttään EchoMode Password
+    // Asetetaan pinOutput-tekstikenttään EchoMode Password
     ui->pinOutput->setEchoMode(QLineEdit::Password);
 
     // QList ja for-loop numeronapeille.
@@ -53,7 +53,6 @@ void Login::setCardId(const QString &newCardId)
     ui->labelCardId->setText(newCardId);
 }
 
-// Slotti numeronapeille
 void Login::onNumberButtonClicked()
 {
     QPushButton *button = qobject_cast<QPushButton*>(sender());
@@ -70,7 +69,6 @@ void Login::onNumberButtonClicked()
     }
 }
 
-// Slot backspace napille
 void Login::onBackButtonClicked()
 {
     // Resetoi ajastin, kun käyttäjä painaa back-nappia

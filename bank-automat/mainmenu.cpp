@@ -26,7 +26,7 @@ MainMenu::~MainMenu()
 void MainMenu::setMyToken(const QByteArray &newMyToken)
 {
     if (newMyToken.isEmpty()) {
-        qDebug() << "WARNING: Empty token received in setMyToken";
+        qDebug() << "Varoitus: Tyhjä token tullut Main Menuun.";
         return;
     }
     myToken = newMyToken;
@@ -40,10 +40,9 @@ void MainMenu::setAccountId(const QString &newAccountId)
 
 void MainMenu::getCustomerInfo()
 {
-    qDebug() << "Token content:" << myToken;
     qDebug() << "Account ID:" << accountid;
     if (myToken.isEmpty()) {
-        qDebug() << "Authentication token is empty";
+    //    qDebug() << "Token tyhjä";
         return;
     }
 

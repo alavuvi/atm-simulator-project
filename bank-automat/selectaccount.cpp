@@ -24,7 +24,6 @@ SelectAccount::~SelectAccount()
     delete ui;
 }
 
- // Esikäsittele tilit, jotta saadaan creditAccountId ja debitAccountId arrayhin
 void SelectAccount::setAccountId(const QJsonArray &newAccountId)
 {
     accountId = newAccountId;
@@ -32,7 +31,6 @@ void SelectAccount::setAccountId(const QJsonArray &newAccountId)
     processAccounts();
 }
 
-// Käsitellään yksittäiset accountid:t creditlimit metodilla for-loopin sisällä
 void SelectAccount::processAccounts()
 {
     if(myToken.isEmpty()) {
@@ -50,7 +48,7 @@ void SelectAccount::processAccounts()
         QNetworkRequest request(url);
 
         QByteArray authHeader = "Bearer " + myToken;
-        qDebug() << authHeader;
+        // qDebug() << authHeader;
         request.setRawHeader("Authorization", authHeader);
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
