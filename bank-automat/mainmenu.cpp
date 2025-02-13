@@ -88,6 +88,7 @@ void MainMenu::on_btnBalance_clicked()
         qDebug() << "Ei tokenia saatavilla balancelle";
         return;
     }
+    TimerManager::getInstance().stopTimer(); // pysäyttää ajastimen siirryttäessä eteenpäin
     Balance *objBalance = new Balance(this);
     objBalance->setMyToken(myToken);
     objBalance->open();
@@ -99,6 +100,7 @@ void MainMenu::on_btnTransactions_clicked()
         qDebug() << "Ei tokenia saatavilla Transactions";
         return;
     }
+    TimerManager::getInstance().stopTimer(); // pysäyttää ajastimen siirryttäessä eteenpäin
     Transactions *objTransactions = new Transactions(this);
     objTransactions->setMyToken(myToken);
     qDebug() << "Token lähetty transactions:"<< myToken;
@@ -112,6 +114,7 @@ void MainMenu::on_btnWithdraw_clicked()
         qDebug() << "Ei tokenia saatavilla Withdraw";
         return;
     }
+    TimerManager::getInstance().stopTimer(); // pysäyttää ajastimen siirryttäessä eteenpäin
     Withdraw *objWithdraw = new Withdraw(this);
     objWithdraw->setMyToken(myToken);
     objWithdraw->open();

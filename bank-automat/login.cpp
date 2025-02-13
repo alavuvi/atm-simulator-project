@@ -100,9 +100,7 @@ void Login::onOkButtonClicked()
     QNetworkRequest request(site_url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     loginManager = new QNetworkAccessManager(this);
-    //connect(loginManager, SIGNAL(finished(QNetworkReply*)),
-    //        this, SLOT(loginSlot(QNetworkReply*)));
-    //Alla uudella versiolla sama
+
     connect(loginManager, &QNetworkAccessManager::finished, this, &Login::loginSlot);
     reply = loginManager->post(request, QJsonDocument(jsonObj).toJson());
 }
@@ -119,7 +117,11 @@ void Login::loginSlot(QNetworkReply *reply)
             ui->labelInfo->setText("Database Error!");
         }
         if(response_data =="-12") {
+            QMessageBox::warning(this, "Card locked!",
+                                 "You're card is locked! Please, contact sysadmin!");
             ui->labelInfo->setText("Card is locked! Contact sysadmin!");
+            TimerManager::getInstance().stopTimer();
+            this->close();
         }
         else {
             if(response_data != "false" && response_data.length() > 20) {
@@ -144,11 +146,13 @@ void Login::loginSlot(QNetworkReply *reply)
             else {
                 failedAttempts++;
                 if(failedAttempts >= 3){
+                    QMessageBox::warning(this, "PIN Error!",
+                                         "Wrong PIN entered 3 times. Card is now locked! Please, contact sysadmin!");
                     ui->labelInfo->setText("Wrong PIN entered 3 times. Card is locked!");
                     QString cardId = ui->labelCardId->text();
                     updateCardStatus(cardId);
-                    // Aloittaa kolmen sekunnin ajastimen ja sulkee ikkunan
-                    QTimer::singleShot(3000, this, &Login::close);
+                    TimerManager::getInstance().stopTimer();
+                    this->close();
                 }
                 else{
                     ui->labelInfo->setText("Wrong PIN entered!");
