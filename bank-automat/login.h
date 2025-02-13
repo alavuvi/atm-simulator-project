@@ -25,21 +25,20 @@ public slots:
 
 private:
     Ui::Login *ui;
+
     int failedAttempts;
-    QTimer *loginTimeoutTimer;
     QNetworkAccessManager *loginManager;
     QNetworkAccessManager *cardStatusManager;
     QByteArray response_data;
     QNetworkReply *reply;
     QByteArray myToken;
 
-    void startLoginTimeout();
     void resetFailedAttempts();
 
-    void handleLoginTimeout();
     void onNumberButtonClicked();
     void onBackButtonClicked();
     void onOkButtonClicked();
+
     void handleAccountsResponse(QNetworkReply *reply);
     void updateCardStatus(const QString &cardId);
     void handleUpdateStatusResponse(QNetworkReply *reply);

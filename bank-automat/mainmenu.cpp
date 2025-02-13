@@ -4,6 +4,7 @@
 #include "balance.h"
 #include "transactions.h"
 #include "withdraw.h"
+#include "timermanager.h"
 
 MainMenu::MainMenu(QWidget *parent)
     : QDialog(parent)
@@ -11,6 +12,10 @@ MainMenu::MainMenu(QWidget *parent)
 {
     ui->setupUi(this);
     labelName = ui->label;
+    //ajastimien keskitetty hallinta
+    connect(&TimerManager::getInstance(), &TimerManager::timerExpired,
+            this, &MainMenu::handleTimerExpired);
+    TimerManager::getInstance().startTimer(this);
 }
 
 MainMenu::~MainMenu()
@@ -21,7 +26,7 @@ MainMenu::~MainMenu()
 void MainMenu::setMyToken(const QByteArray &newMyToken)
 {
     if (newMyToken.isEmpty()) {
-        qDebug() << "WARNING: Empty token received in setMyToken";
+        qDebug() << "Varoitus: Tyhjä token tullut Main Menuun.";
         return;
     }
     myToken = newMyToken;
@@ -35,10 +40,9 @@ void MainMenu::setAccountId(const QString &newAccountId)
 
 void MainMenu::getCustomerInfo()
 {
-    qDebug() << "Token content:" << myToken;
     qDebug() << "Account ID:" << accountid;
     if (myToken.isEmpty()) {
-        qDebug() << "Authentication token is empty";
+    //    qDebug() << "Token tyhjä";
         return;
     }
 
@@ -83,11 +87,9 @@ void MainMenu::on_btnBalance_clicked()
         qDebug() << "Ei tokenia saatavilla balancelle";
         return;
     }
+    TimerManager::getInstance().stopTimer(); // pysäyttää ajastimen siirryttäessä eteenpäin
     Balance *objBalance = new Balance(this);
     objBalance->setMyToken(myToken);
-     /* tämä ottaa käyttöön, jos accountid:tä tarvitaan balancessa
-    objBalance->setAccountId(accountid);
-    */
     objBalance->open();
 }
 
@@ -97,6 +99,7 @@ void MainMenu::on_btnTransactions_clicked()
         qDebug() << "Ei tokenia saatavilla Transactions";
         return;
     }
+    TimerManager::getInstance().stopTimer(); // pysäyttää ajastimen siirryttäessä eteenpäin
     Transactions *objTransactions = new Transactions(this);
     objTransactions->setMyToken(myToken);
     qDebug() << "Token lähetty transactions:"<< myToken;
@@ -110,16 +113,22 @@ void MainMenu::on_btnWithdraw_clicked()
         qDebug() << "Ei tokenia saatavilla Withdraw";
         return;
     }
+    TimerManager::getInstance().stopTimer(); // pysäyttää ajastimen siirryttäessä eteenpäin
     Withdraw *objWithdraw = new Withdraw(this);
     objWithdraw->setMyToken(myToken);
-    //tämä ottaa käyttöön, jos accountid:tä tarvitaan withdrawissa
-    //objWithdraw->setAccountId(accountid);
     objWithdraw->open();
 }
 
 void MainMenu::on_btnLogout_clicked()
 {
     myToken.clear();
+    TimerManager::getInstance().stopTimer();
     qDebug() << "Kirjaudutaan ulos ja tyhjennetään token";
+    this->close();    
+}
+
+void MainMenu::handleTimerExpired()
+{
+    myToken.clear();
     this->close();
 }
