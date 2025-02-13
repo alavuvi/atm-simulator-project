@@ -63,7 +63,7 @@ void Login::setCardId(const QString &newCardId)
 // Tämä suoritetaan, kun login ei onnistu 10 sekunnin sisällä
 void Login::handleLoginTimeout()
 {
-    ui->labelInfo->setText("Palataan takaisin, oikeaa PIN-koodia ei annettu aikarajan sisällä!");
+    ui->labelInfo->setText("Session timeout");
     QTimer::singleShot(3000, this, &Login::close);
 }
 
@@ -110,15 +110,15 @@ void Login::loginSlot(QNetworkReply *reply)
 {
     response_data = reply->readAll();
     if(response_data.length() < 2){
-        qDebug() << "Palvelin ei vastaa!";
-        ui->labelInfo->setText("Palvelin ei vastaa!");
+        qDebug() << "Server is not responding!";
+        ui->labelInfo->setText("Server is not Responding!!");
     }
     else {
         if(response_data == "-11") {
-            ui->labelInfo->setText("Tietokanta virhe!");
+            ui->labelInfo->setText("Database Error!");
         }
         if(response_data =="-12") {
-            ui->labelInfo->setText("Korttisi on lukittu!");
+            ui->labelInfo->setText("Card is locked! Contact sysadmin!");
         }
         else {
             if(response_data != "false" && response_data.length() > 20) {
@@ -143,14 +143,14 @@ void Login::loginSlot(QNetworkReply *reply)
             else {
                 failedAttempts++;
                 if(failedAttempts >= 3){
-                    ui->labelInfo->setText("Syötit väärän PIN koodin 3 kertaa. Korttisi on lukittu");
+                    ui->labelInfo->setText("Wrong PIN entered 3 times. Card is locked!");
                     QString cardId = ui->labelCardId->text();
                     updateCardStatus(cardId);
                     // Aloittaa kolmen sekunnin ajastimen ja sulkee ikkunan
                     QTimer::singleShot(3000, this, &Login::close);
                 }
                 else{
-                    ui->labelInfo->setText("Väärä Kortti-ID/PIN koodi");
+                    ui->labelInfo->setText("Wrong PIN entered!");
                 }
             }
         }

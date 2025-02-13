@@ -32,7 +32,7 @@ void SelectAccount::setAccountId(const QJsonArray &newAccountId)
 void SelectAccount::processAccounts()
 {
     if(myToken.isEmpty()) {
-        qDebug() << "Error: Ei tokenia saatavilla";
+        qDebug() << "Ei tokenia saatavilla";
         return;
     }
 
@@ -65,8 +65,6 @@ void SelectAccount::handleCreditLimitResponse(QNetworkReply *reply)
     QByteArray response_data = reply->readAll();
     int accountId = reply->property("accountId").toInt();
 
-    qDebug() << "Raw response:" << response_data;
-
     QJsonDocument json_doc = QJsonDocument::fromJson(response_data);
     QJsonArray json_array = json_doc.array();
 
@@ -94,7 +92,6 @@ void SelectAccount::on_btnCredit_clicked()
     if (creditAccountId != -1) {
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
-       // qDebug() << "Token lähetetty Main Menu:" << myToken;
         objMainMenu->setAccountId(QString::number(creditAccountId));
         objMainMenu->open();
         this->close();
@@ -109,7 +106,6 @@ void SelectAccount::on_btnDebit_clicked()
     if (debitAccountId != -1) {
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
-       // qDebug() << "Token lähetetty Main Menu:" << myToken;
         objMainMenu->setAccountId(QString::number(debitAccountId));
         objMainMenu->open();
         this->close();
@@ -123,7 +119,7 @@ void SelectAccount::setMyToken(const QByteArray &newMyToken)
 {
     myToken = newMyToken;
     if(myToken.isEmpty()) {
-        qDebug() << "Warning: Tyhjä token saatu";
+        qDebug() << "Tyhjä token saatu";
     } else {
         qDebug() << "Token vastaanotettu Select Accountissa:" << myToken;
     }
