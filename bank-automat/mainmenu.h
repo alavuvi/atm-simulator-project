@@ -6,6 +6,7 @@
 #include <QDialog>
 #include <QDebug>
 
+
 namespace Ui {
 class MainMenu;
 }
@@ -26,7 +27,7 @@ private slots:
     void on_btnBalance_clicked();
     void on_btnTransactions_clicked();
     void on_btnWithdraw_clicked();
-    void on_btnLogout_clicked();
+    void on_btnLogout_clicked();  
 
 private:
     Ui::MainMenu *ui;
@@ -36,7 +37,7 @@ private:
     QString accountid;
     QLabel *labelName;
     void getCustomerInfo();
-
+    void handleTimerExpired();
 };
 
 #endif

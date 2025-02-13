@@ -4,6 +4,7 @@
 #include "balance.h"
 #include "transactions.h"
 #include "withdraw.h"
+#include "timermanager.h"
 
 MainMenu::MainMenu(QWidget *parent)
     : QDialog(parent)
@@ -11,6 +12,10 @@ MainMenu::MainMenu(QWidget *parent)
 {
     ui->setupUi(this);
     labelName = ui->label;
+    //ajastimien keskitetty hallinta
+    connect(&TimerManager::getInstance(), &TimerManager::timerExpired,
+            this, &MainMenu::handleTimerExpired);
+    TimerManager::getInstance().startTimer(this);
 }
 
 MainMenu::~MainMenu()
@@ -85,9 +90,6 @@ void MainMenu::on_btnBalance_clicked()
     }
     Balance *objBalance = new Balance(this);
     objBalance->setMyToken(myToken);
-     /* tämä ottaa käyttöön, jos accountid:tä tarvitaan balancessa
-    objBalance->setAccountId(accountid);
-    */
     objBalance->open();
 }
 
@@ -112,14 +114,19 @@ void MainMenu::on_btnWithdraw_clicked()
     }
     Withdraw *objWithdraw = new Withdraw(this);
     objWithdraw->setMyToken(myToken);
-    //tämä ottaa käyttöön, jos accountid:tä tarvitaan withdrawissa
-    //objWithdraw->setAccountId(accountid);
     objWithdraw->open();
 }
 
 void MainMenu::on_btnLogout_clicked()
 {
     myToken.clear();
+    TimerManager::getInstance().stopTimer();
     qDebug() << "Kirjaudutaan ulos ja tyhjennetään token";
+    this->close();    
+}
+
+void MainMenu::handleTimerExpired()
+{
+    myToken.clear();
     this->close();
 }

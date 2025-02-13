@@ -3,6 +3,7 @@
 #include "qjsonobject.h"
 #include "ui_selectaccount.h"
 #include "mainmenu.h"
+#include "timermanager.h"
 
 
 SelectAccount::SelectAccount(QWidget *parent)
@@ -13,6 +14,9 @@ SelectAccount::SelectAccount(QWidget *parent)
     , debitAccountId(-1)
 {
     ui->setupUi(this);
+    connect(&TimerManager::getInstance(), &TimerManager::timerExpired,
+            this, &SelectAccount::handleTimerExpired);
+    TimerManager::getInstance().startTimer(this);
 }
 
 SelectAccount::~SelectAccount()
@@ -123,4 +127,10 @@ void SelectAccount::setMyToken(const QByteArray &newMyToken)
     } else {
         qDebug() << "Token vastaanotettu Select Accountissa:" << myToken;
     }
+}
+
+void SelectAccount::handleTimerExpired()
+{
+    myToken.clear();
+    this->close();
 }

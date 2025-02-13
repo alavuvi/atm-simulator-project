@@ -3,6 +3,7 @@
 #include "environment.h"
 #include "mainmenu.h"
 #include "selectaccount.h"
+#include "timermanager.h"
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -37,7 +38,7 @@ Login::Login(QWidget *parent)
     connect(loginTimeoutTimer, &QTimer::timeout, this, &Login::handleLoginTimeout);
 
     // Aloita 10 sekunnin ajastus kirjautumiselle
-    startLoginTimeout();
+    TimerManager::getInstance().startTimer(this, TimerManager::LOGIN_TIMEOUT);
 }
 
 Login::~Login()
@@ -45,10 +46,10 @@ Login::~Login()
     delete ui;
 }
 
-void Login::startLoginTimeout()
-{
-    loginTimeoutTimer->start(10000);
-}
+// void Login::startLoginTimeout()
+// {
+//     loginTimeoutTimer->start(10000);
+// }
 
 void Login::resetFailedAttempts()
 {
@@ -169,6 +170,7 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
     int accountCount = accountsArray.size();
     qDebug() << "Tilit kortilla: "<<accountCount;
     if(accountCount > 1){
+        TimerManager::getInstance().stopTimer(); //pysäytetään ajastin siirryttäessä eteenpäin
         SelectAccount *objSelectAccount = new SelectAccount(this);
         objSelectAccount->setMyToken(myToken);
         objSelectAccount->setAccountId(accountsArray);
@@ -182,6 +184,7 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
         int accountNumber = jsonObj["idaccount"].toInt();
         QString accountID = QString::number(accountNumber);
         qDebug() << "Korttiin liitetty accountId:" << accountID;
+        TimerManager::getInstance().stopTimer(); //pysäytetään ajastin siirryttäessä eteenpäin
 
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
