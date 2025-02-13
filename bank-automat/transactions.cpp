@@ -34,7 +34,6 @@ void Transactions::showTransactionsSlot(QNetworkReply *reply)
 
     QJsonDocument json_doc = QJsonDocument::fromJson(response_data);
     QJsonArray json_array = json_doc.array();
-
     QStandardItemModel *model = new QStandardItemModel(json_array.size(), 3, this);
     model->setHeaderData(0, Qt::Horizontal, "Datetime");
     model->setHeaderData(1, Qt::Horizontal, "Transaction");
@@ -80,25 +79,21 @@ void Transactions::on_btnTransactions_clicked()
 
 void Transactions::on_btn_older_clicked()
 {
-        static int s = 0;
-        static int e = 10;
+    static int s = 0;
+    static int e = 10;
+    s += 10;
+    e += 10;
+    QString start = QString::number(s);
+    QString end = QString::number(e);
 
-        s += 10;
-        e += 10;
-
-        QString start = QString::number(s);
-        QString end = QString::number(e);
-
-        QString site_url=Environment::base_url()+"/transactions/"+accountid+"/"+start+"/"+end;
-        QNetworkRequest request(site_url);
-        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        QByteArray header = "Bearer " + myToken;
-        request.setRawHeader(QByteArray("Authorization"), header);
-        transactionsManager = new QNetworkAccessManager(this);
-        connect(transactionsManager, &QNetworkAccessManager::finished, this, &Transactions::showTransactionsSlot);
-
-        reply = transactionsManager->get(request);
-
+    QString site_url=Environment::base_url()+"/transactions/"+accountid+"/"+start+"/"+end;
+    QNetworkRequest request(site_url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QByteArray header = "Bearer " + myToken;
+    request.setRawHeader(QByteArray("Authorization"), header);
+    transactionsManager = new QNetworkAccessManager(this);
+    connect(transactionsManager, &QNetworkAccessManager::finished, this, &Transactions::showTransactionsSlot);
+    reply = transactionsManager->get(request);
 }
 
 void Transactions::on_btnBack_clicked()
