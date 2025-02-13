@@ -14,7 +14,6 @@ Login::Login(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::Login)
     , failedAttempts(0)
-    , loginTimeoutTimer(new QTimer(this))
 {
     ui->setupUi(this);
 
@@ -35,8 +34,6 @@ Login::Login(QWidget *parent)
     connect(ui->buttonOk, &QPushButton::clicked, this, &Login::onOkButtonClicked);
     connect(ui->buttonBack, &QPushButton::clicked, this, &Login::onBackButtonClicked);
 
-    connect(loginTimeoutTimer, &QTimer::timeout, this, &Login::handleLoginTimeout);
-
     // Aloita 10 sekunnin ajastus kirjautumiselle
     TimerManager::getInstance().startTimer(this, TimerManager::LOGIN_TIMEOUT);
 }
@@ -45,11 +42,6 @@ Login::~Login()
 {
     delete ui;
 }
-
-// void Login::startLoginTimeout()
-// {
-//     loginTimeoutTimer->start(10000);
-// }
 
 void Login::resetFailedAttempts()
 {
@@ -61,19 +53,15 @@ void Login::setCardId(const QString &newCardId)
     ui->labelCardId->setText(newCardId);
 }
 
-// Tämä suoritetaan, kun login ei onnistu 10 sekunnin sisällä
-void Login::handleLoginTimeout()
-{
-    ui->labelInfo->setText("Session timeout");
-    QTimer::singleShot(3000, this, &Login::close);
-}
-
 // Slotti numeronapeille
 void Login::onNumberButtonClicked()
 {
     QPushButton *button = qobject_cast<QPushButton*>(sender());
     if (button)
     {
+        // Resetoi ajastin, kun käyttäjä painaa numeronappia
+        TimerManager::getInstance().resetTimer();
+
         QString currentText = ui->pinOutput->text();
         if (currentText.length() < 4)
         {
@@ -85,6 +73,9 @@ void Login::onNumberButtonClicked()
 // Slot backspace napille
 void Login::onBackButtonClicked()
 {
+    // Resetoi ajastin, kun käyttäjä painaa back-nappia
+    TimerManager::getInstance().resetTimer();
+
     QString currentText = ui->pinOutput->text();
     currentText.chop(1);
     ui->pinOutput->setText(currentText);
@@ -126,7 +117,6 @@ void Login::loginSlot(QNetworkReply *reply)
         else {
             if(response_data != "false" && response_data.length() > 20) {
                 ui->labelInfo->setText("Login OK");
-                loginTimeoutTimer->stop();
 
                 setMyToken(response_data);
                 qDebug() << "Token asetettu:" << myToken;
