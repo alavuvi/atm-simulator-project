@@ -17,7 +17,7 @@ public:
     explicit Login(QWidget *parent = nullptr);
     ~Login();
 
-    void setCardNumber(const QString &cardNumber);
+    void setCardId(const QString &newCardId);
     void setMyToken(const QByteArray &newMyToken);
 
 public slots:
@@ -25,21 +25,23 @@ public slots:
 
 private:
     Ui::Login *ui;
+
     int failedAttempts;
-    QTimer *loginTimeoutTimer;
-    QNetworkAccessManager *postManager;
+    QNetworkAccessManager *loginManager;
+    QNetworkAccessManager *cardStatusManager;
     QByteArray response_data;
     QNetworkReply *reply;
     QByteArray myToken;
 
-    void startLoginTimeout();
     void resetFailedAttempts();
 
-    void handleLoginTimeout();
     void onNumberButtonClicked();
     void onBackButtonClicked();
     void onOkButtonClicked();
+
     void handleAccountsResponse(QNetworkReply *reply);
+    void updateCardStatus(const QString &cardId);
+    void handleUpdateStatusResponse(QNetworkReply *reply);
 };
 
 #endif // LOGIN_H

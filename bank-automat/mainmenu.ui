@@ -19,12 +19,12 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QLabel" name="labelAccountid">
+  <widget class="QLabel" name="labelHello">
    <property name="geometry">
     <rect>
      <x>960</x>
      <y>30</y>
-     <width>121</width>
+     <width>271</width>
      <height>21</height>
     </rect>
    </property>
@@ -34,7 +34,7 @@
     </font>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string>Greetings,</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btnBalance">
@@ -102,6 +102,24 @@
    </property>
    <property name="text">
     <string>Logout</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>960</x>
+     <y>70</y>
+     <width>261</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
    </property>
   </widget>
  </widget>

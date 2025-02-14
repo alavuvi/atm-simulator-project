@@ -17,6 +17,7 @@ SOURCES += \
     mainmenu.cpp \
     mainwindow.cpp \
     selectaccount.cpp \
+    timermanager.cpp \
     transactions.cpp \
     withdraw.cpp
 
@@ -27,6 +28,7 @@ HEADERS += \
     mainmenu.h \
     mainwindow.h \
     selectaccount.h \
+    timermanager.h \
     transactions.h \
     withdraw.h
 

@@ -1,8 +1,16 @@
-const db=require('../database');
-const bcrypt=require('bcryptjs');
+const db = require('../database');
 
-const card={
-    checkPin: function(idcard,callback){
-        return db.query('SELECT pin FROM card WHERE idcard=?',[idcard],callback);
+const login = {
+    checkPin: function(idcard, callback) {
+        return db.query(
+            'SELECT pin FROM card WHERE idcard = ?', [idcard],callback
+        );
     },
-}
+    checkCardStatus: function(idcard, callback) {
+        return db.query(
+            'SELECT active FROM card WHERE idcard = ?', [idcard],callback
+        );
+    }
+};
+
+module.exports = login;

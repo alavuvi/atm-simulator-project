@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const accountcard = require('../models/account_model');
+const account = require('../models/account_model');
 
 router.get('/:id', function (request, response) {
-    accountcard.getCreditLimit(request.params.id, function (err, result) {
+    account.getCreditLimit(request.params.id, function (err, result) {
         if (err) {
             response.send(err);
         }

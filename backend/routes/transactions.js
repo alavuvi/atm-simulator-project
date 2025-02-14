@@ -14,13 +14,15 @@ router.get('/', function(request, response){
     })
 });
 
-router.get('/:id', function(request, response){
-    transactions.getById(request.params.id,function(err, result){
+router.get('/:id/:start/:end', function(request, response){
+    let start = Number(request.params.start);
+    let end = Number(request.params.end);
+    transactions.getByid(request.params.id,start,end,function(err, result){
         if(err){
             response.json(err);
         }
         else {
-            response.json(result[0]);
+            response.json(result);
         }
     })
 });
