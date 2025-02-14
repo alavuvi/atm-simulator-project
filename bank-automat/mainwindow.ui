@@ -23,7 +23,7 @@
    <widget class="QLineEdit" name="lineCardId">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>500</x>
       <y>240</y>
       <width>281</width>
       <height>61</height>
@@ -39,7 +39,7 @@
    <widget class="QPushButton" name="button02">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>600</x>
       <y>320</y>
       <width>81</width>
       <height>61</height>
@@ -57,7 +57,7 @@
    <widget class="QPushButton" name="button06">
     <property name="geometry">
      <rect>
-      <x>660</x>
+      <x>700</x>
       <y>390</y>
       <width>81</width>
       <height>61</height>
@@ -75,7 +75,7 @@
    <widget class="QLabel" name="labelInfo">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>500</x>
       <y>630</y>
       <width>281</width>
       <height>20</height>
@@ -88,7 +88,7 @@
    <widget class="QPushButton" name="button08">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>600</x>
       <y>470</y>
       <width>81</width>
       <height>61</height>
@@ -106,7 +106,7 @@
    <widget class="QPushButton" name="buttonOk">
     <property name="geometry">
      <rect>
-      <x>660</x>
+      <x>700</x>
       <y>550</y>
       <width>81</width>
       <height>61</height>
@@ -124,7 +124,7 @@
    <widget class="QPushButton" name="button07">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>500</x>
       <y>470</y>
       <width>81</width>
       <height>61</height>
@@ -142,7 +142,7 @@
    <widget class="QPushButton" name="button03">
     <property name="geometry">
      <rect>
-      <x>660</x>
+      <x>700</x>
       <y>320</y>
       <width>81</width>
       <height>61</height>
@@ -160,7 +160,7 @@
    <widget class="QPushButton" name="buttonBack">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>500</x>
       <y>550</y>
       <width>81</width>
       <height>61</height>
@@ -178,7 +178,7 @@
    <widget class="QPushButton" name="button01">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>500</x>
       <y>320</y>
       <width>81</width>
       <height>61</height>
@@ -196,7 +196,7 @@
    <widget class="QPushButton" name="button04">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>500</x>
       <y>390</y>
       <width>81</width>
       <height>61</height>
@@ -214,7 +214,7 @@
    <widget class="QPushButton" name="button05">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>600</x>
       <y>390</y>
       <width>81</width>
       <height>61</height>
@@ -232,7 +232,7 @@
    <widget class="QPushButton" name="button00">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>600</x>
       <y>550</y>
       <width>81</width>
       <height>61</height>
@@ -250,7 +250,7 @@
    <widget class="QPushButton" name="button09">
     <property name="geometry">
      <rect>
-      <x>660</x>
+      <x>700</x>
       <y>470</y>
       <width>81</width>
       <height>61</height>
@@ -268,7 +268,7 @@
    <widget class="QLabel" name="KorttiID">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>510</x>
       <y>180</y>
       <width>151</width>
       <height>51</height>
@@ -286,7 +286,7 @@
    <widget class="QLabel" name="labelLogo">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>580</x>
       <y>50</y>
       <width>141</width>
       <height>111</height>

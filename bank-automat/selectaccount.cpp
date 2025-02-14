@@ -3,6 +3,7 @@
 #include "qjsonobject.h"
 #include "ui_selectaccount.h"
 #include "mainmenu.h"
+#include "timermanager.h"
 
 
 SelectAccount::SelectAccount(QWidget *parent)
@@ -13,6 +14,9 @@ SelectAccount::SelectAccount(QWidget *parent)
     , debitAccountId(-1)
 {
     ui->setupUi(this);
+    connect(&TimerManager::getInstance(), &TimerManager::timerExpired,
+            this, &SelectAccount::handleTimerExpired);
+    TimerManager::getInstance().startTimer(this);
 }
 
 SelectAccount::~SelectAccount()
@@ -20,7 +24,6 @@ SelectAccount::~SelectAccount()
     delete ui;
 }
 
- // Esikäsittele tilit, jotta saadaan creditAccountId ja debitAccountId arrayhin
 void SelectAccount::setAccountId(const QJsonArray &newAccountId)
 {
     accountId = newAccountId;
@@ -28,11 +31,10 @@ void SelectAccount::setAccountId(const QJsonArray &newAccountId)
     processAccounts();
 }
 
-// Käsitellään yksittäiset accountid:t creditlimit metodilla for-loopin sisällä
 void SelectAccount::processAccounts()
 {
     if(myToken.isEmpty()) {
-        qDebug() << "Error: Ei tokenia saatavilla";
+        qDebug() << "Ei tokenia saatavilla";
         return;
     }
 
@@ -46,7 +48,7 @@ void SelectAccount::processAccounts()
         QNetworkRequest request(url);
 
         QByteArray authHeader = "Bearer " + myToken;
-        qDebug() << authHeader;
+        // qDebug() << authHeader;
         request.setRawHeader("Authorization", authHeader);
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
@@ -64,8 +66,6 @@ void SelectAccount::handleCreditLimitResponse(QNetworkReply *reply)
 {
     QByteArray response_data = reply->readAll();
     int accountId = reply->property("accountId").toInt();
-
-    qDebug() << "Raw response:" << response_data;
 
     QJsonDocument json_doc = QJsonDocument::fromJson(response_data);
     QJsonArray json_array = json_doc.array();
@@ -94,7 +94,6 @@ void SelectAccount::on_btnCredit_clicked()
     if (creditAccountId != -1) {
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
-       // qDebug() << "Token lähetetty Main Menu:" << myToken;
         objMainMenu->setAccountId(QString::number(creditAccountId));
         objMainMenu->open();
         this->close();
@@ -109,7 +108,6 @@ void SelectAccount::on_btnDebit_clicked()
     if (debitAccountId != -1) {
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);
-       // qDebug() << "Token lähetetty Main Menu:" << myToken;
         objMainMenu->setAccountId(QString::number(debitAccountId));
         objMainMenu->open();
         this->close();
@@ -123,8 +121,14 @@ void SelectAccount::setMyToken(const QByteArray &newMyToken)
 {
     myToken = newMyToken;
     if(myToken.isEmpty()) {
-        qDebug() << "Warning: Tyhjä token saatu";
+        qDebug() << "Tyhjä token saatu";
     } else {
         qDebug() << "Token vastaanotettu Select Accountissa:" << myToken;
     }
+}
+
+void SelectAccount::handleTimerExpired()
+{
+    myToken.clear();
+    this->close();
 }

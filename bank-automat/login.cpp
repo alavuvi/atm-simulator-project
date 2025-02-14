@@ -3,6 +3,7 @@
 #include "environment.h"
 #include "mainmenu.h"
 #include "selectaccount.h"
+#include "timermanager.h"
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -13,11 +14,10 @@ Login::Login(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::Login)
     , failedAttempts(0)
-    , loginTimeoutTimer(new QTimer(this))
 {
     ui->setupUi(this);
 
-    // Aseta pinOutput-tekstikenttään EchoMode Password
+    // Asetetaan pinOutput-tekstikenttään EchoMode Password
     ui->pinOutput->setEchoMode(QLineEdit::Password);
 
     // QList ja for-loop numeronapeille.
@@ -34,20 +34,13 @@ Login::Login(QWidget *parent)
     connect(ui->buttonOk, &QPushButton::clicked, this, &Login::onOkButtonClicked);
     connect(ui->buttonBack, &QPushButton::clicked, this, &Login::onBackButtonClicked);
 
-    connect(loginTimeoutTimer, &QTimer::timeout, this, &Login::handleLoginTimeout);
-
     // Aloita 10 sekunnin ajastus kirjautumiselle
-    startLoginTimeout();
+    TimerManager::getInstance().startTimer(this, TimerManager::LOGIN_TIMEOUT);
 }
 
 Login::~Login()
 {
     delete ui;
-}
-
-void Login::startLoginTimeout()
-{
-    loginTimeoutTimer->start(10000);
 }
 
 void Login::resetFailedAttempts()
@@ -60,19 +53,14 @@ void Login::setCardId(const QString &newCardId)
     ui->labelCardId->setText(newCardId);
 }
 
-// Tämä suoritetaan, kun login ei onnistu 10 sekunnin sisällä
-void Login::handleLoginTimeout()
-{
-    ui->labelInfo->setText("Palataan takaisin, oikeaa PIN-koodia ei annettu aikarajan sisällä!");
-    QTimer::singleShot(3000, this, &Login::close);
-}
-
-// Slotti numeronapeille
 void Login::onNumberButtonClicked()
 {
     QPushButton *button = qobject_cast<QPushButton*>(sender());
     if (button)
     {
+        // Resetoi ajastin, kun käyttäjä painaa numeronappia
+        TimerManager::getInstance().resetTimer();
+
         QString currentText = ui->pinOutput->text();
         if (currentText.length() < 4)
         {
@@ -81,9 +69,11 @@ void Login::onNumberButtonClicked()
     }
 }
 
-// Slot backspace napille
 void Login::onBackButtonClicked()
 {
+    // Resetoi ajastin, kun käyttäjä painaa back-nappia
+    TimerManager::getInstance().resetTimer();
+
     QString currentText = ui->pinOutput->text();
     currentText.chop(1);
     ui->pinOutput->setText(currentText);
@@ -99,9 +89,7 @@ void Login::onOkButtonClicked()
     QNetworkRequest request(site_url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     loginManager = new QNetworkAccessManager(this);
-    //connect(loginManager, SIGNAL(finished(QNetworkReply*)),
-    //        this, SLOT(loginSlot(QNetworkReply*)));
-    //Alla uudella versiolla sama
+
     connect(loginManager, &QNetworkAccessManager::finished, this, &Login::loginSlot);
     reply = loginManager->post(request, QJsonDocument(jsonObj).toJson());
 }
@@ -110,20 +98,23 @@ void Login::loginSlot(QNetworkReply *reply)
 {
     response_data = reply->readAll();
     if(response_data.length() < 2){
-        qDebug() << "Palvelin ei vastaa!";
-        ui->labelInfo->setText("Palvelin ei vastaa!");
+        qDebug() << "Server is not responding!";
+        ui->labelInfo->setText("Server is not Responding!!");
     }
     else {
         if(response_data == "-11") {
-            ui->labelInfo->setText("Tietokanta virhe!");
+            ui->labelInfo->setText("Database Error!");
         }
         if(response_data =="-12") {
-            ui->labelInfo->setText("Korttisi on lukittu!");
+            QMessageBox::warning(this, "Card locked!",
+                                 "You're card is locked! Please, contact sysadmin!");
+            ui->labelInfo->setText("Card is locked! Contact sysadmin!");
+            TimerManager::getInstance().stopTimer();
+            this->close();
         }
         else {
             if(response_data != "false" && response_data.length() > 20) {
                 ui->labelInfo->setText("Login OK");
-                loginTimeoutTimer->stop();
 
                 setMyToken(response_data);
                 qDebug() << "Token asetettu:" << myToken;
@@ -143,14 +134,16 @@ void Login::loginSlot(QNetworkReply *reply)
             else {
                 failedAttempts++;
                 if(failedAttempts >= 3){
-                    ui->labelInfo->setText("Syötit väärän PIN koodin 3 kertaa. Korttisi on lukittu");
+                    QMessageBox::warning(this, "PIN Error!",
+                                         "Wrong PIN entered 3 times. Card is now locked! Please, contact sysadmin!");
+                    ui->labelInfo->setText("Wrong PIN entered 3 times. Card is locked!");
                     QString cardId = ui->labelCardId->text();
                     updateCardStatus(cardId);
-                    // Aloittaa kolmen sekunnin ajastimen ja sulkee ikkunan
-                    QTimer::singleShot(3000, this, &Login::close);
+                    TimerManager::getInstance().stopTimer();
+                    this->close();
                 }
                 else{
-                    ui->labelInfo->setText("Väärä Kortti-ID/PIN koodi");
+                    ui->labelInfo->setText("Wrong PIN entered!");
                 }
             }
         }
@@ -169,6 +162,7 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
     int accountCount = accountsArray.size();
     qDebug() << "Tilit kortilla: "<<accountCount;
     if(accountCount > 1){
+        TimerManager::getInstance().stopTimer(); //pysäytetään ajastin siirryttäessä eteenpäin
         SelectAccount *objSelectAccount = new SelectAccount(this);
         objSelectAccount->setMyToken(myToken);
         objSelectAccount->setAccountId(accountsArray);
@@ -182,6 +176,7 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
         int accountNumber = jsonObj["idaccount"].toInt();
         QString accountID = QString::number(accountNumber);
         qDebug() << "Korttiin liitetty accountId:" << accountID;
+        TimerManager::getInstance().stopTimer(); //pysäytetään ajastin siirryttäessä eteenpäin
 
         MainMenu *objMainMenu = new MainMenu(this);
         objMainMenu->setMyToken(myToken);

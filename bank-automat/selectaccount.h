@@ -30,6 +30,7 @@ private slots:
 private:
     void processAccounts();
     void handleCreditLimitResponse(QNetworkReply *reply);
+    void handleTimerExpired();
 
     Ui::SelectAccount *ui;
     QByteArray myToken;
