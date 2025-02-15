@@ -29,10 +29,10 @@
   <widget class="QLabel" name="labelAccountId">
    <property name="geometry">
     <rect>
-     <x>330</x>
+     <x>320</x>
      <y>10</y>
-     <width>37</width>
-     <height>12</height>
+     <width>61</width>
+     <height>16</height>
     </rect>
    </property>
    <property name="text">
@@ -55,17 +55,17 @@
   <widget class="QPushButton" name="btn_older">
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>300</x>
      <y>230</y>
-     <width>171</width>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>OLDER TRANSACTIONS</string>
+    <string>-&gt;</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="labelTransactions">
    <property name="geometry">
     <rect>
      <x>120</x>
@@ -91,21 +91,34 @@
     <rect>
      <x>20</x>
      <y>270</y>
-     <width>81</width>
-     <height>21</height>
+     <width>80</width>
+     <height>18</height>
     </rect>
    </property>
    <property name="text">
     <string>BACK</string>
    </property>
   </widget>
-  <widget class="QLabel" name="labelName">
+  <widget class="QPushButton" name="btn_newer">
    <property name="geometry">
     <rect>
-     <x>330</x>
+     <x>210</x>
+     <y>230</y>
+     <width>80</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;-</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label1">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
      <y>30</y>
-     <width>37</width>
-     <height>12</height>
+     <width>61</width>
+     <height>16</height>
     </rect>
    </property>
    <property name="text">
