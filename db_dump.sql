@@ -163,4 +163,36 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+DELIMITER $$
+
+CREATE PROCEDURE nosto(
+    IN p_idaccount INT,
+    IN p_idcard INT,
+    IN p_amount DECIMAL(10,2)
+)
+BEGIN
+    DECLARE v_balance DECIMAL(10,2);
+
+    -- Haetaan tilin saldo
+    SELECT balance INTO v_balance FROM account WHERE idaccount = p_idaccount;
+
+    -- Tarkistetaan, onko tarpeeksi saldoa
+    IF v_balance >= p_amount THEN
+        -- Päivitetään saldo
+        UPDATE account SET balance = balance - p_amount WHERE idaccount = p_idaccount;
+
+        -- Lisätään tapahtuma transactions-tauluun
+        INSERT INTO transactions (idaccount, datetime, transaction, amount)
+        VALUES (p_idaccount, NOW(), 'withdraw', p_amount);
+        
+        SELECT 'Withdrawal successful' AS message;
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Insufficient funds';
+    END IF;
+END $$
+
+DELIMITER ;
+
+
 -- Dump completed on 2025-02-07  8:46:21
