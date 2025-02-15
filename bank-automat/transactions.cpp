@@ -1,7 +1,6 @@
 #include "environment.h"
 #include "transactions.h"
 #include "ui_transactions.h"
-
 #include <QStandardItemModel>
 
 Transactions::Transactions(QWidget *parent)
@@ -9,6 +8,7 @@ Transactions::Transactions(QWidget *parent)
     , ui(new Ui::Transactions)
 {
     ui->setupUi(this);
+    labelName = ui->label1;
 }
 
 Transactions::~Transactions()
@@ -20,11 +20,55 @@ void Transactions::setAccountId(const QString &newAccountId)
 {
     accountid = newAccountId;
     ui->labelAccountId->setText(accountid);
+    getCustomerInfo();
 }
 
 void Transactions::setMyToken(const QByteArray &newMyToken)
 {
     myToken = newMyToken;
+}
+
+void Transactions::getCustomerInfo()
+{
+    qDebug() << "Account ID:" << accountid;
+    if (myToken.isEmpty()) {
+    //    qDebug() << "Token tyhjä";
+        return;
+    }
+
+    QString site_url = Environment::base_url() + QString("/customer/name/%1").arg(accountid);
+    QNetworkRequest request((QUrl(site_url)));
+
+    // Set headers
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QByteArray authHeader = "Bearer " + myToken;
+    request.setRawHeader("Authorization", authHeader);
+
+    transactionsManager = new QNetworkAccessManager(this);
+    connect(transactionsManager, &QNetworkAccessManager::finished,
+            this, &Transactions::handleCustomerInfo);
+    reply = transactionsManager->get(request);
+}
+
+void Transactions::handleCustomerInfo(QNetworkReply *reply)
+{
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray responseData = reply->readAll();
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+        QJsonObject jsonObj = jsonDoc.object();
+
+        QString customerName = jsonObj["name"].toString();
+        if (!customerName.isEmpty()) {
+            labelName->setText(customerName);
+        } else {
+            labelName->setText("Asiakasta ei löytynyt");
+        }
+    } else {
+        labelName->setText("Virhe haettaessa asiakastietoja");
+    }
+
+    reply->deleteLater();
+    transactionsManager->deleteLater();
 }
 
 void Transactions::showTransactionsSlot(QNetworkReply *reply)
@@ -60,29 +104,9 @@ void Transactions::showTransactionsSlot(QNetworkReply *reply)
     transactionsManager->deleteLater();
 
 }
-void Transactions::on_btnTransactions_clicked()
-{
-    int s = 0;
-    int e = 10;
-    QString start = QString::number(s);
-    QString end = QString::number(e);
 
-    QString site_url=Environment::base_url()+"/transactions/"+accountid+"/"+start+"/"+end;
-    QNetworkRequest request(site_url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    QByteArray header= "Bearer "+myToken;
-    request.setRawHeader(QByteArray("Authorization"),(header));
-    transactionsManager = new QNetworkAccessManager(this);
-    connect(transactionsManager, &QNetworkAccessManager::finished, this, &Transactions::showTransactionsSlot);
-    reply = transactionsManager->get(request);
-}
-
-void Transactions::on_btn_older_clicked()
+void Transactions::loadTransactions()
 {
-    static int s = 0;
-    static int e = 10;
-    s += 10;
-    e += 10;
     QString start = QString::number(s);
     QString end = QString::number(e);
 
@@ -96,7 +120,29 @@ void Transactions::on_btn_older_clicked()
     reply = transactionsManager->get(request);
 }
 
+void Transactions::on_btnTransactions_clicked()
+{
+    s = 0;
+    e = 10;
+    loadTransactions();
+
+}
+
+void Transactions::on_btn_older_clicked()
+{
+    s += 10;
+    e += 0;
+    loadTransactions();
+}
+
+void Transactions::on_btn_newer_clicked()
+{
+    s -= 10;
+    e -= 0;
+    loadTransactions();
+}
+
 void Transactions::on_btnBack_clicked()
 {
-
+    this->close();
 }
