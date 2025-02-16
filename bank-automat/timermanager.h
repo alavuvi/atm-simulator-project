@@ -22,7 +22,7 @@ signals:
     void timerExpired();
 
 private:
-    TimerManager(QObject* parant = nullptr);
+    TimerManager(QObject* parent = nullptr);
     ~TimerManager();
     TimerManager(const TimerManager&) = delete;
     TimerManager& operator=(const TimerManager&) = delete;
