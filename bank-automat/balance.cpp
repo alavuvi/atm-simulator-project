@@ -2,6 +2,7 @@
 #include "ui_balance.h"
 #include <QJsonObject>
 #include <QDebug>
+#include <environment.h>
 
 Balance::Balance(QWidget *parent)
     : QDialog(parent)
@@ -49,7 +50,8 @@ void Balance::on_btnBack_clicked()
 
 void Balance::getBalanceData()
 {
-    QString site_url = "http://localhost:3000/account/" + accountid;
+    //QString site_url = "http://localhost:3000/account/" + accountid;
+    QString site_url = Environment::base_url()+"/account/"+accountid;
     QNetworkRequest request((site_url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader(QByteArray("Authorization"), "Bearer " + myToken);
