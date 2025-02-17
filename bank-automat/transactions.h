@@ -42,8 +42,10 @@ private:
 
     int s = 0;
     int e = 10;
-    void loadTransactions();
+    int totalTransactions = 0;
 
+
+    void loadTransactions();
     void getCustomerInfo();
 };
 
