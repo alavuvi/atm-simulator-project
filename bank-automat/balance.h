@@ -17,7 +17,7 @@ class Balance : public QDialog
 public:
     explicit Balance(QWidget *parent = nullptr);
     ~Balance();
-    void setCardnumber(const QString &newCardnumber);
+    void setAccountId(const QString &newAccountId);
     void setMyToken(const QByteArray &newMyToken);
 
 private slots:
@@ -26,7 +26,7 @@ private slots:
 
 private:
     Ui::Balance *ui;
-    QString cardnumber;
+    QString accountid;
     QByteArray myToken;
     QNetworkAccessManager *networkManager;
     QNetworkReply *reply;

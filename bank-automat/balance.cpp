@@ -30,10 +30,11 @@ Balance::~Balance()
     delete ui;
 }
 
-void Balance::setCardnumber(const QString &newCardnumber)
+void Balance::setAccountId(const QString &newAccountId)
 {
-    cardnumber = newCardnumber;
+    accountid = newAccountId;
     getBalanceData();
+    //getCustomerInfo();
 }
 
 void Balance::setMyToken(const QByteArray &newMyToken)
@@ -48,7 +49,7 @@ void Balance::on_btnBack_clicked()
 
 void Balance::getBalanceData()
 {
-    QString site_url = "http://localhost:3000/account/5" + cardnumber;
+    QString site_url = "http://localhost:3000/account/" + accountid;
     QNetworkRequest request((site_url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader(QByteArray("Authorization"), "Bearer " + myToken);
