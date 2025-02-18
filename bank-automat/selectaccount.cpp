@@ -95,7 +95,7 @@ void SelectAccount::on_btnCredit_clicked()
                this, &SelectAccount::handleTimerExpired);
     TimerManager::getInstance().stopTimer();
     if (creditAccountId != -1) {
-        MainMenu *objMainMenu = new MainMenu(this);
+        MainMenu *objMainMenu = new MainMenu(nullptr);
         objMainMenu->setMyToken(myToken);
         objMainMenu->setAccountId(QString::number(creditAccountId));
 
@@ -114,7 +114,7 @@ void SelectAccount::on_btnDebit_clicked()
                this, &SelectAccount::handleTimerExpired);
     TimerManager::getInstance().stopTimer();
     if (debitAccountId != -1) {    
-        MainMenu *objMainMenu = new MainMenu(this);
+        MainMenu *objMainMenu = new MainMenu(nullptr);
         objMainMenu->setMyToken(myToken);
         objMainMenu->setAccountId(QString::number(debitAccountId));
 

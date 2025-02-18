@@ -178,7 +178,7 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
         qDebug() << "Korttiin liitetty accountId:" << accountID;
         TimerManager::getInstance().stopTimer(); //pysäytetään ajastin siirryttäessä eteenpäin
 
-        MainMenu *objMainMenu = new MainMenu(this);
+        MainMenu *objMainMenu = new MainMenu(nullptr);
         objMainMenu->setMyToken(myToken);
         objMainMenu->setAccountId(accountID);
         objMainMenu->open();
