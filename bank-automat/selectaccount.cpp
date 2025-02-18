@@ -16,7 +16,7 @@ SelectAccount::SelectAccount(QWidget *parent)
     ui->setupUi(this);
     connect(&TimerManager::getInstance(), &TimerManager::timerExpired,
             this, &SelectAccount::handleTimerExpired);
-    TimerManager::getInstance().startTimer(this);
+    TimerManager::getInstance().startTimer(this, TimerManager::WindowType::LOGIN);
 }
 
 SelectAccount::~SelectAccount()
@@ -130,5 +130,6 @@ void SelectAccount::setMyToken(const QByteArray &newMyToken)
 void SelectAccount::handleTimerExpired()
 {
     myToken.clear();
+    qDebug() << "Token tyhjennetty ajastimen lopussa: " << myToken;
     this->close();
 }
