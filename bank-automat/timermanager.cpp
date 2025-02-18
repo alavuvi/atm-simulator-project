@@ -20,9 +20,26 @@ TimerManager& TimerManager:: getInstance()
     return instance;
 }
 
-void TimerManager::startTimer(QWidget* window, int timeout)
+void TimerManager::startTimer(QWidget* window, WindowType type)
 {
     currentWindow = window;
+    currentWindowType = type;
+
+    int timeout;
+    switch(type) {
+    case WindowType::LOGIN:
+        timeout = LOGIN_TIMEOUT;
+        break;
+    case WindowType::MAINMENU:
+        timeout = MAINMENU_TIMEOUT;
+        break;
+    case WindowType::OPERATIONS:
+        timeout = OPERATIONS_TIMEOUT;
+        break;
+    default:
+        timeout = MAINMENU_TIMEOUT;
+    }
+
     timer->start(timeout);
     qDebug() << "Aloitettu" << timeout << "ms ajastin";
 }
@@ -44,9 +61,19 @@ void TimerManager::resetTimer()
 void TimerManager::handleTimeout()
 {
     stopTimer();
-    QMessageBox::warning(currentWindow, "Timeout",
-                         "Your session has timed out due to inactivity.");
-    emit timerExpired();
+
+    switch(currentWindowType) {
+    case WindowType::LOGIN:
+    case WindowType::MAINMENU:
+        QMessageBox::warning(currentWindow, "Timeout",
+                             "Your session has timed out due to inactivity.");
+        emit timerExpired();
+        break;
+
+    case WindowType::OPERATIONS:
+        emit returnToMainMenuRequested();
+        break;
+    }
 
     if (currentWindow) {
         currentWindow->close();

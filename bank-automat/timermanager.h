@@ -11,15 +11,24 @@ class TimerManager : public QObject
 
 public:
     static constexpr int LOGIN_TIMEOUT = 10000;
-    static constexpr int DEFAULT_TIMEOUT = 30000;
+    static constexpr int OPERATIONS_TIMEOUT = 10000;
+    static constexpr int MAINMENU_TIMEOUT = 30000;
+
+    enum class WindowType {
+        LOGIN,
+        MAINMENU,
+        OPERATIONS
+    };
 
     static TimerManager& getInstance();
-    void startTimer(QWidget* window, int timeout = DEFAULT_TIMEOUT);
+    void startTimer(QWidget* window, WindowType type);
     void stopTimer();
     void resetTimer();
+    void returnToMainMenu();
 
 signals:
     void timerExpired();
+    void returnToMainMenuRequested();
 
 private:
     TimerManager(QObject* parent = nullptr);
@@ -29,6 +38,7 @@ private:
 
     QTimer* timer;
     QWidget* currentWindow;
+    WindowType currentWindowType;
 
 private slots:
     void handleTimeout();

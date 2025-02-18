@@ -2,6 +2,7 @@
 #include "transactions.h"
 #include "ui_transactions.h"
 #include <QStandardItemModel>
+#include "timermanager.h"
 
 Transactions::Transactions(QWidget *parent)
     : QDialog(parent)
