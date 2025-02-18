@@ -47,6 +47,7 @@ private:
 
     void loadTransactions();
     void getCustomerInfo();
+    void handleReturnToMainMenu();
 };
 
 #endif // TRANSACTIONS_H

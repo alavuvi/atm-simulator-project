@@ -38,6 +38,9 @@ private:
     QLabel *labelName;
     void getCustomerInfo();
     void handleTimerExpired();
+
+protected:
+    void showEvent(QShowEvent* event) override;
 };
 
 #endif

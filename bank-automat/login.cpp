@@ -35,7 +35,7 @@ Login::Login(QWidget *parent)
     connect(ui->buttonBack, &QPushButton::clicked, this, &Login::onBackButtonClicked);
 
     // Aloita 10 sekunnin ajastus kirjautumiselle
-    TimerManager::getInstance().startTimer(this, TimerManager::LOGIN_TIMEOUT);
+    TimerManager::getInstance().startTimer(this, TimerManager::WindowType::LOGIN);
 }
 
 Login::~Login()
