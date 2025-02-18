@@ -11,10 +11,11 @@ Balance::Balance(QWidget *parent)
     ui->setupUi(this);
     this->setWindowTitle("Balance");
     networkManager = new QNetworkAccessManager(this);
+    customerManager = new QNetworkAccessManager(this);
 
     refreshTimer = new QTimer(this);
     connect(refreshTimer, &QTimer::timeout, this, &Balance::getBalanceData);
-    refreshTimer->start(5000); // 5 sekunnin välein
+    //refreshTimer->start(5000); // 5 sekunnin välein
 
     inactivityTimer = new QTimer(this);
     inactivityTimer->setSingleShot(true);
@@ -35,7 +36,7 @@ void Balance::setAccountId(const QString &newAccountId)
 {
     accountid = newAccountId;
     getBalanceData();
-    //getCustomerInfo();
+    getCustomerInfo();
 }
 
 void Balance::setMyToken(const QByteArray &newMyToken)
@@ -50,7 +51,6 @@ void Balance::on_btnBack_clicked()
 
 void Balance::getBalanceData()
 {
-    //QString site_url = "http://localhost:3000/account/" + accountid;
     QString site_url = Environment::base_url()+"/account/"+accountid;
     QNetworkRequest request((site_url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -90,6 +90,34 @@ void Balance::balanceReceived()
     reply->deleteLater();
 }
 
+void Balance::getCustomerInfo()
+{
+    QString site_url = Environment::base_url() + "/customer/name/" + accountid;
+    QNetworkRequest request((QUrl(site_url)));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setRawHeader("Authorization", "Bearer " + myToken);
+
+    QNetworkReply *customerReply = customerManager->get(request);
+    connect(customerReply, &QNetworkReply::finished, this, [this, customerReply](){
+        if (customerReply->error() == QNetworkReply::NoError) {
+            QByteArray responseData = customerReply->readAll();
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+            QJsonObject jsonObj = jsonDoc.object();
+            QString customerName = jsonObj["name"].toString();
+
+            if (!customerName.isEmpty()) {
+                ui->labelOwner->setText(customerName);
+            } else {
+                ui->labelOwner->setText("Ei nimeä");
+            }
+        } else {
+            ui->labelOwner->setText("Virhe");
+            qDebug() << "Customer info error:" << customerReply->errorString();
+        }
+        customerReply->deleteLater();
+    });
+}
+
 void Balance::updateUI(const QJsonObject &accountData)
 {
     // Saldo
@@ -98,14 +126,6 @@ void Balance::updateUI(const QJsonObject &accountData)
         ui->labelBalance->setText(QString("Current Balance: %1 €").arg(balance, 0, 'f', 2));
     } else {
         ui->labelBalance->setText("Error: Missing balance data");
-    }
-
-    // Tili numero
-    if (accountData.contains("accountnumber")) {
-        QString accountNumber = accountData["accountnumber"].toString();
-        ui->labelOwner->setText(QString("Erkki Esimerkki").arg(accountNumber));
-    } else {
-        ui->labelOwner->setText("Error: Missing account number data");
     }
 
     ui->textTransactions->setText("No transactions found");

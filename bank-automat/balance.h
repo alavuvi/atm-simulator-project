@@ -29,11 +29,13 @@ private:
     QString accountid;
     QByteArray myToken;
     QNetworkAccessManager *networkManager;
+    QNetworkAccessManager *customerManager;
     QNetworkReply *reply;
     QTimer *refreshTimer;
     QTimer *inactivityTimer;
     void resetInactivityTimer();
     void getBalanceData();
+    void getCustomerInfo();
     void updateUI(const QJsonObject &accountData);
 
     QString accountOwner;
