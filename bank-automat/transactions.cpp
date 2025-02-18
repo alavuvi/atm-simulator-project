@@ -2,6 +2,7 @@
 #include "transactions.h"
 #include "ui_transactions.h"
 #include <QStandardItemModel>
+#include "timermanager.h"
 
 Transactions::Transactions(QWidget *parent)
     : QDialog(parent)
@@ -9,6 +10,10 @@ Transactions::Transactions(QWidget *parent)
 {
     ui->setupUi(this);
     labelName = ui->label1;
+    //Ajastimen kutsuminen
+    TimerManager::getInstance().startTimer(this, TimerManager::WindowType::OPERATIONS);
+    connect(&TimerManager::getInstance(), &TimerManager::returnToMainMenuRequested,
+            this, &Transactions::close);
 }
 
 Transactions::~Transactions()
@@ -19,7 +24,6 @@ Transactions::~Transactions()
 void Transactions::setAccountId(const QString &newAccountId)
 {
     accountid = newAccountId;
-    ui->labelAccountId->setText(accountid);
     getCustomerInfo();
 }
 
@@ -78,6 +82,16 @@ void Transactions::showTransactionsSlot(QNetworkReply *reply)
 
     QJsonDocument json_doc = QJsonDocument::fromJson(response_data);
     QJsonArray json_array = json_doc.array();
+
+    if (!json_array.isEmpty()) {
+        totalTransactions = qMax(totalTransactions, s + json_array.size());
+    }
+
+    if (json_array.isEmpty()) {
+        qDebug() << "No more transactions to show.";
+        return;
+    }
+
     QStandardItemModel *model = new QStandardItemModel(json_array.size(), 3, this);
     model->setHeaderData(0, Qt::Horizontal, "Datetime");
     model->setHeaderData(1, Qt::Horizontal, "Transaction");
@@ -125,24 +139,52 @@ void Transactions::on_btnTransactions_clicked()
     s = 0;
     e = 10;
     loadTransactions();
-
+    TimerManager::getInstance().resetTimer(); //timer reset
 }
 
 void Transactions::on_btn_older_clicked()
 {
+    if (s + 10 > totalTransactions) {
+        qDebug() << "No more older transactions available.";
+        return;
+    }
+
     s += 10;
     e += 0;
+
     loadTransactions();
+    TimerManager::getInstance().resetTimer(); //timer reset
 }
 
 void Transactions::on_btn_newer_clicked()
 {
+    if (s - 10 < 0) {
+        qDebug() << "No newer transactions available.";
+        return;
+    }
+
     s -= 10;
     e -= 0;
+
     loadTransactions();
+    TimerManager::getInstance().resetTimer(); //timer reset
 }
 
+
 void Transactions::on_btnBack_clicked()
+{
+    TimerManager::getInstance().stopTimer(); // Pysäytetään nykyinen ajastin
+    this->close();
+    // Asetetaan mainmenu aktiiviseksi ikkunaksi ja aloitetaan ajastin
+    if (TimerManager::getInstance().getMainMenuWindow()) {
+        TimerManager::getInstance().startTimer(
+            TimerManager::getInstance().getMainMenuWindow(),
+            TimerManager::WindowType::MAINMENU
+            );
+    }
+}
+
+void Transactions::handleReturnToMainMenu()
 {
     this->close();
 }
