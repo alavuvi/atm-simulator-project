@@ -132,7 +132,6 @@ void MainMenu::showEvent(QShowEvent* event)
     QDialog::showEvent(event);
     if (this->isVisible()) {  // Tarkistetaan että ikkuna on oikeasti näkyvissä
         setupTimerConnections();
-        qDebug() << "MainMenu timer käynnistetty";
     }
 }
 
