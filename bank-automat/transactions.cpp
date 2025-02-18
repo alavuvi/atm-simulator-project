@@ -10,6 +10,10 @@ Transactions::Transactions(QWidget *parent)
 {
     ui->setupUi(this);
     labelName = ui->label1;
+    //Ajastimen kutsuminen
+    TimerManager::getInstance().startTimer(this, TimerManager::WindowType::OPERATIONS);
+    connect(&TimerManager::getInstance(), &TimerManager::returnToMainMenuRequested,
+            this, &Transactions::handleReturnToMainMenu);
 }
 
 Transactions::~Transactions()
@@ -165,6 +169,11 @@ void Transactions::on_btn_newer_clicked()
 
 
 void Transactions::on_btnBack_clicked()
+{
+    this->close();
+}
+
+void Transactions::handleReturnToMainMenu()
 {
     this->close();
 }
