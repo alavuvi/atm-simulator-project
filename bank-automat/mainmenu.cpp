@@ -89,7 +89,9 @@ void MainMenu::on_btnBalance_clicked()
     TimerManager::getInstance().stopTimer();
     Balance *objBalance = new Balance(this);
     objBalance->setMyToken(myToken);
+    objBalance->setAccountId(accountid);
     objBalance->open();
+
 }
 
 void MainMenu::on_btnTransactions_clicked()
