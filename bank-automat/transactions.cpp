@@ -139,6 +139,7 @@ void Transactions::on_btnTransactions_clicked()
     s = 0;
     e = 10;
     loadTransactions();
+    TimerManager::getInstance().resetTimer(); //timer reset
 }
 
 void Transactions::on_btn_older_clicked()
@@ -152,6 +153,7 @@ void Transactions::on_btn_older_clicked()
     e += 0;
 
     loadTransactions();
+    TimerManager::getInstance().resetTimer(); //timer reset
 }
 
 void Transactions::on_btn_newer_clicked()
@@ -165,6 +167,7 @@ void Transactions::on_btn_newer_clicked()
     e -= 0;
 
     loadTransactions();
+    TimerManager::getInstance().resetTimer(); //timer reset
 }
 
 
@@ -172,6 +175,7 @@ void Transactions::on_btnBack_clicked()
 {
     TimerManager::getInstance().stopTimer(); // Pysäytetään nykyinen ajastin
     this->close();
+    // Asetetaan mainmenu aktiiviseksi ikkunaksi ja aloitetaan ajastin
     if (TimerManager::getInstance().getMainMenuWindow()) {
         TimerManager::getInstance().startTimer(
             TimerManager::getInstance().getMainMenuWindow(),
