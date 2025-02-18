@@ -91,9 +91,9 @@ void SelectAccount::handleCreditLimitResponse(QNetworkReply *reply)
 
 void SelectAccount::on_btnCredit_clicked()
 {
+    TimerManager::getInstance().stopTimer();
     disconnect(&TimerManager::getInstance(), &TimerManager::timerExpired,
                this, &SelectAccount::handleTimerExpired);
-    TimerManager::getInstance().stopTimer();
     if (creditAccountId != -1) {
         MainMenu *objMainMenu = new MainMenu(nullptr);
         objMainMenu->setMyToken(myToken);
@@ -110,9 +110,9 @@ void SelectAccount::on_btnCredit_clicked()
 
 void SelectAccount::on_btnDebit_clicked()
 {
+    TimerManager::getInstance().stopTimer();
     disconnect(&TimerManager::getInstance(), &TimerManager::timerExpired,
                this, &SelectAccount::handleTimerExpired);
-    TimerManager::getInstance().stopTimer();
     if (debitAccountId != -1) {    
         MainMenu *objMainMenu = new MainMenu(nullptr);
         objMainMenu->setMyToken(myToken);

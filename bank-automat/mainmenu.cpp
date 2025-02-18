@@ -122,8 +122,10 @@ void MainMenu::on_btnWithdraw_clicked()
 
 void MainMenu::on_btnLogout_clicked()
 {
-    myToken.clear();
+    disconnect(&TimerManager::getInstance(), &TimerManager::timerExpired,
+               this, &MainMenu::handleTimerExpired);
     TimerManager::getInstance().stopTimer();
+    myToken.clear();
     qDebug() << "Kirjaudutaan ulos ja tyhjennetään token";
     this->close();    
 }
@@ -167,6 +169,8 @@ void MainMenu::closeEvent(QCloseEvent* event)
 
 void MainMenu::handleTimerExpired()
 {
+    disconnect(&TimerManager::getInstance(), &TimerManager::timerExpired,
+               this, &MainMenu::handleTimerExpired);
     myToken.clear();
     qDebug() << "Token tyhjennetty ajastimen loppuessa Main Menussa: " << myToken;
     accept();
