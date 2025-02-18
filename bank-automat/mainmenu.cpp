@@ -12,7 +12,6 @@ MainMenu::MainMenu(QWidget *parent)
 {
     ui->setupUi(this);
     labelName = ui->label;
-    //ajastimien keskitetty hallinta
     TimerManager::getInstance().setMainMenuWindow(this);
 }
 
@@ -40,7 +39,6 @@ void MainMenu::getCustomerInfo()
 {
     qDebug() << "Account ID:" << accountid;
     if (myToken.isEmpty()) {
-    //    qDebug() << "Token tyhjä";
         return;
     }
 
@@ -85,7 +83,6 @@ void MainMenu::on_btnBalance_clicked()
         qDebug() << "Ei tokenia saatavilla balancelle";
         return;
     }
-    // Katkaistaan yhteys ja pysäytetään ajastin ennen uuden ikkunan avaamista
     TimerManager::getInstance().stopTimer();
     Balance *objBalance = new Balance(this);
     objBalance->setMyToken(myToken);
@@ -100,7 +97,6 @@ void MainMenu::on_btnTransactions_clicked()
         qDebug() << "Ei tokenia saatavilla Transactions";
         return;
     }
-    // Katkaistaan yhteys ja pysäytetään ajastin ennen uuden ikkunan avaamista
     TimerManager::getInstance().stopTimer();
     Transactions *objTransactions = new Transactions(this);
     objTransactions->setMyToken(myToken);
@@ -115,7 +111,6 @@ void MainMenu::on_btnWithdraw_clicked()
         qDebug() << "Ei tokenia saatavilla Withdraw";
         return;
     }
-    // Katkaistaan yhteys ja pysäytetään ajastin ennen uuden ikkunan avaamista
     TimerManager::getInstance().stopTimer();
     Withdraw *objWithdraw = new Withdraw(this);
     objWithdraw->setMyToken(myToken);
@@ -137,7 +132,7 @@ void MainMenu::showEvent(QShowEvent* event)
     QDialog::showEvent(event);
     if (this->isVisible()) {  // Tarkistetaan että ikkuna on oikeasti näkyvissä
         setupTimerConnections();
-        qDebug() << "MainMenu näkyvissä - timer käynnistetty";
+        qDebug() << "MainMenu timer käynnistetty";
     }
 }
 
