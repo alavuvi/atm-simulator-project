@@ -13,7 +13,7 @@ Transactions::Transactions(QWidget *parent)
     //Ajastimen kutsuminen
     TimerManager::getInstance().startTimer(this, TimerManager::WindowType::OPERATIONS);
     connect(&TimerManager::getInstance(), &TimerManager::returnToMainMenuRequested,
-            this, &Transactions::handleReturnToMainMenu);
+            this, &Transactions::close);
 }
 
 Transactions::~Transactions()
@@ -170,7 +170,14 @@ void Transactions::on_btn_newer_clicked()
 
 void Transactions::on_btnBack_clicked()
 {
+    TimerManager::getInstance().stopTimer(); // Pysäytetään nykyinen ajastin
     this->close();
+    if (TimerManager::getInstance().getMainMenuWindow()) {
+        TimerManager::getInstance().startTimer(
+            TimerManager::getInstance().getMainMenuWindow(),
+            TimerManager::WindowType::MAINMENU
+            );
+    }
 }
 
 void Transactions::handleReturnToMainMenu()

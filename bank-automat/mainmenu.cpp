@@ -15,6 +15,7 @@ MainMenu::MainMenu(QWidget *parent)
     //ajastimien keskitetty hallinta
     connect(&TimerManager::getInstance(), &TimerManager::timerExpired,
             this, &MainMenu::handleTimerExpired);
+    TimerManager::getInstance().setMainMenuWindow(this);
     TimerManager::getInstance().startTimer(this, TimerManager::WindowType::MAINMENU);
 }
 
@@ -129,11 +130,14 @@ void MainMenu::on_btnLogout_clicked()
 void MainMenu::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
-    TimerManager::getInstance().startTimer(this, TimerManager::WindowType::MAINMENU);
+    if (isVisible()) {
+        TimerManager::getInstance().startTimer(this, TimerManager::WindowType::MAINMENU);
+    }
 }
 
 void MainMenu::handleTimerExpired()
 {
     myToken.clear();
+    qDebug() << "Token tyhjennetty ajastimen loppuessa" << myToken;
     this->close();
 }

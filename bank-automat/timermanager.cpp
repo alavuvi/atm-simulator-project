@@ -62,20 +62,20 @@ void TimerManager::handleTimeout()
 {
     stopTimer();
 
-    switch(currentWindowType) {
-    case WindowType::LOGIN:
-    case WindowType::MAINMENU:
+    if (currentWindowType == WindowType::OPERATIONS) {
+        if (currentWindow) {
+            currentWindow->close();
+        }
+        if (mainMenuWindow) {
+            startTimer(mainMenuWindow, WindowType::MAINMENU);
+        }
+        emit returnToMainMenuRequested();
+    } else {
         QMessageBox::warning(currentWindow, "Timeout",
                              "Your session has timed out due to inactivity.");
         emit timerExpired();
-        break;
-
-    case WindowType::OPERATIONS:
-        emit returnToMainMenuRequested();
-        break;
-    }
-
-    if (currentWindow) {
-        currentWindow->close();
+        if (currentWindow) {
+            currentWindow->close();
+        }
     }
 }

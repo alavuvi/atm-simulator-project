@@ -26,6 +26,8 @@ public:
     void resetTimer();
     void returnToMainMenu();
 
+    QWidget* getMainMenuWindow() const { return mainMenuWindow; }
+    void setMainMenuWindow(QWidget* window) { mainMenuWindow = window; }
 signals:
     void timerExpired();
     void returnToMainMenuRequested();
@@ -39,6 +41,7 @@ private:
     QTimer* timer;
     QWidget* currentWindow;
     WindowType currentWindowType;
+    QWidget* mainMenuWindow;
 
 private slots:
     void handleTimeout();
