@@ -13,10 +13,7 @@ MainMenu::MainMenu(QWidget *parent)
     ui->setupUi(this);
     labelName = ui->label;
     //ajastimien keskitetty hallinta
-    connect(&TimerManager::getInstance(), &TimerManager::timerExpired,
-            this, &MainMenu::handleTimerExpired);
     TimerManager::getInstance().setMainMenuWindow(this);
-    TimerManager::getInstance().startTimer(this, TimerManager::WindowType::MAINMENU);
 }
 
 MainMenu::~MainMenu()
@@ -88,7 +85,8 @@ void MainMenu::on_btnBalance_clicked()
         qDebug() << "Ei tokenia saatavilla balancelle";
         return;
     }
-    TimerManager::getInstance().stopTimer(); // pysäyttää ajastimen siirryttäessä eteenpäin
+    // Katkaistaan yhteys ja pysäytetään ajastin ennen uuden ikkunan avaamista
+    TimerManager::getInstance().stopTimer();
     Balance *objBalance = new Balance(this);
     objBalance->setMyToken(myToken);
     objBalance->open();
@@ -100,7 +98,8 @@ void MainMenu::on_btnTransactions_clicked()
         qDebug() << "Ei tokenia saatavilla Transactions";
         return;
     }
-    TimerManager::getInstance().stopTimer(); // pysäyttää ajastimen siirryttäessä eteenpäin
+    // Katkaistaan yhteys ja pysäytetään ajastin ennen uuden ikkunan avaamista
+    TimerManager::getInstance().stopTimer();
     Transactions *objTransactions = new Transactions(this);
     objTransactions->setMyToken(myToken);
     qDebug() << "Token lähetty transactions:"<< myToken;
@@ -114,7 +113,8 @@ void MainMenu::on_btnWithdraw_clicked()
         qDebug() << "Ei tokenia saatavilla Withdraw";
         return;
     }
-    TimerManager::getInstance().stopTimer(); // pysäyttää ajastimen siirryttäessä eteenpäin
+    // Katkaistaan yhteys ja pysäytetään ajastin ennen uuden ikkunan avaamista
+    TimerManager::getInstance().stopTimer();
     Withdraw *objWithdraw = new Withdraw(this);
     objWithdraw->setMyToken(myToken);
     objWithdraw->open();
@@ -127,17 +127,48 @@ void MainMenu::on_btnLogout_clicked()
     qDebug() << "Kirjaudutaan ulos ja tyhjennetään token";
     this->close();    
 }
+
 void MainMenu::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
-    if (isVisible()) {
+    if (this->isVisible()) {  // Tarkistetaan että ikkuna on oikeasti näkyvissä
+        setupTimerConnections();
+        qDebug() << "MainMenu näkyvissä - timer käynnistetty";
+    }
+}
+
+void MainMenu::setupTimerConnections()
+{
+    // Poistetaan mahdolliset vanhat yhteydet
+    disconnect(&TimerManager::getInstance(), &TimerManager::timerExpired,
+               this, &MainMenu::handleTimerExpired);
+
+    // Luodaan uusi yhteys
+    if (this->isVisible()) {
+        connect(&TimerManager::getInstance(), &TimerManager::timerExpired,
+                this, &MainMenu::handleTimerExpired,
+                Qt::UniqueConnection);
+
         TimerManager::getInstance().startTimer(this, TimerManager::WindowType::MAINMENU);
     }
+}
+
+void MainMenu::closeEvent(QCloseEvent* event)
+{
+    static bool closing = false;
+    if (!closing) {
+        closing = true;
+        TimerManager::getInstance().stopTimer();
+        qDebug() << "Ajastin pysäytetty MainMenussa";
+    }
+    QDialog::closeEvent(event);
+    closing = false;
 }
 
 void MainMenu::handleTimerExpired()
 {
     myToken.clear();
-    qDebug() << "Token tyhjennetty ajastimen loppuessa" << myToken;
-    this->close();
+    qDebug() << "Token tyhjennetty ajastimen loppuessa Main Menussa: " << myToken;
+    accept();
 }
+

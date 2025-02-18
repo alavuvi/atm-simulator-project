@@ -46,8 +46,10 @@ void TimerManager::startTimer(QWidget* window, WindowType type)
 
 void TimerManager::stopTimer()
 {
-    timer->stop();
-    qDebug() << "Ajastin pysäytetty";
+    if (timer->isActive()) {
+        timer->stop();
+        qDebug() << "Ajastin pysäytetty";
+    }
 }
 
 void TimerManager::resetTimer()
