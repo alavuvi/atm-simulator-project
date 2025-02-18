@@ -88,10 +88,12 @@ void MainMenu::on_btnBalance_clicked()
         qDebug() << "Ei tokenia saatavilla balancelle";
         return;
     }
-    TimerManager::getInstance().stopTimer(); // pysäyttää ajastimen siirryttäessä eteenpäin
+    TimerManager::getInstance().stopTimer();    // pysäyttää ajastimen siirryttäessä eteenpäin
     Balance *objBalance = new Balance(this);
     objBalance->setMyToken(myToken);
+    objBalance->setAccountId(accountid);
     objBalance->open();
+
 }
 
 void MainMenu::on_btnTransactions_clicked()
