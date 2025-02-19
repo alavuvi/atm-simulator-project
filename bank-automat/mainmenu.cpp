@@ -110,13 +110,13 @@ void MainMenu::on_btnTransactions_clicked()
 void MainMenu::on_btnWithdraw_clicked()
 {
     if (myToken.isEmpty()) {
-        qDebug() << "Ei tokenia saatavilla Withdraw";
+        qDebug() << "Token missing";
         return;
     }
     TimerManager::getInstance().stopTimer(); // pysäyttää ajastimen siirryttäessä eteenpäin
     Withdraw *objWithdraw = new Withdraw(this);
     objWithdraw->setMyToken(myToken);
-    objWithdraw->setIdCard(accountid);
+    objWithdraw->setAccountId(accountid);
     objWithdraw->open();
 }
 
