@@ -17,25 +17,19 @@ public:
     explicit Withdraw(QWidget *parent = nullptr);
     ~Withdraw();
 
-    void setCardnumber(const QString &newCardnumber);
     void setMyToken(const QByteArray &newMyToken);
-
-private slots:
-    void on_pushButton_clicked();  // 20 €
-    void on_pushButton_2_clicked(); // 40 €
-    void on_pushButton_3_clicked(); // 60 €
-    void on_pushButton_4_clicked(); // 80 €
-    void on_pushButton_5_clicked(); // 100 €
-    void onCustomWithdraw(); // oma summa
-    void onWithdrawReply(QNetworkReply *reply);
-
-private:
+    void setIdCard(const QString &newIdCard);
     void sendWithdrawRequest(int amount);
 
+private slots:
+    void on_btnWithdraw_clicked();
+    void handleWithdrawReply();
+
+private:
     Ui::Withdraw *ui;
-    QString cardnumber;
-    QByteArray myToken;
     QNetworkAccessManager *networkManager;
+    QByteArray myToken;
+    QString idCard;
 };
 
 #endif

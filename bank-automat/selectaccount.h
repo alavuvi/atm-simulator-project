@@ -38,6 +38,9 @@ private:
     QNetworkAccessManager *networkManager;
     int creditAccountId;
     int debitAccountId;
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 };
 
 #endif // SELECTACCOUNT_H

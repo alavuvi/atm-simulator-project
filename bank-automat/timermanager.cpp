@@ -22,6 +22,18 @@ TimerManager& TimerManager:: getInstance()
 
 void TimerManager::startTimer(QWidget* window, WindowType type)
 {
+    if (!window) {
+        qDebug() << "Ei voida käynnistää ajastinta - ikkuna puuttuu";
+        return;
+    }
+
+    // Poistetaan isVisible() tarkistus, koska ikkuna ei välttämättä
+    // ole vielä näkyvissä konstruktorissa
+
+    if (currentWindow && currentWindow != window) {
+        currentWindow->disconnect(this);
+    }
+
     currentWindow = window;
     currentWindowType = type;
 
@@ -41,13 +53,16 @@ void TimerManager::startTimer(QWidget* window, WindowType type)
     }
 
     timer->start(timeout);
-    qDebug() << "Aloitettu" << timeout << "ms ajastin";
+    qDebug() << "Aloitettu" << timeout << "ms ajastin ikkunalle:"
+             << window->metaObject()->className();
 }
 
 void TimerManager::stopTimer()
 {
-    timer->stop();
-    qDebug() << "Ajastin pysäytetty";
+    if (timer->isActive()) {
+        timer->stop();
+        qDebug() << "Ajastin pysäytetty";
+    }
 }
 
 void TimerManager::resetTimer()
