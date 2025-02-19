@@ -30,12 +30,14 @@ private:
     QByteArray myToken;
     QNetworkAccessManager *networkManager;
     QNetworkAccessManager *customerManager;
+    QNetworkAccessManager *creditLimitManager;
     QNetworkReply *reply;
     QTimer *refreshTimer;
     QTimer *inactivityTimer;
     void resetInactivityTimer();
     void getBalanceData();
     void getCustomerInfo();
+    void getCreditLimitData();
     void updateUI(const QJsonObject &accountData);
 
     QString accountOwner;
