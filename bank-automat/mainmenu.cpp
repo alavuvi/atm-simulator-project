@@ -114,6 +114,7 @@ void MainMenu::on_btnWithdraw_clicked()
     TimerManager::getInstance().stopTimer();
     Withdraw *objWithdraw = new Withdraw(this);
     objWithdraw->setMyToken(myToken);
+    objWithdraw->setIdCard(accountid);
     objWithdraw->open();
 }
 
