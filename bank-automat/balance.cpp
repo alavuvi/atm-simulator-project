@@ -12,6 +12,7 @@ Balance::Balance(QWidget *parent)
     this->setWindowTitle("Balance");
     networkManager = new QNetworkAccessManager(this);
     customerManager = new QNetworkAccessManager(this);
+    creditLimitManager = new QNetworkAccessManager(this);
 
     refreshTimer = new QTimer(this);
     connect(refreshTimer, &QTimer::timeout, this, &Balance::getBalanceData);
@@ -37,6 +38,7 @@ void Balance::setAccountId(const QString &newAccountId)
     accountid = newAccountId;
     getBalanceData();
     getCustomerInfo();
+    getCreditLimitData();
 }
 
 void Balance::setMyToken(const QByteArray &newMyToken)
@@ -115,6 +117,51 @@ void Balance::getCustomerInfo()
             qDebug() << "Customer info error:" << customerReply->errorString();
         }
         customerReply->deleteLater();
+    });
+}
+
+void Balance::getCreditLimitData()
+{
+    QString site_url = Environment::base_url()+"/account/"+accountid;
+    QNetworkRequest request((site_url));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setRawHeader(QByteArray("Authorization"), "Bearer " + myToken);
+
+    QNetworkReply *creditLimitReply = creditLimitManager->get(request);
+    connect(creditLimitReply, &QNetworkReply::finished, this, [this, creditLimitReply](){
+        if(creditLimitReply->error() == QNetworkReply::NoError)
+        {
+            QByteArray response = creditLimitReply->readAll();
+
+
+            QJsonDocument json_doc = QJsonDocument::fromJson(response);
+            if (json_doc.isArray()) {
+                QJsonArray json_array = json_doc.array();
+                if (!json_array.isEmpty()) {
+                    QJsonObject jsonObj = json_array[0].toObject();
+                    if (jsonObj.contains("creditlimit")) {
+                        double creditLimit = jsonObj["creditlimit"].toString().toDouble();
+                        ui->labelCreditLimit->setText(QString("Credit Limit: %1 €").arg(creditLimit, 0, 'f', 2));
+                    } else {
+                        ui->labelCreditLimit->setText("Credit Limit: Not Available");
+                    }
+                }
+            } else {
+                QJsonObject jsonObj = json_doc.object();
+                if (jsonObj.contains("creditlimit")) {
+                    double creditLimit = jsonObj["creditlimit"].toString().toDouble();
+                    ui->labelCreditLimit->setText(QString("Credit Limit: %1 €").arg(creditLimit, 0, 'f', 2));
+                } else {
+                    ui->labelCreditLimit->setText("Credit Limit: Not Available");
+                }
+            }
+        }
+        else
+        {
+            ui->labelCreditLimit->setText("Error getting credit limit");
+            qDebug() << "Error:" << creditLimitReply->errorString();
+        }
+        creditLimitReply->deleteLater();
     });
 }
 
