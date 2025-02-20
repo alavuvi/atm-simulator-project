@@ -3,6 +3,7 @@
 #include <QJsonObject>
 #include <QDebug>
 #include <environment.h>
+#include "timermanager.h"
 
 Balance::Balance(QWidget *parent)
     : QDialog(parent)
@@ -31,6 +32,7 @@ Balance::~Balance()
 {
     refreshTimer->stop();
     inactivityTimer->stop();
+
     delete ui;
 }
 
@@ -48,10 +50,27 @@ void Balance::setMyToken(const QByteArray &newMyToken)
     myToken = newMyToken;
 }
 
+// Ikkunan sulkeutuessa käynnistää main menu-valikon ajastimen
+void Balance::closeEvent(QCloseEvent* event)
+{
+    refreshTimer->stop();
+    inactivityTimer->stop();
+
+    TimerManager& timerManager = TimerManager::getInstance();
+    if (timerManager.getMainMenuWindow()) {
+        timerManager.startTimer(
+            timerManager.getMainMenuWindow(),
+            TimerManager::WindowType::MAINMENU);
+    }
+
+    QDialog::closeEvent(event);
+}
+
 void Balance::on_btnBack_clicked()
 {
     this->close();
 }
+
 
 void Balance::getBalanceData()
 {

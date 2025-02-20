@@ -2,8 +2,11 @@
 #include "ui_withdraw.h"
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QMessageBox>
+#include <QJsonArray>
 #include <QDebug>
+#include <QMessageBox>
+#include <QNetworkAccessManager>
+#include "environment.h"
 
 Withdraw::Withdraw(QWidget *parent) :
     QDialog(parent),
@@ -11,73 +14,93 @@ Withdraw::Withdraw(QWidget *parent) :
     networkManager(new QNetworkAccessManager(this))
 {
     ui->setupUi(this);
+
+    QList<QPair<QPushButton*, int>> buttons = {
+        {ui->pushButton, 20},
+        {ui->pushButton_2, 40},
+        {ui->pushButton_3, 60},
+        {ui->pushButton_4, 80},
+        {ui->pushButton_5, 100}
+    };
+
+    for (const auto &btn : buttons) {
+        connect(btn.first, &QPushButton::clicked, this, [this, btn]() {
+            handleButtonClicked(btn.second);
+        });
+    }
+
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &Withdraw::onCustomAmountEntered);
 }
 
 Withdraw::~Withdraw()
 {
     delete ui;
+    delete networkManager;
 }
 
-void Withdraw::setMyToken(const QByteArray &newMyToken)
+void Withdraw::setMyToken(const QByteArray &token)
 {
-    myToken = newMyToken;
+    myToken = token;
     qDebug() << "Withdraw received token:" << myToken;
 }
 
-void Withdraw::setIdCard(const QString &newIdCard)
+void Withdraw::setAccountId(const QString &accountId)
 {
-    idCard = newIdCard;
-    qDebug() << "Withdraw received idCard: " << idCard;
+    accountID = accountId;
+    qDebug() << "Withdraw received accountID: " << accountID;
+}
+
+void Withdraw::onCustomAmountEntered()
+{
+    int amount = ui->lineEdit->text().toInt();
+    if (amount <= 0) {
+        QMessageBox::warning(this, "Error", "Enter approved amount !");
+        return;
+    }
+    handleButtonClicked(amount);
+}
+
+void Withdraw::handleButtonClicked(int amount)
+{
+    sendWithdrawRequest(amount);
 }
 
 void Withdraw::sendWithdrawRequest(int amount)
 {
-    if (idCard.isEmpty()) {
-        QMessageBox::critical(this, "Error", "ID Card is not set!");
+    if (myToken.isEmpty() || accountID.isEmpty()) {
+        QMessageBox::critical(this, "Error", "Token or accountid missing.");
         return;
     }
 
-    QNetworkRequest request(QUrl("http://localhost:3000/withdraw"));
+    QUrl url("http://localhost:3000/withdraw");
+    QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setRawHeader("Authorization", "Bearer " + myToken);
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + myToken);
 
     QJsonObject json;
-    json["idcard"] = idCard.toInt();
+    json["idaccount"] = accountID;
     json["amount"] = amount;
 
-    qDebug() << "Sending withdraw request: " << QJsonDocument(json).toJson();
+    QJsonDocument doc(json);
+    QByteArray data = doc.toJson();
 
-    QNetworkReply *reply = networkManager->post(request, QJsonDocument(json).toJson());
-    connect(reply, &QNetworkReply::finished, this, &Withdraw::handleWithdrawReply);
+    qDebug() << "Withdraw Request JSON:" << data;
+
+    QNetworkReply *reply = networkManager->post(request, data);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        handleNetworkReply(reply);
+    });
 }
 
-void Withdraw::handleWithdrawReply()
+void Withdraw::handleNetworkReply(QNetworkReply *reply)
 {
-    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-
-    if (!reply) return;
-
     if (reply->error() == QNetworkReply::NoError) {
-        QMessageBox::information(this, "Success", "Withdrawal successful!");
-        qDebug() << "Withdraw successful!";
+        QByteArray response = reply->readAll();
+        qDebug() << "Withdraw successfull:" << response;
+        QMessageBox::information(this, "Success", "Withdrawl succesfull");
     } else {
-        QByteArray errorData = reply->readAll();
-        QMessageBox::critical(this, "Error", "Withdraw request failed!");
-        qDebug() << "Withdraw request failed: " << reply->errorString() << " Error Data: " << errorData;
+        qDebug() << "Withdraw request failed:" << reply->errorString();
+        QMessageBox::critical(this, "Error", "Withdraw failed: " + reply->errorString());
     }
-
     reply->deleteLater();
-}
-
-void Withdraw::on_btnWithdraw_clicked()
-{
-    bool ok;
-    int amount = ui->lineEdit->text().toInt(&ok);
-
-    if (!ok || amount <= 0) {
-        QMessageBox::warning(this, "Invalid Input", "Enter a valid amount.");
-        return;
-    }
-
-    sendWithdrawRequest(amount);
 }

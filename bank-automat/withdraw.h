@@ -17,19 +17,20 @@ public:
     explicit Withdraw(QWidget *parent = nullptr);
     ~Withdraw();
 
-    void setMyToken(const QByteArray &newMyToken);
-    void setIdCard(const QString &newIdCard);
-    void sendWithdrawRequest(int amount);
+    void setMyToken(const QByteArray &token);
+    void setAccountId(const QString &accountId);
 
 private slots:
-    void on_btnWithdraw_clicked();
-    void handleWithdrawReply();
+    void onCustomAmountEntered();
+    void handleNetworkReply(QNetworkReply *reply);
+    void handleButtonClicked(int amount);
+    void sendWithdrawRequest(int amount);
 
 private:
     Ui::Withdraw *ui;
     QNetworkAccessManager *networkManager;
     QByteArray myToken;
-    QString idCard;
+    QString accountID;
 };
 
 #endif
