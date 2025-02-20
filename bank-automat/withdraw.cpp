@@ -11,8 +11,7 @@
 Withdraw::Withdraw(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Withdraw),
-    networkManager(new QNetworkAccessManager(this)),
-    accountsManager(new QNetworkAccessManager(this))
+    networkManager(new QNetworkAccessManager(this))
 {
     ui->setupUi(this);
 
@@ -25,8 +24,8 @@ Withdraw::Withdraw(QWidget *parent) :
     };
 
     for (const auto &btn : buttons) {
-        connect(btn.first, &QPushButton::clicked, this, [=]() {
-            sendWithdrawRequest(btn.second);
+        connect(btn.first, &QPushButton::clicked, this, [this, btn]() {
+            handleButtonClicked(btn.second);
         });
     }
 
@@ -36,7 +35,7 @@ Withdraw::Withdraw(QWidget *parent) :
 Withdraw::~Withdraw()
 {
     delete ui;
-    delete accountsManager;
+    delete networkManager;
 }
 
 void Withdraw::setMyToken(const QByteArray &token)
@@ -45,84 +44,51 @@ void Withdraw::setMyToken(const QByteArray &token)
     qDebug() << "Withdraw received token:" << myToken;
 }
 
-void Withdraw::setIdCard(const QString &cardId)
+void Withdraw::setAccountId(const QString &accountId)
 {
-    idCard = cardId;
-    qDebug() << "Withdraw received idCard: " << idCard;
-
-    // Retrieve account info:
-    QString accounts_url = Environment::base_url() + "/accountsbycard/" + cardId;
-    QNetworkRequest accountsRequest(accounts_url);
-    accountsRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    accountsRequest.setRawHeader("Authorization", "Bearer " + myToken);
-
-    connect(accountsManager, &QNetworkAccessManager::finished, this, &Withdraw::handleAccountInfoForWithdrawal);
-    accountsManager->get(accountsRequest);
-}
-
-void Withdraw::handleAccountInfoForWithdrawal(QNetworkReply *reply)
-{
-    if (reply->error() == QNetworkReply::NoError) {
-        QByteArray response_data = reply->readAll();
-        QJsonDocument json_doc = QJsonDocument::fromJson(response_data);
-        QJsonArray accountsArray = json_doc.array();
-
-        if (accountsArray.size() == 1) {
-            QJsonObject accountObject = accountsArray[0].toObject();
-            if (accountObject.contains("idaccount") && accountObject["idaccount"].isDouble()) {
-                accountID = QString::number(accountObject["idaccount"].toDouble());
-                qDebug() << "Account ID retrieved:" << accountID;
-            } else {
-                qDebug() << "Invalid JSON: 'idaccount' missing or not a number";
-                QMessageBox::critical(this, "Error", "Invalid account information received.");
-            }
-        } else if (accountsArray.size() > 1) {
-            qDebug() << "Multiple accounts found. Handling not implemented yet.";
-            QMessageBox::critical(this, "Error", "Multiple accounts found. Withdrawal not supported.");
-        } else {
-            qDebug() << "No accounts found.";
-            QMessageBox::critical(this, "Error", "No accounts found for this card.");
-        }
-    } else {
-        qDebug() << "Error retrieving account info:" << reply->errorString();
-        QMessageBox::critical(this, "Error", "Could not retrieve account information.");
-    }
-    reply->deleteLater();
+    accountID = accountId;
+    qDebug() << "Withdraw received accountID: " << accountID;
 }
 
 void Withdraw::onCustomAmountEntered()
 {
     int amount = ui->lineEdit->text().toInt();
     if (amount <= 0) {
-        QMessageBox::warning(this, "Virhe", "Syötä kelvollinen nostosumma!");
+        QMessageBox::warning(this, "Error", "Enter approved amount !");
         return;
     }
+    handleButtonClicked(amount);
+}
+
+void Withdraw::handleButtonClicked(int amount)
+{
     sendWithdrawRequest(amount);
 }
 
 void Withdraw::sendWithdrawRequest(int amount)
 {
-    if (myToken.isEmpty() || idCard.isEmpty() || accountID.isEmpty()) {
-        QMessageBox::critical(this, "Virhe", "Token, kortin ID tai tilin ID puuttuu.");
+    if (myToken.isEmpty() || accountID.isEmpty()) {
+        QMessageBox::critical(this, "Error", "Token or accountid missing.");
         return;
     }
 
     QUrl url("http://localhost:3000/withdraw");
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setRawHeader("Authorization", "Bearer " + myToken);
+    request.setRawHeader("Authorization", QByteArray("Bearer ") + myToken);
 
     QJsonObject json;
-    json["idcard"] = idCard;
+    json["idaccount"] = accountID;
     json["amount"] = amount;
-    json["idaccount"] = accountID; // Include accountID
 
     QJsonDocument doc(json);
     QByteArray data = doc.toJson();
 
+    qDebug() << "Withdraw Request JSON:" << data;
+
     QNetworkReply *reply = networkManager->post(request, data);
-    connect(reply, &QNetworkReply::finished, this, [this]() {
-        handleNetworkReply(qobject_cast<QNetworkReply*>(sender()));
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        handleNetworkReply(reply);
     });
 }
 
@@ -130,11 +96,11 @@ void Withdraw::handleNetworkReply(QNetworkReply *reply)
 {
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray response = reply->readAll();
-        qDebug() << "Withdraw success:" << response;
-        QMessageBox::information(this, "Onnistui", "Nosto onnistui!");
+        qDebug() << "Withdraw successfull:" << response;
+        QMessageBox::information(this, "Success", "Withdrawl succesfull");
     } else {
         qDebug() << "Withdraw request failed:" << reply->errorString();
-        QMessageBox::critical(this, "Virhe", "Nosto epäonnistui: " + reply->errorString());
+        QMessageBox::critical(this, "Error", "Withdraw failed: " + reply->errorString());
     }
     reply->deleteLater();
 }
