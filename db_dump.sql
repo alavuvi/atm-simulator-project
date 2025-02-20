@@ -154,6 +154,48 @@ LOCK TABLES `transactions` WRITE;
 INSERT INTO `transactions` VALUES (1,17,'2025-02-15 14:04:48','Nosto',-250.00),(2,17,'2025-02-15 14:04:49','Nosto',-250.00),(3,17,'2025-02-15 14:04:50','Nosto',-250.00),(4,17,'2025-02-15 14:04:50','Nosto',-250.00),(5,17,'2025-02-15 14:04:57','Pano',500.00),(6,17,'2025-02-15 14:04:57','Pano',500.00),(7,17,'2025-02-15 14:04:58','Pano',500.00),(8,17,'2025-02-15 14:05:00','Pano',500.00),(9,17,'2025-02-15 14:05:00','Pano',500.00),(10,17,'2025-02-15 14:05:01','Pano',500.00),(11,17,'2025-02-15 14:05:02','Pano',500.00),(12,17,'2025-02-15 14:05:03','Pano',500.00),(13,17,'2025-02-15 14:05:03','Pano',500.00),(14,17,'2025-02-15 14:05:04','Pano',500.00),(15,17,'2025-02-15 14:05:05','Pano',500.00),(16,17,'2025-02-15 14:05:05','Pano',500.00),(17,16,'2025-02-20 07:01:11','withdraw',20.00),(18,16,'2025-02-20 07:03:27','withdraw',80.00),(19,16,'2025-02-20 07:03:45','withdraw',20.00),(20,16,'2025-02-20 07:03:56','withdraw',100.00),(21,16,'2025-02-20 07:04:36','withdraw',100.00),(22,16,'2025-02-20 08:07:48','withdraw',20.00);
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'bankautomat'
+--
+/*!50003 DROP PROCEDURE IF EXISTS `nosto` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `nosto`(IN p_idaccount INT, IN p_amount DECIMAL(10,2))
+BEGIN
+    DECLARE v_balance DECIMAL(10,2);
+
+    -- Haetaan tilin saldo
+    SELECT balance INTO v_balance FROM account WHERE idaccount = p_idaccount;
+
+    -- Tarkistetaan, onko tarpeeksi saldoa
+    IF v_balance >= p_amount THEN
+        -- Päivitetään saldo
+        UPDATE account SET balance = balance - p_amount WHERE idaccount = p_idaccount;
+
+        -- Lisätään tapahtuma transactions-tauluun
+        INSERT INTO transactions (idaccount, datetime, transaction, amount)
+        VALUES (p_idaccount, NOW(), 'withdraw', p_amount);
+        
+        SELECT 'Withdrawal successful' AS message;  -- Return success message
+
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Insufficient funds';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -164,4 +206,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-20 10:10:31
+-- Dump completed on 2025-02-20 10:14:52
