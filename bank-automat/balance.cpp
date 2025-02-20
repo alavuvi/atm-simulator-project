@@ -188,6 +188,8 @@ void Balance::getCreditLimitData()
 
 void Balance::getRecentTransactions()
 {
+    response_data=reply->readAll();
+    qDebug()<<response_data;
     QString start = QString::number(s);
     QString end = QString::number(e);
 
@@ -220,7 +222,8 @@ void Balance::getRecentTransactions()
             ui->textTransactions->setText("Error loading transactions");
             qDebug() << "Transactions error:" << transactionsReply->errorString();
         }
-        transactionsReply->deleteLater();
+        reply->deleteLater();
+        transactionsManager->deleteLater();
     });
 }
 
