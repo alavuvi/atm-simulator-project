@@ -27,9 +27,6 @@ void TimerManager::startTimer(QWidget* window, WindowType type)
         return;
     }
 
-    // Poistetaan isVisible() tarkistus, koska ikkuna ei välttämättä
-    // ole vielä näkyvissä konstruktorissa
-
     if (currentWindow && currentWindow != window) {
         currentWindow->disconnect(this);
     }
