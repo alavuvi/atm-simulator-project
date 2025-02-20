@@ -145,7 +145,7 @@ void Transactions::on_btnTransactions_clicked()
 void Transactions::on_btn_older_clicked()
 {
     if (s + 10 > totalTransactions) {
-        qDebug() << "No more older transactions available.";
+        qDebug() << "No older transactions available.";
         return;
     }
 
