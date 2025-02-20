@@ -24,6 +24,7 @@ private slots:
     void on_btnBack_clicked();
     void balanceReceived();
 
+
 private:
     Ui::Balance *ui;
     QString accountid;
@@ -31,6 +32,7 @@ private:
     QNetworkAccessManager *networkManager;
     QNetworkAccessManager *customerManager;
     QNetworkAccessManager *creditLimitManager;
+    QNetworkAccessManager *transactionsManager;
     QNetworkReply *reply;
     QTimer *refreshTimer;
     QTimer *inactivityTimer;
@@ -38,6 +40,8 @@ private:
     void getBalanceData();
     void getCustomerInfo();
     void getCreditLimitData();
+    void getRecentTransactions();
+    void transactionsReceived();
     void updateUI(const QJsonObject &accountData);
 
     QString accountOwner;
