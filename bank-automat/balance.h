@@ -41,14 +41,13 @@ private:
     void getCustomerInfo();
     void getCreditLimitData();
     void getRecentTransactions();
-    void transactionsReceived();
     void updateUI(const QJsonObject &accountData);
-
     QString accountOwner;
     QStringList recentTransactions;
     int s = 0;
     int e = 10;
     QByteArray response_data;
+
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
     void closeEvent(QCloseEvent* event) override;
