@@ -32,7 +32,6 @@ Balance::~Balance()
 {
     refreshTimer->stop();
     inactivityTimer->stop();
-
     delete ui;
 }
 
@@ -42,7 +41,6 @@ void Balance::setAccountId(const QString &newAccountId)
     getBalanceData();
     getCustomerInfo();
     getCreditLimitData();
-    getRecentTransactions();
 }
 
 void Balance::setMyToken(const QByteArray &newMyToken)
@@ -50,7 +48,6 @@ void Balance::setMyToken(const QByteArray &newMyToken)
     myToken = newMyToken;
 }
 
-// Ikkunan sulkeutuessa käynnistää main menu-valikon ajastimen
 void Balance::closeEvent(QCloseEvent* event)
 {
     refreshTimer->stop();
@@ -71,7 +68,6 @@ void Balance::on_btnBack_clicked()
     this->close();
 }
 
-
 void Balance::getBalanceData()
 {
     QString site_url = Environment::base_url()+"/account/"+accountid;
@@ -84,9 +80,14 @@ void Balance::getBalanceData()
 
 void Balance::balanceReceived()
 {
-    if(reply->error() == QNetworkReply::NoError)
+    QNetworkReply *balanceReply = qobject_cast<QNetworkReply*>(sender());
+    if (!balanceReply) return;
+
+    balanceReply->deleteLater();
+
+    if(balanceReply->error() == QNetworkReply::NoError)
     {
-        QString response = reply->readAll();
+        QString response = balanceReply->readAll();
         qDebug() << "Server Response:" << response;
 
         QJsonDocument json_doc = QJsonDocument::fromJson(response.toUtf8());
@@ -97,6 +98,8 @@ void Balance::balanceReceived()
             if (!json_array.isEmpty()) {
                 QJsonObject accountData = json_array[0].toObject();
                 updateUI(accountData);
+                // Haetaan transaktiot vasta kun balance on haettu onnistuneesti
+                getRecentTransactions();
             } else {
                 ui->labelBalance->setText("Error: Account not found");
             }
@@ -108,9 +111,8 @@ void Balance::balanceReceived()
     else
     {
         ui->labelBalance->setText("Error getting balance");
-        qDebug() << "Error:" << reply->errorString();
+        qDebug() << "Error:" << balanceReply->errorString();
     }
-    reply->deleteLater();
 }
 
 void Balance::getCustomerInfo()
@@ -154,7 +156,6 @@ void Balance::getCreditLimitData()
         {
             QByteArray response = creditLimitReply->readAll();
 
-
             QJsonDocument json_doc = QJsonDocument::fromJson(response);
             if (json_doc.isArray()) {
                 QJsonArray json_array = json_doc.array();
@@ -188,21 +189,29 @@ void Balance::getCreditLimitData()
 
 void Balance::getRecentTransactions()
 {
-    response_data=reply->readAll();
-    qDebug()<<response_data;
     QString start = QString::number(s);
     QString end = QString::number(e);
 
-    QString site_url = Environment::base_url() + "/transactions/" + accountid+"/"+start+"/"+end;
+    QString site_url = Environment::base_url() + "/transactions/" + accountid + "/" + start + "/" + end;
     QNetworkRequest request((QUrl(site_url)));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", "Bearer " + myToken);
 
     QNetworkReply *transactionsReply = transactionsManager->get(request);
+
     connect(transactionsReply, &QNetworkReply::finished, this, [this, transactionsReply]() {
+        transactionsReply->deleteLater();
+
         if (transactionsReply->error() == QNetworkReply::NoError) {
             QByteArray responseData = transactionsReply->readAll();
             QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+
+            if (jsonDoc.isNull()) {
+                ui->textTransactions->setText("Error: Invalid JSON response");
+                qDebug() << "Invalid JSON response for transactions";
+                return;
+            }
+
             QJsonArray jsonArray = jsonDoc.array();
 
             if (!jsonArray.isEmpty()) {
@@ -222,22 +231,17 @@ void Balance::getRecentTransactions()
             ui->textTransactions->setText("Error loading transactions");
             qDebug() << "Transactions error:" << transactionsReply->errorString();
         }
-        reply->deleteLater();
-        transactionsManager->deleteLater();
     });
 }
 
 void Balance::updateUI(const QJsonObject &accountData)
 {
-    // Saldo
     if (accountData.contains("balance")) {
         double balance = accountData["balance"].toString().toDouble();
         ui->labelBalance->setText(QString("Current Balance: %1 €").arg(balance, 0, 'f', 2));
     } else {
         ui->labelBalance->setText("Error: Missing balance data");
     }
-
-    ui->textTransactions->setText("No transactions found");
 }
 
 void Balance::resetInactivityTimer()
