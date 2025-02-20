@@ -14,6 +14,7 @@ Balance::Balance(QWidget *parent)
     networkManager = new QNetworkAccessManager(this);
     customerManager = new QNetworkAccessManager(this);
     creditLimitManager = new QNetworkAccessManager(this);
+    transactionsManager = new QNetworkAccessManager(this);
 
     refreshTimer = new QTimer(this);
     connect(refreshTimer, &QTimer::timeout, this, &Balance::getBalanceData);
@@ -41,6 +42,7 @@ void Balance::setAccountId(const QString &newAccountId)
     getBalanceData();
     getCustomerInfo();
     getCreditLimitData();
+    getRecentTransactions();
 }
 
 void Balance::setMyToken(const QByteArray &newMyToken)
@@ -181,6 +183,44 @@ void Balance::getCreditLimitData()
             qDebug() << "Error:" << creditLimitReply->errorString();
         }
         creditLimitReply->deleteLater();
+    });
+}
+
+void Balance::getRecentTransactions()
+{
+    QString start = QString::number(s);
+    QString end = QString::number(e);
+
+    QString site_url = Environment::base_url() + "/transactions/" + accountid+"/"+start+"/"+end;
+    QNetworkRequest request((QUrl(site_url)));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setRawHeader("Authorization", "Bearer " + myToken);
+
+    QNetworkReply *transactionsReply = transactionsManager->get(request);
+    connect(transactionsReply, &QNetworkReply::finished, this, [this, transactionsReply]() {
+        if (transactionsReply->error() == QNetworkReply::NoError) {
+            QByteArray responseData = transactionsReply->readAll();
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+            QJsonArray jsonArray = jsonDoc.array();
+
+            if (!jsonArray.isEmpty()) {
+                QString transactionsText;
+                for (const QJsonValue &value : jsonArray) {
+                    QJsonObject obj = value.toObject();
+                    QString datetime = obj["datetime"].toString();
+                    QString type = obj["transaction"].toString();
+                    QString amount = obj["amount"].toString();
+                    transactionsText += datetime + " - " + type + ": " + amount + "€\n";
+                }
+                ui->textTransactions->setText(transactionsText);
+            } else {
+                ui->textTransactions->setText("No transactions found");
+            }
+        } else {
+            ui->textTransactions->setText("Error loading transactions");
+            qDebug() << "Transactions error:" << transactionsReply->errorString();
+        }
+        transactionsReply->deleteLater();
     });
 }
 
