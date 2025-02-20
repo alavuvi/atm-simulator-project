@@ -46,6 +46,8 @@ private:
 
     QString accountOwner;
     QStringList recentTransactions;
+    int s = 0;
+    int e = 10;
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;

@@ -169,7 +169,10 @@ void Balance::getCreditLimitData()
 
 void Balance::getRecentTransactions()
 {
-    QString site_url = Environment::base_url() + "/transactions/" + accountid + "/0/10";
+    QString start = QString::number(s);
+    QString end = QString::number(e);
+
+    QString site_url = Environment::base_url() + "/transactions/" + accountid+"/"+start+"/"+end;
     QNetworkRequest request((QUrl(site_url)));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", "Bearer " + myToken);
