@@ -72,7 +72,7 @@ void Withdraw::sendWithdrawRequest(int amount)
         return;
     }
 
-    QUrl url("http://localhost:3000/withdraw");
+    QUrl url(Environment::base_url()+"/withdraw");
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", QByteArray("Bearer ") + myToken);

@@ -45,7 +45,6 @@ void MainMenu::getCustomerInfo()
     QString site_url = Environment::base_url() + QString("/customer/name/%1").arg(accountid);
     QNetworkRequest request((QUrl(site_url)));
 
-    // Set headers
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QByteArray authHeader = "Bearer " + myToken;
     request.setRawHeader("Authorization", authHeader);
