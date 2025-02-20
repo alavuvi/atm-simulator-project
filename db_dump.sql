@@ -41,7 +41,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES (16,1,50000.00,0.00,123456789,'debit'),(17,2,0.00,5000.00,555444999,'credit'),(19,4,0.00,2000.00,111444999,'credit'),(20,4,50000.00,0.00,222444999,'debit');
+INSERT INTO `account` VALUES (16,1,49660.00,0.00,123456789,'debit'),(17,2,0.00,5000.00,555444999,'credit'),(19,4,0.00,2000.00,111444999,'credit'),(20,4,50000.00,0.00,222444999,'debit');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +95,7 @@ CREATE TABLE `card` (
 
 LOCK TABLES `card` WRITE;
 /*!40000 ALTER TABLE `card` DISABLE KEYS */;
-INSERT INTO `card` VALUES (16,45605555,'$2a$10$dtG7mNyJptXB2q//l/u2MOOTBYiRfxO5jxyUUzaKlUx7DB4aZgXcu',NULL),(17,45706666,'$2a$10$gObFslfvon/pVlWmQh3fz.uE2X3JtoptFhO4LIVG5FkPoBYcHOS.a',NULL),(20,45707777,'$2a$10$tL7xhGEXL71ALETER9sFM.DAzbJkvX3gJy8PVDdHTUQ7rA3C5z64C',NULL),(21,5555555,'$2a$10$lvrWlNzQqX9N1FoP.WQh.uPXHI7cXzFDEQUxVoiwoK0Kd5a./zk1a',NULL);
+INSERT INTO `card` VALUES (16,45605555,'$2a$10$dtG7mNyJptXB2q//l/u2MOOTBYiRfxO5jxyUUzaKlUx7DB4aZgXcu',1),(17,45706666,'$2a$10$gObFslfvon/pVlWmQh3fz.uE2X3JtoptFhO4LIVG5FkPoBYcHOS.a',1),(20,45707777,'$2a$10$tL7xhGEXL71ALETER9sFM.DAzbJkvX3gJy8PVDdHTUQ7rA3C5z64C',1),(21,5555555,'$2a$10$lvrWlNzQqX9N1FoP.WQh.uPXHI7cXzFDEQUxVoiwoK0Kd5a./zk1a',1);
 /*!40000 ALTER TABLE `card` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,7 +142,7 @@ CREATE TABLE `transactions` (
   PRIMARY KEY (`idtransactions`,`idaccount`),
   KEY `accountid_idx` (`idaccount`),
   CONSTRAINT `fk_accountid` FOREIGN KEY (`idaccount`) REFERENCES `account` (`idaccount`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -151,6 +151,7 @@ CREATE TABLE `transactions` (
 
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
+INSERT INTO `transactions` VALUES (1,17,'2025-02-15 14:04:48','Nosto',-250.00),(2,17,'2025-02-15 14:04:49','Nosto',-250.00),(3,17,'2025-02-15 14:04:50','Nosto',-250.00),(4,17,'2025-02-15 14:04:50','Nosto',-250.00),(5,17,'2025-02-15 14:04:57','Pano',500.00),(6,17,'2025-02-15 14:04:57','Pano',500.00),(7,17,'2025-02-15 14:04:58','Pano',500.00),(8,17,'2025-02-15 14:05:00','Pano',500.00),(9,17,'2025-02-15 14:05:00','Pano',500.00),(10,17,'2025-02-15 14:05:01','Pano',500.00),(11,17,'2025-02-15 14:05:02','Pano',500.00),(12,17,'2025-02-15 14:05:03','Pano',500.00),(13,17,'2025-02-15 14:05:03','Pano',500.00),(14,17,'2025-02-15 14:05:04','Pano',500.00),(15,17,'2025-02-15 14:05:05','Pano',500.00),(16,17,'2025-02-15 14:05:05','Pano',500.00),(17,16,'2025-02-20 07:01:11','withdraw',20.00),(18,16,'2025-02-20 07:03:27','withdraw',80.00),(19,16,'2025-02-20 07:03:45','withdraw',20.00),(20,16,'2025-02-20 07:03:56','withdraw',100.00),(21,16,'2025-02-20 07:04:36','withdraw',100.00),(22,16,'2025-02-20 08:07:48','withdraw',20.00);
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -163,36 +164,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-DELIMITER $$
-
-CREATE PROCEDURE nosto(
-    IN p_idaccount INT,
-    IN p_idcard INT,
-    IN p_amount DECIMAL(10,2)
-)
-BEGIN
-    DECLARE v_balance DECIMAL(10,2);
-
-    -- Haetaan tilin saldo
-    SELECT balance INTO v_balance FROM account WHERE idaccount = p_idaccount;
-
-    -- Tarkistetaan, onko tarpeeksi saldoa
-    IF v_balance >= p_amount THEN
-        -- Päivitetään saldo
-        UPDATE account SET balance = balance - p_amount WHERE idaccount = p_idaccount;
-
-        -- Lisätään tapahtuma transactions-tauluun
-        INSERT INTO transactions (idaccount, datetime, transaction, amount)
-        VALUES (p_idaccount, NOW(), 'withdraw', p_amount);
-        
-        SELECT 'Withdrawal successful' AS message;
-    ELSE
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Insufficient funds';
-    END IF;
-END $$
-
-DELIMITER ;
-
-
--- Dump completed on 2025-02-07  8:46:21
+-- Dump completed on 2025-02-20 10:10:31
