@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(38, 38, 38);</string>
+  </property>
   <widget class="QPushButton" name="btnDebit">
    <property name="geometry">
     <rect>
@@ -27,8 +30,11 @@
      <pointsize>14</pointsize>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
    <property name="text">
-    <string>Debit</string>
+    <string>DEBIT</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btnCredit">
@@ -45,8 +51,11 @@
      <pointsize>14</pointsize>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
    <property name="text">
-    <string>Credit</string>
+    <string>CREDIT</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">
@@ -63,8 +72,11 @@
      <pointsize>23</pointsize>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
    <property name="text">
-    <string>Choose account</string>
+    <string>SELECT ACCOUNT</string>
    </property>
   </widget>
  </widget>
