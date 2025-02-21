@@ -110,7 +110,7 @@ void Transactions::showTransactionsSlot(QNetworkReply *reply)
     }
 
     ui->tableTransactions->setModel(model);
-    ui->tableTransactions->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    ui->tableTransactions->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     ui->tableTransactions->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->tableTransactions->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
 
