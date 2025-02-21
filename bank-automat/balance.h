@@ -33,7 +33,6 @@ private:
     QNetworkAccessManager *customerManager;
     QNetworkAccessManager *creditLimitManager;
     QNetworkAccessManager *transactionsManager;
-    QByteArray response_data;
     QNetworkReply *reply;
     QTimer *refreshTimer;
     QTimer *inactivityTimer;
@@ -47,11 +46,7 @@ private:
     QStringList recentTransactions;
     int s = 0;
     int e = 10;
-<<<<<<< HEAD
-=======
     QByteArray response_data;
-
->>>>>>> main
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
     void closeEvent(QCloseEvent* event) override;
