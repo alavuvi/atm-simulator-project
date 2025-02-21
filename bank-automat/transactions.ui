@@ -13,19 +13,25 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(38, 38, 38);</string>
+  </property>
   <widget class="QLabel" name="labelTransactions">
    <property name="geometry">
     <rect>
-     <x>580</x>
+     <x>570</x>
      <y>50</y>
-     <width>141</width>
+     <width>161</width>
      <height>41</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>14</pointsize>
+     <pointsize>20</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>TRANSACTIONS</string>
@@ -43,6 +49,9 @@
      <height>21</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
    <property name="text">
     <string>TextLabel</string>
    </property>
@@ -56,6 +65,9 @@
      <height>331</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
    <property name="selectionMode">
     <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
    </property>
@@ -66,8 +78,16 @@
      <x>430</x>
      <y>460</y>
      <width>201</width>
-     <height>31</height>
+     <height>41</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>SHOW TRANSACTIONS</string>
@@ -79,8 +99,16 @@
      <x>640</x>
      <y>460</y>
      <width>111</width>
-     <height>31</height>
+     <height>41</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>&lt;-</string>
@@ -92,8 +120,16 @@
      <x>760</x>
      <y>460</y>
      <width>111</width>
-     <height>31</height>
+     <height>41</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>-&gt;</string>
@@ -103,13 +139,18 @@
    <property name="geometry">
     <rect>
      <x>430</x>
-     <y>500</y>
+     <y>510</y>
      <width>101</width>
-     <height>31</height>
+     <height>41</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>BACK</string>
