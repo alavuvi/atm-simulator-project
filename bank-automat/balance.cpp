@@ -101,16 +101,16 @@ void Balance::balanceReceived()
                 // Haetaan transaktiot vasta kun balance on haettu onnistuneesti
                 getRecentTransactions();
             } else {
-                ui->labelBalance->setText("Error: Account not found");
+                ui->labelBalance->setText("<FONT COLOR='#FFFFFF'>Error: Account not found</FONT>");
             }
         } else {
-            ui->labelBalance->setText("Error: Invalid JSON format");
+            ui->labelBalance->setText("<FONT COLOR='#FFFFFF'>Error: Invalid JSON format</FONT>");
             qDebug() << "Invalid JSON format. Raw response:" << response;
         }
     }
     else
     {
-        ui->labelBalance->setText("Error getting balance");
+        ui->labelBalance->setText("<FONT COLOR='#FFFFFF'>Error getting balance</FONT>");
         qDebug() << "Error:" << balanceReply->errorString();
     }
 }
@@ -133,10 +133,10 @@ void Balance::getCustomerInfo()
             if (!customerName.isEmpty()) {
                 ui->labelOwner->setText(customerName);
             } else {
-                ui->labelOwner->setText("Ei nimeä");
+                ui->labelOwner->setText("<FONT COLOR='#FFFFFF'>Ei nimeä</FONT>");
             }
         } else {
-            ui->labelOwner->setText("Virhe");
+            ui->labelOwner->setText("<FONT COLOR='#FFFFFF'>Virhe</FONT>");
             qDebug() << "Customer info error:" << customerReply->errorString();
         }
         customerReply->deleteLater();
@@ -165,22 +165,22 @@ void Balance::getCreditLimitData()
                         double creditLimit = jsonObj["creditlimit"].toString().toDouble();
                         ui->labelCreditLimit->setText(QString("Credit Limit: %1 €").arg(creditLimit, 0, 'f', 2));
                     } else {
-                        ui->labelCreditLimit->setText("Credit Limit: Not Available");
+                        ui->labelCreditLimit->setText("<FONT COLOR='#FFFFFF'>Credit Limit: Not Available</FONT>");
                     }
                 }
             } else {
                 QJsonObject jsonObj = json_doc.object();
                 if (jsonObj.contains("creditlimit")) {
                     double creditLimit = jsonObj["creditlimit"].toString().toDouble();
-                    ui->labelCreditLimit->setText(QString("Credit Limit: %1 €").arg(creditLimit, 0, 'f', 2));
+                    ui->labelCreditLimit->setText(QString("<FONT COLOR='#FFFFFF'>Credit Limit: %1 €</FONT>").arg(creditLimit, 0, 'f', 2));
                 } else {
-                    ui->labelCreditLimit->setText("Credit Limit: Not Available");
+                    ui->labelCreditLimit->setText("<FONT COLOR='#FFFFFF'>Credit Limit: Not Available</FONT>");
                 }
             }
         }
         else
         {
-            ui->labelCreditLimit->setText("Error getting credit limit");
+            ui->labelCreditLimit->setText("<FONT COLOR='#FFFFFF'>Error getting credit limit</FONT>");
             qDebug() << "Error:" << creditLimitReply->errorString();
         }
         creditLimitReply->deleteLater();
@@ -207,7 +207,7 @@ void Balance::getRecentTransactions()
             QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
 
             if (jsonDoc.isNull()) {
-                ui->textTransactions->setText("Error: Invalid JSON response");
+                ui->textTransactions->setText("<FONT COLOR='#FFFFFF'>Error: Invalid JSON response</FONT>");
                 qDebug() << "Invalid JSON response for transactions";
                 return;
             }
@@ -225,10 +225,10 @@ void Balance::getRecentTransactions()
                 }
                 ui->textTransactions->setText(transactionsText);
             } else {
-                ui->textTransactions->setText("No transactions found");
+                ui->textTransactions->setText("<FONT COLOR='#FFFFFF'>No transactions found</FONT>");
             }
         } else {
-            ui->textTransactions->setText("Error loading transactions");
+            ui->textTransactions->setText("<FONT COLOR='#FFFFFF'>Error loading transactions</FONT>");
             qDebug() << "Transactions error:" << transactionsReply->errorString();
         }
     });
@@ -238,9 +238,9 @@ void Balance::updateUI(const QJsonObject &accountData)
 {
     if (accountData.contains("balance")) {
         double balance = accountData["balance"].toString().toDouble();
-        ui->labelBalance->setText(QString("Current Balance: %1 €").arg(balance, 0, 'f', 2));
+        ui->labelBalance->setText(QString("<FONT COLOR='#FFFFFF'>Current Balance: %1 €</FONT>").arg(balance, 0, 'f', 2));
     } else {
-        ui->labelBalance->setText("Error: Missing balance data");
+        ui->labelBalance->setText("<FONT COLOR='#FFFFFF'>Error: Missing balance data</FONT>");
     }
 }
 

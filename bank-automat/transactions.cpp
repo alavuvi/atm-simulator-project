@@ -65,10 +65,10 @@ void Transactions::handleCustomerInfo(QNetworkReply *reply)
         if (!customerName.isEmpty()) {
             labelName->setText(customerName);
         } else {
-            labelName->setText("Asiakasta ei löytynyt");
+            labelName->setText("<FONT COLOR='#FFFFFF'>Asiakasta ei löytynyt</FONT>");
         }
     } else {
-        labelName->setText("Virhe haettaessa asiakastietoja");
+        labelName->setText("<FONT COLOR='#FFFFFF'>Virhe haettaessa asiakastietoja</FONT>");
     }
 
     reply->deleteLater();

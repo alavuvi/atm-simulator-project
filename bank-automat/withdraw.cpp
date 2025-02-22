@@ -54,7 +54,7 @@ void Withdraw::onCustomAmountEntered()
 {
     int amount = ui->lineEdit->text().toInt();
     if (amount <= 0) {
-        QMessageBox::warning(this, "Error", "Enter approved amount !");
+        QMessageBox::warning(this, "Error", "<FONT COLOR='#FFFFFF'>Enter approved amount !</FONT>");
         return;
     }
     handleButtonClicked(amount);
@@ -68,7 +68,7 @@ void Withdraw::handleButtonClicked(int amount)
 void Withdraw::sendWithdrawRequest(int amount)
 {
     if (myToken.isEmpty() || accountID.isEmpty()) {
-        QMessageBox::critical(this, "Error", "Token or accountid missing.");
+        QMessageBox::critical(this, "Error", "<FONT COLOR='#FFFFFF'>Token or accountid missing.</FONT>");
         return;
     }
 
@@ -97,10 +97,28 @@ void Withdraw::handleNetworkReply(QNetworkReply *reply)
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray response = reply->readAll();
         qDebug() << "Withdraw successfull:" << response;
-        QMessageBox::information(this, "Success", "Withdrawl succesfull");
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Success");
+        msgBox.setText("<FONT COLOR='#FFFFFF'>Enter approved amount!</FONT>");
+        msgBox.setIcon(QMessageBox::Warning);
+
+        msgBox.setStyleSheet("QMessageBox { background-color: rgb(38,38,38);}");
+
+        QPushButton *okButton = msgBox.addButton(QMessageBox::Ok);
+        okButton->setStyleSheet("color: white; background-color: rgb(38,38,38);");
+        msgBox.exec();
     } else {
         qDebug() << "Withdraw request failed:" << reply->errorString();
-        QMessageBox::critical(this, "Error", "Withdraw failed: " + reply->errorString());
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Error");
+        msgBox.setText("<FONT COLOR='#FFFFFF'>Withdraw failed:!</FONT>");
+        msgBox.setIcon(QMessageBox::Warning);
+
+        msgBox.setStyleSheet("QMessageBox { background-color: rgb(38,38,38);}");
+
+        QPushButton *okButton = msgBox.addButton(QMessageBox::Ok);
+        okButton->setStyleSheet("color: white; background-color: rgb(38,38,38);");
+        msgBox.exec();
     }
     reply->deleteLater();
 }
