@@ -1,4 +1,5 @@
 #include "timermanager.h"
+#include "qpushbutton.h"
 #include <QDebug>
 #include <QMessageBox>
 
@@ -83,8 +84,16 @@ void TimerManager::handleTimeout()
         }
         emit returnToMainMenuRequested();
     } else {
-        QMessageBox::warning(currentWindow, "Timeout",
-                             "Your session has timed out due to inactivity.");
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Timeout");
+        msgBox.setText("<FONT COLOR='#FFFFFF'>Your session has timed out due to inactivity.</FONT>");
+        msgBox.setIcon(QMessageBox::Warning);
+
+        msgBox.setStyleSheet("QMessageBox { background-color: rgb(38,38,38);}");
+
+        QPushButton *okButton = msgBox.addButton(QMessageBox::Ok);
+        okButton->setStyleSheet("color: white; background-color: rgb(38,38,38);");
+        msgBox.exec();
         emit timerExpired();
         if (currentWindow) {
             currentWindow->close();
