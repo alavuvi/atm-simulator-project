@@ -62,10 +62,6 @@ void Withdraw::setAccountId(const QString &accountId)
     qDebug() << "Withdraw received accountID: " << accountID;
 }
 
-void Withdraw::setOwnerName(const QString &ownerName)
-{
-    ui->labelOwner->setText(ownerName);
-}
 
 void Withdraw::onCustomAmountEntered()
 {
