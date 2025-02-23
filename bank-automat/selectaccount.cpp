@@ -16,7 +16,7 @@ SelectAccount::SelectAccount(QWidget *parent)
     ui->setupUi(this);
     connect(&TimerManager::getInstance(), &TimerManager::timerExpired,
             this, &SelectAccount::handleTimerExpired);
-    TimerManager::getInstance().startTimer(this);
+    TimerManager::getInstance().startTimer(this, TimerManager::WindowType::LOGIN);
 }
 
 SelectAccount::~SelectAccount()
@@ -91,12 +91,17 @@ void SelectAccount::handleCreditLimitResponse(QNetworkReply *reply)
 
 void SelectAccount::on_btnCredit_clicked()
 {
+    TimerManager::getInstance().stopTimer();
+    disconnect(&TimerManager::getInstance(), &TimerManager::timerExpired,
+               this, &SelectAccount::handleTimerExpired);
     if (creditAccountId != -1) {
-        MainMenu *objMainMenu = new MainMenu(this);
+        MainMenu *objMainMenu = new MainMenu(nullptr);
         objMainMenu->setMyToken(myToken);
         objMainMenu->setAccountId(QString::number(creditAccountId));
-        objMainMenu->open();
+
         this->close();
+        objMainMenu->show();
+
     }
     else {
         qDebug() << "Credit-tiliä ei löytynyt.";
@@ -105,12 +110,16 @@ void SelectAccount::on_btnCredit_clicked()
 
 void SelectAccount::on_btnDebit_clicked()
 {
-    if (debitAccountId != -1) {
-        MainMenu *objMainMenu = new MainMenu(this);
+    TimerManager::getInstance().stopTimer();
+    disconnect(&TimerManager::getInstance(), &TimerManager::timerExpired,
+               this, &SelectAccount::handleTimerExpired);
+    if (debitAccountId != -1) {    
+        MainMenu *objMainMenu = new MainMenu(nullptr);
         objMainMenu->setMyToken(myToken);
         objMainMenu->setAccountId(QString::number(debitAccountId));
-        objMainMenu->open();
+
         this->close();
+        objMainMenu->show();
     }
     else {
         qDebug() << "Debit-tiliä ei löytynyt.";
@@ -130,5 +139,14 @@ void SelectAccount::setMyToken(const QByteArray &newMyToken)
 void SelectAccount::handleTimerExpired()
 {
     myToken.clear();
+    qDebug() << "Token tyhjennetty ajastimen loppuessa Select Accountissa: " << myToken;
     this->close();
+}
+
+void SelectAccount::closeEvent(QCloseEvent *event)
+{
+    TimerManager::getInstance().stopTimer();
+    disconnect(&TimerManager::getInstance(), &TimerManager::timerExpired,
+               this, &SelectAccount::handleTimerExpired);
+    QDialog::closeEvent(event);
 }

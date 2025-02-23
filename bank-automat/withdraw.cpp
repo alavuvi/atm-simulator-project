@@ -15,11 +15,9 @@ Withdraw::Withdraw(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
     connect(ui->Btnam100, &QPushButton::clicked, this, [this]() { handleButtonClicked(100); });
     connect(ui->Btnam50, &QPushButton::clicked, this, [this]() { handleButtonClicked(50); });
     connect(ui->Btnam20, &QPushButton::clicked, this, [this]() { handleButtonClicked(20); });
-
 
     QList<QPushButton*> numberButtons = {
         ui->Btnn0, ui->Btnn1, ui->Btnn2, ui->Btnn3, ui->Btnn4,
@@ -32,14 +30,12 @@ Withdraw::Withdraw(QWidget *parent) :
         });
     }
 
-
     connect(ui->Btnok, &QPushButton::clicked, this, &Withdraw::onCustomAmountEntered);
     connect(ui->Btncorr, &QPushButton::clicked, this, [this]() {
         QString text = ui->lineEdit->text();
         text.chop(1);
         ui->lineEdit->setText(text);
     });
-
 
     connect(ui->Btnback, &QPushButton::clicked, this, &QDialog::reject);
 }
@@ -71,49 +67,21 @@ void Withdraw::onCustomAmountEntered()
 {
     int amount = ui->lineEdit->text().toInt();
     if (amount <= 0) {
-<<<<<<< Updated upstream
-        QMessageBox::warning(this, "Error", "Enter approved amount !");
-=======
         QMessageBox::warning(this, "Error", "<FONT COLOR='#FFFFFF'>Enter approved amount!</FONT>");
->>>>>>> Stashed changes
         return;
     }
     handleButtonClicked(amount);
 }
 
-void Withdraw::onNumberButtonClicked() {
-
-}
-
-void Withdraw::onCorrectButtonClicked() {
-
-}
-
-void Withdraw::onConfirmButtonClicked() {
-
-}
-
-void Withdraw::onBackButtonClicked() {
-
-}
-
 void Withdraw::handleButtonClicked(int amount)
 {
-    sendWithdrawRequest(amount);
+    fetchBalanceAndWithdraw(amount); // Call the correct function
 }
+
 void Withdraw::fetchBalanceAndWithdraw(int amount)
 {
     if (myToken.isEmpty() || accountID.isEmpty()) {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("Error");
-        msgBox.setText("<FONT COLOR='#FFFFFF'>Token or accountID missing.</FONT>");
-        msgBox.setIcon(QMessageBox::Critical);
-
-        msgBox.setStyleSheet("QMessageBox { background-color: rgb(38,38,38);}");
-
-        QPushButton *okButton = msgBox.addButton(QMessageBox::Ok);
-        okButton->setStyleSheet("color: white; background-color: rgb(38,38,38);");
-        msgBox.exec();
+        showMessageBox("Error", "<FONT COLOR='#FFFFFF'>Token or accountID missing.</FONT>", QMessageBox::Critical);
         return;
     }
 
@@ -135,50 +103,26 @@ void Withdraw::fetchBalanceAndWithdraw(int amount)
             qDebug() << "Balance:" << balance << " Credit Limit:" << creditLimit;
 
             if (amount > availableFunds) {
-                QMessageBox msgBox;
-                msgBox.setWindowTitle("Error");
-                msgBox.setText("<FONT COLOR='#FFFFFF'>Insufficient funds!</FONT>");
-                msgBox.setIcon(QMessageBox::Warning);
-
-                msgBox.setStyleSheet("QMessageBox { background-color: rgb(38,38,38);}");
-
-                QPushButton *okButton = msgBox.addButton(QMessageBox::Ok);
-                okButton->setStyleSheet("color: white; background-color: rgb(38,38,38);");
-                msgBox.exec();
+                showMessageBox("Error", "<FONT COLOR='#FFFFFF'>Insufficient funds!</FONT>", QMessageBox::Warning);
             } else {
                 sendWithdrawRequest(amount);
             }
         } else {
             qDebug() << "Failed to fetch balance:" << reply->errorString();
-
-            QMessageBox msgBox;
-            msgBox.setWindowTitle("Error");
-            msgBox.setText("<FONT COLOR='#FFFFFF'>Failed to fetch balance.</FONT>");
-            msgBox.setIcon(QMessageBox::Critical);
-
-            msgBox.setStyleSheet("QMessageBox { background-color: rgb(38,38,38);}");
-
-            QPushButton *okButton = msgBox.addButton(QMessageBox::Ok);
-            okButton->setStyleSheet("color: white; background-color: rgb(38,38,38);");
-            msgBox.exec();
+            showMessageBox("Error", "<FONT COLOR='#FFFFFF'>Failed to fetch balance.</FONT>", QMessageBox::Critical);
         }
         reply->deleteLater();
     });
 }
 
-
 void Withdraw::sendWithdrawRequest(int amount)
 {
     if (myToken.isEmpty() || accountID.isEmpty()) {
-<<<<<<< Updated upstream
-        QMessageBox::critical(this, "Error", "Token or accountid missing.");
-=======
-        QMessageBox::critical(this, "Error", "<FONT COLOR='#FFFFFF'>Token or accountID missing.</FONT>");
->>>>>>> Stashed changes
+        showMessageBox("Error", "<FONT COLOR='#FFFFFF'>Token or accountid missing.</FONT>", QMessageBox::Critical);
         return;
     }
 
-    QUrl url("http://localhost:3000/withdraw");
+    QUrl url(Environment::base_url() + "/withdraw");
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", QByteArray("Bearer ") + myToken);
@@ -202,37 +146,23 @@ void Withdraw::handleNetworkReply(QNetworkReply *reply)
 {
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray response = reply->readAll();
-<<<<<<< Updated upstream
-        qDebug() << "Withdraw successfull:" << response;
-        QMessageBox::information(this, "Success", "Withdrawl succesfull");
-    } else {
-        qDebug() << "Withdraw request failed:" << reply->errorString();
-        QMessageBox::critical(this, "Error", "Withdraw failed: " + reply->errorString());
-=======
         qDebug() << "Withdraw successful:" << response;
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("Success");
-        msgBox.setText("<FONT COLOR='#FFFFFF'>Withdrawal successful!</FONT>");
-        msgBox.setIcon(QMessageBox::Information);
-
-        msgBox.setStyleSheet("QMessageBox { background-color: rgb(38,38,38);}");
-
-        QPushButton *okButton = msgBox.addButton(QMessageBox::Ok);
-        okButton->setStyleSheet("color: white; background-color: rgb(38,38,38);");
-        msgBox.exec();
+        showMessageBox("Success", "<FONT COLOR='#FFFFFF'>Withdrawal successful!</FONT>", QMessageBox::Information);
     } else {
         qDebug() << "Withdraw request failed:" << reply->errorString();
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("Error");
-        msgBox.setText("<FONT COLOR='#FFFFFF'>Withdrawal failed!</FONT>");
-        msgBox.setIcon(QMessageBox::Warning);
-
-        msgBox.setStyleSheet("QMessageBox { background-color: rgb(38,38,38);}");
-
-        QPushButton *okButton = msgBox.addButton(QMessageBox::Ok);
-        okButton->setStyleSheet("color: white; background-color: rgb(38,38,38);");
-        msgBox.exec();
->>>>>>> Stashed changes
+        showMessageBox("Error", "<FONT COLOR='#FFFFFF'>Withdraw failed: " + reply->errorString() + "</FONT>", QMessageBox::Warning);
     }
     reply->deleteLater();
+}
+
+void Withdraw::showMessageBox(const QString& title, const QString& message, QMessageBox::Icon icon)
+{
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(title);
+    msgBox.setText(message);
+    msgBox.setIcon(icon);
+    msgBox.setStyleSheet("QMessageBox { background-color: rgb(38,38,38);}");
+    QPushButton *okButton = msgBox.addButton(QMessageBox::Ok);
+    okButton->setStyleSheet("color: white; background-color: rgb(38,38,38);");
+    msgBox.exec();
 }

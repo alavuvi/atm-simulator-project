@@ -5,7 +5,7 @@ const transactions={
         return db.query('SELECT * FROM transactions', callback);
     },
     getByid:function(id, start, end, callback){
-        return db.query('SELECT date_format(datetime, "%Y-%m-%d %H:%i:%s") as "datetime", transaction, amount FROM transactions WHERE idaccount=? LIMIT ?, ?',[id, start, end],callback);
+        return db.query('SELECT date_format(datetime, "%Y-%m-%d %H:%i:%s") as "datetime", transaction, amount FROM transactions WHERE idaccount=? ORDER BY datetime DESC LIMIT ?, ?',[id, start, end],callback);
     },
     add:function(transactions_data, callback){
         return db.query("insert into transactions(idaccount, datetime, transaction, amount) values(?,?,?,?)", [transactions_data.idaccount, transactions_data.datetime, transactions_data.transaction, transactions_data.amount], callback);

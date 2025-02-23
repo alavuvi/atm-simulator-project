@@ -20,7 +20,7 @@ public:
     ~MainMenu();
     void setMyToken(const QByteArray &newMyToken);
     void setAccountId(const QString &newAccountId);
-
+    void setupTimerConnections();
 
 private slots:
     void handleCustomerInfo(QNetworkReply *reply);
@@ -38,6 +38,10 @@ private:
     QLabel *labelName;
     void getCustomerInfo();
     void handleTimerExpired();
+
+protected:
+    void showEvent(QShowEvent* event) override;
+    void closeEvent(QCloseEvent *event) override;
 };
 
 #endif

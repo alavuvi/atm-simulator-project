@@ -35,7 +35,7 @@ Login::Login(QWidget *parent)
     connect(ui->buttonBack, &QPushButton::clicked, this, &Login::onBackButtonClicked);
 
     // Aloita 10 sekunnin ajastus kirjautumiselle
-    TimerManager::getInstance().startTimer(this, TimerManager::LOGIN_TIMEOUT);
+    TimerManager::getInstance().startTimer(this, TimerManager::WindowType::LOGIN);
 }
 
 Login::~Login()
@@ -99,22 +99,31 @@ void Login::loginSlot(QNetworkReply *reply)
     response_data = reply->readAll();
     if(response_data.length() < 2){
         qDebug() << "Server is not responding!";
-        ui->labelInfo->setText("Server is not Responding!!");
+        ui->labelInfo->setText("<FONT COLOR='#FFFFFF'>Server is not Responding!!</FONT>");
     }
     else {
         if(response_data == "-11") {
-            ui->labelInfo->setText("Database Error!");
+            ui->labelInfo->setText("<FONT COLOR='#FFFFFF'>Database Error!</FONT>");
         }
-        if(response_data =="-12") {
-            QMessageBox::warning(this, "Card locked!",
-                                 "You're card is locked! Please, contact sysadmin!");
-            ui->labelInfo->setText("Card is locked! Contact sysadmin!");
+        if(response_data == "-12") {
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Card locked!");
+            msgBox.setText("<FONT COLOR='#FFFFFF'>You're card is locked! Please, contact sysadmin!</FONT>");
+            msgBox.setIcon(QMessageBox::Warning);
+
+            msgBox.setStyleSheet("QMessageBox { background-color: rgb(38,38,38);}");
+
+            QPushButton *okButton = msgBox.addButton(QMessageBox::Ok);
+            okButton->setStyleSheet("color: white; background-color: rgb(38,38,38);");
+            msgBox.exec();
+
+            ui->labelInfo->setText("<FONT COLOR='#FFFFFF'>Card is locked! Contact sysadmin!</FONT>");
             TimerManager::getInstance().stopTimer();
             this->close();
         }
         else {
             if(response_data != "false" && response_data.length() > 20) {
-                ui->labelInfo->setText("Login OK");
+                ui->labelInfo->setText("<FONT COLOR='#FFFFFF'>Login OK</FONT>");
 
                 setMyToken(response_data);
                 qDebug() << "Token asetettu:" << myToken;
@@ -134,16 +143,24 @@ void Login::loginSlot(QNetworkReply *reply)
             else {
                 failedAttempts++;
                 if(failedAttempts >= 3){
-                    QMessageBox::warning(this, "PIN Error!",
-                                         "Wrong PIN entered 3 times. Card is now locked! Please, contact sysadmin!");
-                    ui->labelInfo->setText("Wrong PIN entered 3 times. Card is locked!");
+                    QMessageBox msgBox;
+                    msgBox.setWindowTitle("Card locked!");
+                    msgBox.setText("<FONT COLOR='#FFFFFF'>>Wrong PIN entered 3 times. Card is now locked! Please, contact sysadmin!</FONT>");
+                    msgBox.setIcon(QMessageBox::Warning);
+
+                    msgBox.setStyleSheet("QMessageBox { background-color: rgb(38,38,38); }");
+
+                    QPushButton *okButton = msgBox.addButton(QMessageBox::Ok);
+                    okButton->setStyleSheet("color: white; background-color: rgb(38,38,38);");
+                    msgBox.exec();
+                    ui->labelInfo->setText("<FONT COLOR='#FFFFFF'>Wrong PIN entered 3 times. Card is locked!</FONT>");
                     QString cardId = ui->labelCardId->text();
                     updateCardStatus(cardId);
                     TimerManager::getInstance().stopTimer();
                     this->close();
                 }
                 else{
-                    ui->labelInfo->setText("Wrong PIN entered!");
+                    ui->labelInfo->setText("<FONT COLOR='#FFFFFF'>Wrong PIN entered!</FONT>");
                 }
             }
         }
@@ -178,7 +195,7 @@ void Login::handleAccountsResponse(QNetworkReply *reply)
         qDebug() << "Korttiin liitetty accountId:" << accountID;
         TimerManager::getInstance().stopTimer(); //pysäytetään ajastin siirryttäessä eteenpäin
 
-        MainMenu *objMainMenu = new MainMenu(this);
+        MainMenu *objMainMenu = new MainMenu(nullptr);
         objMainMenu->setMyToken(myToken);
         objMainMenu->setAccountId(accountID);
         objMainMenu->open();

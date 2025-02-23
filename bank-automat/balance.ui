@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>611</width>
-    <height>406</height>
+    <width>1280</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
-    <width>644</width>
+    <width>1280</width>
     <height>16777215</height>
    </size>
   </property>
@@ -29,13 +29,16 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(38, 38, 38);</string>
+  </property>
   <widget class="QLabel" name="labelBalance">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>160</y>
-     <width>311</width>
-     <height>101</height>
+     <x>320</x>
+     <y>0</y>
+     <width>421</width>
+     <height>161</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -44,17 +47,27 @@
      <height>50</height>
     </size>
    </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>20</pointsize>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
    <property name="text">
     <string>Current Balance: 0.00 €</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <set>Qt::AlignmentFlag::AlignCenter</set>
    </property>
   </widget>
   <widget class="QPushButton" name="btnBack">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>50</x>
      <y>30</y>
      <width>121</width>
      <height>51</height>
@@ -66,6 +79,16 @@
      <height>40</height>
     </size>
    </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>14</pointsize>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
    <property name="text">
     <string>Back</string>
    </property>
@@ -73,31 +96,67 @@
   <widget class="QLabel" name="labelOwner">
    <property name="geometry">
     <rect>
-     <x>440</x>
+     <x>910</x>
      <y>30</y>
-     <width>121</width>
-     <height>41</height>
+     <width>181</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <family>Segoe UI</family>
-     <pointsize>12</pointsize>
+     <pointsize>16</pointsize>
      <bold>false</bold>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>Erkki Esimerkki</string>
    </property>
   </widget>
+  <widget class="QLabel" name="labelCreditLimit">
+   <property name="geometry">
+    <rect>
+     <x>380</x>
+     <y>100</y>
+     <width>361</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>20</pointsize>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>Current Creditlimit: 0.00€</string>
+   </property>
+  </widget>
   <widget class="QTextEdit" name="textTransactions">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>20</y>
-     <width>161</width>
-     <height>131</height>
+     <x>220</x>
+     <y>250</y>
+     <width>661</width>
+     <height>431</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>20</pointsize>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
   </widget>
  </widget>
