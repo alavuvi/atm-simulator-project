@@ -19,18 +19,25 @@ public:
 
     void setMyToken(const QByteArray &token);
     void setAccountId(const QString &accountId);
+    void setOwnerName(const QString &ownerName);
 
 private slots:
     void onCustomAmountEntered();
     void handleNetworkReply(QNetworkReply *reply);
     void handleButtonClicked(int amount);
     void sendWithdrawRequest(int amount);
+    void onNumberButtonClicked();
+    void onCorrectButtonClicked();
+    void onConfirmButtonClicked();
+    void onBackButtonClicked();
+    void fetchBalanceAndWithdraw(int amount);
 
 private:
     Ui::Withdraw *ui;
     QNetworkAccessManager *networkManager;
     QByteArray myToken;
     QString accountID;
+    QString currentAmount;
 };
 
 #endif
