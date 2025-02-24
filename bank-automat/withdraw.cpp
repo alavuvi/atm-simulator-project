@@ -35,7 +35,7 @@ Withdraw::Withdraw(QWidget *parent) :
     for (int i = 0; i < numberButtons.size(); ++i) {
         connect(numberButtons[i], &QPushButton::clicked, this, [this, i]() {
             ui->lineEdit->setText(ui->lineEdit->text() + QString::number(i));
-            TimerManager::getInstance().resetTimer();  // Add this line
+            TimerManager::getInstance().resetTimer();  // Timer reset
         });
     }
 
@@ -93,17 +93,17 @@ void Withdraw::onCustomAmountEntered()
 
 void Withdraw::onNumberButtonClicked()
 {
-    //TimerManager::getInstance().resetTimer(); //timer reset
+
 }
 
 void Withdraw::onCorrectButtonClicked()
 {
-    //TimerManager::getInstance().resetTimer(); //timer reset
+
 }
 
 void Withdraw::onConfirmButtonClicked()
 {
-    //TimerManager::getInstance().resetTimer(); //timer reset
+
 }
 
 void Withdraw::onBackButtonClicked()
