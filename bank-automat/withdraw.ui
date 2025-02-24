@@ -267,29 +267,6 @@
     <string>20</string>
    </property>
   </widget>
-  <widget class="QLabel" name="labelOwner">
-   <property name="geometry">
-    <rect>
-     <x>960</x>
-     <y>10</y>
-     <width>251</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>16</pointsize>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(255, 255, 255);</string>
-   </property>
-   <property name="text">
-    <string>Erkki Esimerkki</string>
-   </property>
-  </widget>
  </widget>
  <resources/>
  <connections/>
