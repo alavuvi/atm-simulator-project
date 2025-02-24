@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QNetworkAccessManager>
 #include "environment.h"
+#include "timermanager.h"
 
 Withdraw::Withdraw(QWidget *parent) :
     QDialog(parent),
@@ -14,6 +15,11 @@ Withdraw::Withdraw(QWidget *parent) :
     networkManager(new QNetworkAccessManager(this))
 {
     ui->setupUi(this);
+
+    //Ajastimen kutsuminen
+    TimerManager::getInstance().startTimer(this, TimerManager::WindowType::OPERATIONS);
+    connect(&TimerManager::getInstance(), &TimerManager::returnToMainMenuRequested,
+            this, &Withdraw::close);
 
 
     connect(ui->Btnam100, &QPushButton::clicked, this, [this]() { handleButtonClicked(100); });
@@ -29,6 +35,7 @@ Withdraw::Withdraw(QWidget *parent) :
     for (int i = 0; i < numberButtons.size(); ++i) {
         connect(numberButtons[i], &QPushButton::clicked, this, [this, i]() {
             ui->lineEdit->setText(ui->lineEdit->text() + QString::number(i));
+            TimerManager::getInstance().resetTimer();  // Timer reset
         });
     }
 
@@ -41,7 +48,17 @@ Withdraw::Withdraw(QWidget *parent) :
     });
 
 
-    connect(ui->Btnback, &QPushButton::clicked, this, &QDialog::reject);
+    connect(ui->Btnback, &QPushButton::clicked, this, [this]() {
+        TimerManager::getInstance().stopTimer(); // stop timer
+        this->close();
+        // set main menu as an active window and start timer there
+        if (TimerManager::getInstance().getMainMenuWindow()) {
+            TimerManager::getInstance().startTimer(
+                TimerManager::getInstance().getMainMenuWindow(),
+                TimerManager::WindowType::MAINMENU
+                );
+        }
+    });
 }
 
 Withdraw::~Withdraw()
@@ -65,6 +82,7 @@ void Withdraw::setAccountId(const QString &accountId)
 
 void Withdraw::onCustomAmountEntered()
 {
+    TimerManager::getInstance().resetTimer();  // timer reset
     int amount = ui->lineEdit->text().toInt();
     if (amount <= 0) {
         QMessageBox::warning(this, "Error", "<FONT COLOR='#FFFFFF'>Enter approved amount!</FONT>");
@@ -73,25 +91,30 @@ void Withdraw::onCustomAmountEntered()
     handleButtonClicked(amount);
 }
 
-void Withdraw::onNumberButtonClicked() {
+void Withdraw::onNumberButtonClicked()
+{
 
 }
 
-void Withdraw::onCorrectButtonClicked() {
+void Withdraw::onCorrectButtonClicked()
+{
 
 }
 
-void Withdraw::onConfirmButtonClicked() {
+void Withdraw::onConfirmButtonClicked()
+{
 
 }
 
-void Withdraw::onBackButtonClicked() {
+void Withdraw::onBackButtonClicked()
+{
 
 }
 
 void Withdraw::handleButtonClicked(int amount)
 {
     sendWithdrawRequest(amount);
+    TimerManager::getInstance().resetTimer(); //timer reset
 }
 void Withdraw::fetchBalanceAndWithdraw(int amount)
 {
