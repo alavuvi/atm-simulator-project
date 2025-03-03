@@ -39,8 +39,10 @@ The system includes the following components:
 ## License
 This software and it's documentation is using MIT license.
 
-## Developers:
-- [Ville-Pekka Alavuotunki](https://github.com/alavuvi)
-- Aapo Pähti
-- Kata Niva
-- Tuure Väänänen
+## Developers and Their Main Responsibilities
+- [Ville-Pekka Alavuotunki](https://github.com/alavuvi) - login system (front- and backend), combination card, timers, cruds for card/accountcard, various backend models and routes etc..
+- [Aapo Pähti](https://github.com/PahtiA) - account cruds and balance in QT
+- [Kata Niva](https://github.com/kataniva) - transactions cruds and transactions in QT
+- [Tuure Väänänen](https://github.com/tvll) - customer cruds and withdraw in QT
+
+Together we transitioned our backend to Digital Oceans Linux Virtual Servers and set it up with automatic database backup solutions built with bash script and crontab job.
